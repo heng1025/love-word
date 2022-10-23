@@ -1,0 +1,40 @@
+{
+  "name": "love word",
+  "version": "0.0.1",
+  "manifest_version": 3,
+  "description": "Love because of words",
+  "icons": {
+    "16": "icons/lw16x16.png",
+    "32": "icons/lw32x32.png",
+    "48": "icons/lw48x48.png",
+    "128": "icons/lw128x128.png"
+  },
+  "action": {
+    "default_title": "Love Word",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-loader.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": [
+        "images/*.jpeg",
+        "assets/vendor.js",
+        "assets/common.js",
+        "assets/common.css",
+        "assets/content.js"
+      ]
+    }
+  ],
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "assets/background.js",
+    "type": "module"
+  }
+}

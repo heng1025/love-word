@@ -1,0 +1,44 @@
+{
+  "name": "NASA picture of the day viewer",
+  "version": "0.0.0.1",
+  "manifest_version": 3,
+  "description": "An extension to display the NASA picture of the day.",
+  "icons": {
+    "16": "icons/nasapod16x16.png",
+    "32": "icons/nasapod32x32.png",
+    "48": "icons/nasapod48x48.png",
+    "128": "icons/nasapod128x128.png"
+  },
+  "action": {
+    "default_title": "Click Me",
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-scripts/content.js"],
+      "css": ["content-scripts/content.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["images/*.jpeg", "assets/vendor.js"]
+    }
+  ],
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "commands": {
+    "aasdfasdf": {
+      "suggested_key": {
+        "default": "Alt+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Run \"abc\" on the current page."
+    }
+  }
+}

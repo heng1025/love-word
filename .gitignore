@@ -1,0 +1,8 @@
+#build
+dist
+
+node_modules
+#rescript
+.bsb.lock
+.merlin
+lib
