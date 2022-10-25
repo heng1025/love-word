@@ -21,9 +21,10 @@ function ContentApp(Props) {
   var setOpactity = match$2[1];
   var opacity = match$2[0];
   var match$3 = React.useState(function () {
-        return /* None */2;
+        return /* Noop */2;
       });
   var setLoading = match$3[1];
+  var loading = match$3[0];
   var match$4 = React.useState(function () {
         return "";
       });
@@ -33,11 +34,19 @@ function ContentApp(Props) {
       });
   var setMouseClick = match$5[1];
   var isMouseClick = match$5[0];
-  var showTransPanel = function (ev) {
+  var updatePos = function (ev) {
     var x = ev.pageX - 50 | 0;
     var y = ev.pageY + 30 | 0;
+    setTop(function (_p) {
+          return "" + y.toString() + "px";
+        });
+    setLeft(function (_p) {
+          return "" + x.toString() + "px";
+        });
+  };
+  var showTransPanel = function (target) {
     var raw = window.getSelection().toString().trim();
-    if (raw !== "" && !containerEl.current.contains(ev.target)) {
+    if (raw !== "" && loading === /* Noop */2 && !containerEl.current.contains(target)) {
       setLoading(function (param) {
             return /* Yes */0;
           });
@@ -49,12 +58,6 @@ function ContentApp(Props) {
                   return ret;
                 });
             return Promise.resolve(undefined);
-          });
-      setTop(function (_p) {
-            return "" + y.toString() + "px";
-          });
-      setLeft(function (_p) {
-            return "" + x.toString() + "px";
           });
       return setOpactity(function (_p) {
                   return "1";
@@ -73,26 +76,42 @@ function ContentApp(Props) {
             e.stopPropagation();
             firtTime.contents = Date.now();
           };
-          var handleMouseUp = function (e) {
-            e.stopPropagation();
+          var handleMouseUp = function (ev) {
+            ev.stopPropagation();
             lastTime.contents = Date.now();
             var delta = lastTime.contents - firtTime.contents | 0;
             var clickState = delta < 250;
             setMouseClick(function (_p) {
                   return clickState;
                 });
-            if (!clickState) {
-              return showTransPanel(e);
+            if (!clickState && ev.altKey) {
+              updatePos(ev);
+              return showTransPanel(ev.target);
+            }
+            
+          };
+          var handleDblclick = function (ev) {
+            if (ev.altKey) {
+              updatePos(ev);
+              return showTransPanel(ev.target);
+            }
+            
+          };
+          var handleKeyup = function (ev) {
+            if (ev.keyCode === 18) {
+              return showTransPanel(ev.target);
             }
             
           };
           window.addEventListener("mousedown", handleMouseDown);
-          window.addEventListener("dblclick", showTransPanel);
+          window.addEventListener("dblclick", handleDblclick);
           window.addEventListener("mouseup", handleMouseUp);
+          window.addEventListener("keyup", handleKeyup);
           return (function (param) {
                     window.removeEventListener("mousedown", handleMouseDown);
-                    window.removeEventListener("dblclick", showTransPanel);
+                    window.removeEventListener("dblclick", handleDblclick);
                     window.removeEventListener("mouseup", handleMouseUp);
+                    window.removeEventListener("keyup", handleKeyup);
                   });
         }), []);
   React.useEffect((function () {
@@ -125,14 +144,14 @@ function ContentApp(Props) {
     opacity: opacity
   };
   var tmp;
-  switch (match$3[0]) {
+  switch (loading) {
     case /* Yes */0 :
         tmp = "loading...";
         break;
     case /* No */1 :
         tmp = match$4[0];
         break;
-    case /* None */2 :
+    case /* Noop */2 :
         tmp = null;
         break;
     

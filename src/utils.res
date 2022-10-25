@@ -27,8 +27,21 @@ module Webapi = {
       offsetY: int,
       clientX: int,
       clientY: int,
+      altKey: bool,
+      ctrlKey: bool,
+      shiftKey: bool,
       target: Dom.element,
       stopPropagation: @uncurry (. unit) => unit,
+    }
+  }
+
+  module KeyboardEvent = {
+    type t = {
+      keyCode: int,
+      altKey: bool,
+      ctrlKey: bool,
+      shiftKey: bool,
+      target: Dom.element,
     }
   }
 }
@@ -41,10 +54,16 @@ external windowInnerWidth: int = "innerWidth"
 @scope("window") @val
 external getSelection: unit => int = "getSelection"
 @scope("window") @val
-external addWindowEventListener: (string, @uncurry (MouseEvent.t => unit)) => unit =
+external addMouseEventListener: (string, @uncurry (MouseEvent.t => unit)) => unit =
   "addEventListener"
 @scope("window") @val
-external removeWindowEventListener: (string, @uncurry (MouseEvent.t => unit)) => unit =
+external removeMouseEventListener: (string, @uncurry (MouseEvent.t => unit)) => unit =
+  "removeEventListener"
+@scope("window") @val
+external addKeyboardEventListener: (string, @uncurry (KeyboardEvent.t => unit)) => unit =
+  "addEventListener"
+@scope("window") @val
+external removeKeyboardEventListener: (string, @uncurry (KeyboardEvent.t => unit)) => unit =
   "removeEventListener"
 
 @val

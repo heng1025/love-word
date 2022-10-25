@@ -8,10 +8,13 @@ var $$Document = {};
 
 var $$MouseEvent = {};
 
+var $$KeyboardEvent = {};
+
 var Webapi = {
   $$Element: $$Element,
   $$Document: $$Document,
-  $$MouseEvent: $$MouseEvent
+  $$MouseEvent: $$MouseEvent,
+  $$KeyboardEvent: $$KeyboardEvent
 };
 
 function translate(text) {

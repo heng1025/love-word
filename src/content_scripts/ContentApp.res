@@ -6,7 +6,7 @@ open Utils.Webapi.Element
 @@warning("-44")
 let common = getURL(. "assets/common.css")
 
-type loading = Yes | No | None
+type loading = Yes | No | Noop
 
 @react.component
 let make = () => {
@@ -14,17 +14,23 @@ let make = () => {
   let (top, setTop) = React.Uncurried.useState(_ => "0")
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
-  let (loading, setLoading) = React.Uncurried.useState(_ => None)
+  let (loading, setLoading) = React.Uncurried.useState(_ => Noop)
   let (result, setResult) = React.Uncurried.useState(_ => "")
   let (isMouseClick, setMouseClick) = React.Uncurried.useState(_ => false)
 
-  let showTransPanel = (ev: MouseEvent.t) => {
+  let updatePos = (ev: MouseEvent.t) => {
     // get mouse position
     let x = ev.pageX - 50
     let y = ev.pageY + 30
+    open Js.Int
 
+    setTop(._p => `${toString(y)}px`)
+    setLeft(._p => `${toString(x)}px`)
+  }
+
+  let showTransPanel = (target: Dom.element) => {
     let raw = Js.String2.trim(Js.Int.toString(getSelection()))
-    if raw !== "" && !contains(containerEl.current, ev.target) {
+    if raw !== "" && loading === Noop && !contains(containerEl.current, target) {
       setLoading(._ => Yes)
       translate(raw)
       ->then(ret => {
@@ -34,10 +40,6 @@ let make = () => {
       })
       ->ignore
 
-      open Js.Int
-
-      setTop(._p => `${toString(y)}px`)
-      setLeft(._p => `${toString(x)}px`)
       setOpactity(._p => "1")
     }
   }
@@ -51,8 +53,8 @@ let make = () => {
       firtTime := Js.Date.now()
     }
 
-    let handleMouseUp = (e: MouseEvent.t) => {
-      e.stopPropagation(.)
+    let handleMouseUp = (ev: MouseEvent.t) => {
+      ev.stopPropagation(.)
       lastTime := Js.Date.now()
       open Belt.Float
       let delta = Belt.Float.toInt(lastTime.contents - firtTime.contents)
@@ -60,20 +62,37 @@ let make = () => {
       let clickState = delta < 250
       setMouseClick(._p => clickState)
 
-      if !clickState {
-        showTransPanel(e)
+      if !clickState && ev.altKey {
+        updatePos(ev)
+        showTransPanel(ev.target)
       }
     }
 
-    addWindowEventListener("mousedown", handleMouseDown)
-    addWindowEventListener("dblclick", showTransPanel)
-    addWindowEventListener("mouseup", handleMouseUp)
+    let handleDblclick = (ev: MouseEvent.t) => {
+      if ev.altKey {
+        updatePos(ev)
+        showTransPanel(ev.target)
+      }
+    }
+
+    let handleKeyup = (ev: KeyboardEvent.t) => {
+      // altkey (left or right)
+      if ev.keyCode === 18 {
+        showTransPanel(ev.target)
+      }
+    }
+
+    addMouseEventListener("mousedown", handleMouseDown)
+    addMouseEventListener("dblclick", handleDblclick)
+    addMouseEventListener("mouseup", handleMouseUp)
+    addKeyboardEventListener("keyup", handleKeyup)
 
     Some(
       () => {
-        removeWindowEventListener("mousedown", handleMouseDown)
-        removeWindowEventListener("dblclick", showTransPanel)
-        removeWindowEventListener("mouseup", handleMouseUp)
+        removeMouseEventListener("mousedown", handleMouseDown)
+        removeMouseEventListener("dblclick", handleDblclick)
+        removeMouseEventListener("mouseup", handleMouseUp)
+        removeKeyboardEventListener("keyup", handleKeyup)
       },
     )
   }, [])
@@ -87,10 +106,10 @@ let make = () => {
         setMouseClick(._p => false)
       }
     }
-    addWindowEventListener("click", handleClick)
+    addMouseEventListener("click", handleClick)
     Some(
       () => {
-        removeWindowEventListener("click", handleClick)
+        removeMouseEventListener("click", handleClick)
       },
     )
   }, (isMouseClick, opacity))
@@ -105,7 +124,7 @@ let make = () => {
           {switch loading {
           | Yes => React.string("loading...")
           | No => React.string(result)
-          | None => React.null
+          | Noop => React.null
           }}
         </p>
       </div>
