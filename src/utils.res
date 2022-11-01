@@ -69,12 +69,36 @@ external removeKeyboardEventListener: (string, @uncurry (KeyboardEvent.t => unit
 @val
 external fetch: (. string) => Promise.t<'a> = "fetch"
 
+// chrome.storage.local.set({key: value}, function() {
+//   console.log('Value is set to ' + value);
+// });
+
+// chrome.storage.local.get(['key'], function(result) {
+//   console.log('Value currently is ' + result.key);
+// });
+
+// chrome.storage.onChanged.addListener((changes, area) => {
+//   if (area === 'sync' && changes.options?.newValue) {
+//     const debugMode = Boolean(changes.options.newValue.debug);
+//     console.log('enable debug mode?', debugMode);
+//     setDebugMode(debugMode);
+//   }
+// });
+
 @scope(("chrome", "runtime")) @val
 external getURL: (. string) => string = "getURL"
 @scope(("chrome", "runtime")) @val
 external sendMessage: 'a = "sendMessage"
 @scope(("chrome", "runtime", "onMessage")) @val
-external addExtListener: (@uncurry ('a, 'b, 'c) => bool) => unit = "addListener"
+external addMessageListener: (@uncurry ('a, 'b, 'c) => bool) => unit = "addListener"
+
+@scope(("chrome", "storage", "onChanged")) @val
+external addStorageListener: (@uncurry ('changes, 'areaName) => unit) => unit = "addListener"
+
+@scope(("chrome", "storage", "local")) @val
+external getExtStorage: (~keys: 'keys, ~callback: 'a => unit=?, unit) => unit = "get"
+@scope(("chrome", "storage", "local")) @val
+external setExtStorage: (~items: 'items, ~callback: unit => unit=?, unit) => unit = "set"
 
 let translate: string => Promise.t<string> = (text: string) => {
   sendMessage(. text)

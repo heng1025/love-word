@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "permissions": ["tabs", "activeTab", "scripting"],
+  "permissions": ["tabs", "activeTab", "scripting", "storage"],
   "options_page": "options.html",
   "background": {
     "service_worker": "assets/background.js",

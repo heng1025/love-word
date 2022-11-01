@@ -28,7 +28,7 @@ let translate = (. msg) => {
   })
 }
 
-addExtListener((message, _, sendResponse) => {
+addMessageListener((message, _, sendResponse) => {
   translate(. message)
   ->then(res => {
     sendResponse(. res)
