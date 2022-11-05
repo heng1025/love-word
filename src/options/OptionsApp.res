@@ -1,4 +1,5 @@
-open Utils
+open Promise
+open Common.Chrome
 
 @react.component
 let make = () => {
@@ -7,14 +8,13 @@ let make = () => {
   let (warnVisibleClass, setWarnVisibleClass) = React.Uncurried.useState(_ => "hidden")
 
   React.useEffect0(() => {
-    getExtStorage(
-      ~keys=["baiduKey"],
-      ~callback=result => {
-        setAppid(._ => result["baiduKey"]["appid"])
-        setSecret(._ => result["baiduKey"]["secret"])
-      },
-      (),
-    )
+    getExtStorage(~keys=["baiduKey"])
+    ->then(result => {
+      setAppid(. _ => result["baiduKey"]["appid"])
+      setSecret(. _ => result["baiduKey"]["secret"])
+      resolve()
+    })
+    ->ignore
     None
   })
 
@@ -23,7 +23,7 @@ let make = () => {
       setWarnVisibleClass(._ => "block")
     } else {
       setWarnVisibleClass(._ => "hidden")
-      setExtStorage(~items={"baiduKey": {"appid": appid, "secret": secret}}, ())
+      setExtStorage(~items={"baiduKey": {"appid": appid, "secret": secret}})->ignore
     }
   }
 

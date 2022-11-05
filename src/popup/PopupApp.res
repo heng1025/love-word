@@ -1,6 +1,6 @@
 open Promise
-open Utils.Webapi.Element
-
+open Common.Webapi
+open Common.Chrome
 type loading = Yes | No | None
 
 @react.component
@@ -14,7 +14,7 @@ let make = () => {
   }
 
   let focusTextInput = _ => {
-    textInput.current->Js.Nullable.toOption->Belt.Option.forEach(input => input->focus)
+    textInput.current->Js.Nullable.toOption->Belt.Option.forEach(input => input->Element.focus)
   }
 
   let handleChange = event => {
@@ -22,17 +22,17 @@ let make = () => {
     setText(._ => value)
   }
 
-  let translate = _ => {
+  let handleTranslate = _ => {
     if text !== "" {
       setLoading(._p => Yes)
-      Utils.translate(text)
-      ->then(ret => {
+      sendMessage(. text)
+      ->thenResolve(ret => {
         setResult(._p => ret)
         setLoading(._p => No)
-        resolve()
       })
-      ->catch(_ => {
-        setResult(._p => "~Oops Err~")
+      ->catch(err => {
+        Js.log2("err", err)
+        setResult(._p => "err")
         setLoading(._p => No)
         resolve()
       })
@@ -51,7 +51,7 @@ let make = () => {
         onChange={handleChange}
         ref={ReactDOM.Ref.callbackDomRef(setTextInputRef)}
       />
-      <button className="btn btn-primary btn-sm m-2" onClick={translate}>
+      <button className="btn btn-primary btn-sm m-2" onClick={handleTranslate}>
         {React.string("Translate")}
       </button>
       <div className="text-secondary p-2 min-h-8">

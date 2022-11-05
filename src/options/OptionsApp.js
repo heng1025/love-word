@@ -18,14 +18,15 @@ function OptionsApp(Props) {
       });
   var setWarnVisibleClass = match$2[1];
   React.useEffect((function () {
-          chrome.storage.local.get(["baiduKey"], (function (result) {
-                  setAppid(function (param) {
-                        return result.baiduKey.appid;
-                      });
-                  setSecret(function (param) {
-                        return result.baiduKey.secret;
-                      });
-                }));
+          chrome.storage.local.get(["baiduKey"]).then(function (result) {
+                setAppid(function (param) {
+                      return result.baiduKey.appid;
+                    });
+                setSecret(function (param) {
+                      return result.baiduKey.secret;
+                    });
+                return Promise.resolve(undefined);
+              });
         }), []);
   var handleSubmit = function (param) {
     if (appid === "" || secret === "") {
@@ -41,7 +42,7 @@ function OptionsApp(Props) {
               appid: appid,
               secret: secret
             }
-          }, undefined);
+          });
       return ;
     }
   };

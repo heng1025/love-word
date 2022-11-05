@@ -1,5 +1,5 @@
-open Utils.Webapi.Element
-open Utils.Webapi.Document
+open Common.Webapi.Element
+open Common.Webapi.Document
 
 let id = "love-word"
 

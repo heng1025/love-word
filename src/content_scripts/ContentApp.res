@@ -1,7 +1,7 @@
 open Promise
-open Utils
-open Utils.Webapi
-open Utils.Webapi.Element
+open Common.Chrome
+open Common.Webapi
+open Common.Webapi.Window
 
 @@warning("-44")
 let common = getURL(. "assets/common.css")
@@ -29,14 +29,13 @@ let make = () => {
   }
 
   let showTransPanel = (target: Dom.element) => {
-    let raw = Js.String2.trim(Js.Int.toString(getSelection()))
-    if raw !== "" && loading === Noop && !contains(containerEl.current, target) {
+    let text = Js.String2.trim(Js.Int.toString(getSelection()))
+    if text !== "" && loading === Noop && !Element.contains(containerEl.current, target) {
       setLoading(._ => Yes)
-      translate(raw)
-      ->then(ret => {
+      sendMessage(. text)
+      ->thenResolve(ret => {
         setLoading(._ => No)
         setResult(._p => ret)
-        resolve()
       })
       ->ignore
 
@@ -100,7 +99,7 @@ let make = () => {
   React.useEffect2(() => {
     let handleClick = (e: MouseEvent.t) => {
       e.stopPropagation(.)
-      if isMouseClick && opacity === "1" && !contains(containerEl.current, e.target) {
+      if isMouseClick && opacity === "1" && !Element.contains(containerEl.current, e.target) {
         setOpactity(._p => "0")
         setResult(._p => "")
         setMouseClick(._p => false)
