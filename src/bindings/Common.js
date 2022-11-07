@@ -27,9 +27,12 @@ var Chrome = {};
 
 var Md5 = {};
 
+var Qs = {};
+
 export {
   Webapi ,
   Chrome ,
   Md5 ,
+  Qs ,
 }
 /* No side effect */

@@ -27,7 +27,8 @@
         "assets/vendor.js",
         "assets/common.js",
         "assets/common.css",
-        "assets/content.js"
+        "assets/content.js",
+        "assets/TranslateResult.js"
       ]
     }
   ],

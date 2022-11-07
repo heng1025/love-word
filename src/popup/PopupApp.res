@@ -1,13 +1,13 @@
 open Promise
 open Common.Chrome
 open Common.Webapi
-
-type loading = Yes | No | None
+open Utils
 
 @react.component
 let make = () => {
-  let (loading, setLoading) = React.Uncurried.useState(_ => None)
-  let (result, setResult) = React.Uncurried.useState(_ => "")
+  let (loading, setLoading) = React.Uncurried.useState(_ => Noop)
+  let (errText, seErrText) = React.Uncurried.useState(_ => "")
+  let (results, setResults) = React.Uncurried.useState(_ => [])
   let (text, setText) = React.Uncurried.useState(_ => "")
   let textInput = React.useRef(Js.Nullable.null)
   let setTextInputRef = element => {
@@ -26,9 +26,13 @@ let make = () => {
   let handleTranslate = _ => {
     if text !== "" {
       setLoading(._p => Yes)
+      seErrText(._ => "")
       sendMessage(. text)
       ->thenResolve(ret => {
-        setResult(._p => ret)
+        switch ret {
+        | Ok(trans_result) => setResults(._p => trans_result)
+        | Error(msg) => seErrText(._p => msg)
+        }
         setLoading(._p => No)
       })
       ->ignore
@@ -66,13 +70,7 @@ let make = () => {
       <button className="btn btn-primary btn-sm m-2" onClick={handleTranslate}>
         {React.string("Translate")}
       </button>
-      <div className="text-secondary p-2 min-h-8">
-        {switch loading {
-        | Yes => React.string("loading...")
-        | No => React.string(result)
-        | None => React.null
-        }}
-      </div>
+      <TranslateResult loading errText results className="text-secondary p-2 min-h-8" />
     </div>
   </div>
 }

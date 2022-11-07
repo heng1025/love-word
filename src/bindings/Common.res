@@ -99,3 +99,6 @@ module Chrome = {
 module Md5 = {
   @module("md5") @val external createMd5: string => string = "default"
 }
+module Qs = {
+  @module("qs") @val external stringify: 'a => string = "stringify"
+}

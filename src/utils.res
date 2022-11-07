@@ -3,6 +3,7 @@ open Common
 open Common.Chrome
 open Common.Webapi.Window
 
+type loading = Yes | No | Noop
 module Baidu = {
   type config = {
     appid: string,
@@ -14,7 +15,7 @@ module Baidu = {
     error_msg?: string,
     from?: string,
     to?: string,
-    trans_result?: Js.Array2.t<{"dst": string, "src": string}>,
+    trans_result?: Js.Array2.t<{"src": string, "dst": string}>,
   }
 
   let endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate"
@@ -26,7 +27,15 @@ module Baidu = {
       let key = result["baiduKey"]["secret"]
       let salt = Js.Float.toString(Js.Date.now())
       let sign = Md5.createMd5(appid ++ q ++ salt ++ key)
-      `${endpoint}?q=${q}&from=auto&to=zh&appid=${appid}&salt=${salt}&sign=${sign}`
+      let query = Qs.stringify({
+        "q": q,
+        "from": "auto",
+        "to": "zh",
+        "appid": appid,
+        "salt": salt,
+        "sign": sign,
+      })
+      `${endpoint}?${query}`
     })
     ->then(ret => fetch(~input=ret, ()))
     ->then(res => Response.json(res))
@@ -35,7 +44,7 @@ module Baidu = {
       | Some(msg) => Error(msg)
       | None =>
         switch data.trans_result {
-        | Some(trans_result) => Ok(trans_result[0]["dst"])
+        | Some(trans_result) => Ok(trans_result)
         | None => Error("No Tralation")
         }
       }->resolve

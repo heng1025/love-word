@@ -2,11 +2,10 @@ open Promise
 open Common.Chrome
 open Common.Webapi
 open Common.Webapi.Window
+open Utils
 
 @@warning("-44")
 let common = getURL("assets/common.css")
-
-type loading = Yes | No | Noop
 
 @react.component
 let make = () => {
@@ -15,7 +14,8 @@ let make = () => {
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
   let (loading, setLoading) = React.Uncurried.useState(_ => Noop)
-  let (result, setResult) = React.Uncurried.useState(_ => "")
+  let (errText, seErrText) = React.Uncurried.useState(_ => "")
+  let (results, setResults) = React.Uncurried.useState(_ => [])
   let (isMouseClick, setMouseClick) = React.Uncurried.useState(_ => false)
 
   let updatePos = (ev: MouseEvent.t) => {
@@ -32,10 +32,14 @@ let make = () => {
     let text = Js.String2.trim(Js.Int.toString(getSelection()))
     if text !== "" && loading === Noop && !Element.contains(containerEl.current, target) {
       setLoading(._ => Yes)
+      seErrText(._ => "")
       sendMessage(. text)
       ->thenResolve(ret => {
-        setLoading(._ => No)
-        setResult(._p => ret)
+        switch ret {
+        | Ok(trans_result) => setResults(._p => trans_result)
+        | Error(msg) => seErrText(._p => msg)
+        }
+        setLoading(._p => No)
       })
       ->ignore
 
@@ -101,7 +105,7 @@ let make = () => {
       e.stopPropagation(.)
       if isMouseClick && opacity === "1" && !Element.contains(containerEl.current, e.target) {
         setOpactity(._p => "0")
-        setResult(._p => "")
+        setResults(._p => [])
         setMouseClick(._p => false)
       }
     }
@@ -118,14 +122,8 @@ let make = () => {
     <link rel="stylesheet" href={common} />
     <div className="card w-52 bg-primary text-primary-content">
       <div className="card-body p-4">
-        <h4 className="card-title text-sm"> {React.string("翻译结果：")} </h4>
-        <p className="text-sm min-h-6">
-          {switch loading {
-          | Yes => React.string("loading...")
-          | No => React.string(result)
-          | Noop => React.null
-          }}
-        </p>
+        <h4 className="card-title text-sm"> {React.string("译文：")} </h4>
+        <TranslateResult loading errText results className="text-sm min-h-6" />
       </div>
     </div>
   </div>

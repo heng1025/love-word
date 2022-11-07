@@ -5,11 +5,7 @@ open Common
 Chrome.addMessageListener((message, _, sendResponse) => {
   Baidu.translate(message)
   ->then(ret => {
-    let res = switch ret {
-    | Error(msg) => msg
-    | Ok(data) => data
-    }
-    sendResponse(. res)
+    sendResponse(. ret)
   })
   ->ignore
 

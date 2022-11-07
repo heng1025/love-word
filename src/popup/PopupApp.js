@@ -3,21 +3,26 @@
 import * as React from "react";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
+import * as TranslateResult from "../components/TranslateResult.js";
 
 function PopupApp(Props) {
   var match = React.useState(function () {
-        return /* None */2;
+        return /* Noop */2;
       });
   var setLoading = match[1];
   var match$1 = React.useState(function () {
         return "";
       });
-  var setResult = match$1[1];
+  var seErrText = match$1[1];
   var match$2 = React.useState(function () {
+        return [];
+      });
+  var setResults = match$2[1];
+  var match$3 = React.useState(function () {
         return "";
       });
-  var setText = match$2[1];
-  var text = match$2[0];
+  var setText = match$3[1];
+  var text = match$3[0];
   var textInput = React.useRef(null);
   var setTextInputRef = function (element) {
     textInput.current = element;
@@ -38,10 +43,21 @@ function PopupApp(Props) {
       setLoading(function (_p) {
             return /* Yes */0;
           });
+      seErrText(function (param) {
+            return "";
+          });
       chrome.runtime.sendMessage(text).then(function (ret) {
-            setResult(function (_p) {
-                  return ret;
-                });
+            if (ret.TAG === /* Ok */0) {
+              var trans_result = ret._0;
+              setResults(function (_p) {
+                    return trans_result;
+                  });
+            } else {
+              var msg = ret._0;
+              seErrText(function (_p) {
+                    return msg;
+                  });
+            }
             setLoading(function (_p) {
                   return /* No */1;
                 });
@@ -62,19 +78,6 @@ function PopupApp(Props) {
   React.useEffect((function () {
           focusTextInput(undefined);
         }), []);
-  var tmp;
-  switch (match[0]) {
-    case /* Yes */0 :
-        tmp = "loading...";
-        break;
-    case /* No */1 :
-        tmp = match$1[0];
-        break;
-    case /* None */2 :
-        tmp = null;
-        break;
-    
-  }
   return React.createElement("div", {
               className: "card card-compact w-56 bg-base-100 shadow-xl"
             }, React.createElement("div", {
@@ -90,9 +93,12 @@ function PopupApp(Props) {
                     }), React.createElement("button", {
                       className: "btn btn-primary btn-sm m-2",
                       onClick: handleTranslate
-                    }, "Translate"), React.createElement("div", {
+                    }, "Translate"), React.createElement(TranslateResult.make, {
+                      loading: match[0],
+                      errText: match$1[0],
+                      results: match$2[0],
                       className: "text-secondary p-2 min-h-8"
-                    }, tmp)));
+                    })));
 }
 
 var make = PopupApp;
