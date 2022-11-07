@@ -51,6 +51,14 @@ function PopupApp(Props) {
       return focusTextInput(undefined);
     }
   };
+  var handleKeyDown = function (evt) {
+    var isCtrlKey = evt.ctrlKey;
+    var key = evt.key;
+    if (isCtrlKey && key === "Enter") {
+      return handleTranslate(undefined);
+    }
+    
+  };
   React.useEffect((function () {
           focusTextInput(undefined);
         }), []);
@@ -77,6 +85,7 @@ function PopupApp(Props) {
                       placeholder: "please input...",
                       rows: 5,
                       value: text,
+                      onKeyDown: handleKeyDown,
                       onChange: handleChange
                     }), React.createElement("button", {
                       className: "btn btn-primary btn-sm m-2",

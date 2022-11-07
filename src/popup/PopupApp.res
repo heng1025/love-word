@@ -1,6 +1,7 @@
 open Promise
-open Common.Webapi
 open Common.Chrome
+open Common.Webapi
+
 type loading = Yes | No | None
 
 @react.component
@@ -36,6 +37,16 @@ let make = () => {
     }
   }
 
+  let handleKeyDown = evt => {
+    let isCtrlKey = ReactEvent.Keyboard.ctrlKey(evt)
+    let key = ReactEvent.Keyboard.key(evt)
+
+    if isCtrlKey && key === "Enter" {
+      handleTranslate()
+    }
+  }
+
+  // default focus
   React.useEffect0(() => {
     focusTextInput()
     None
@@ -49,6 +60,7 @@ let make = () => {
         value={text}
         rows={5}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         ref={ReactDOM.Ref.callbackDomRef(setTextInputRef)}
       />
       <button className="btn btn-primary btn-sm m-2" onClick={handleTranslate}>
