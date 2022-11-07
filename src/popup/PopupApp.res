@@ -30,17 +30,16 @@ let make = () => {
         setResult(._p => ret)
         setLoading(._p => No)
       })
-      ->catch(err => {
-        Js.log2("err", err)
-        setResult(._p => "err")
-        setLoading(._p => No)
-        resolve()
-      })
       ->ignore
     } else {
       focusTextInput()
     }
   }
+
+  React.useEffect0(() => {
+    focusTextInput()
+    None
+  })
 
   <div className="card card-compact w-56 bg-base-100 shadow-xl">
     <div className="card-body">

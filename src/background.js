@@ -3,8 +3,8 @@
 import * as Utils from "./utils.js";
 
 chrome.runtime.onMessage.addListener(function (message, param, sendResponse) {
-      Utils.Baidu.translate(message).then(function (res) {
-            return sendResponse(res);
+      Utils.Baidu.translate(message).then(function (ret) {
+            return sendResponse(ret._0);
           });
       return true;
     });

@@ -156,7 +156,7 @@ function ContentApp(Props) {
   }
   return React.createElement("div", {
               ref: containerEl,
-              className: "absolute",
+              className: "absolute z-[99999]",
               style: style
             }, React.createElement("link", {
                   href: common,

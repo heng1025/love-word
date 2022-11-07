@@ -4,7 +4,7 @@ open Common.Webapi
 open Common.Webapi.Window
 
 @@warning("-44")
-let common = getURL(. "assets/common.css")
+let common = getURL("assets/common.css")
 
 type loading = Yes | No | Noop
 
@@ -114,7 +114,7 @@ let make = () => {
   }, (isMouseClick, opacity))
 
   let style = ReactDOM.Style.make(~top, ~left, ~opacity, ())
-  <div style className="absolute" ref={ReactDOM.Ref.domRef(containerEl)}>
+  <div style className="absolute z-[99999]" ref={ReactDOM.Ref.domRef(containerEl)}>
     <link rel="stylesheet" href={common} />
     <div className="card w-52 bg-primary text-primary-content">
       <div className="card-body p-4">

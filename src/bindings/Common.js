@@ -9,7 +9,11 @@ var $$MouseEvent = {};
 
 var $$KeyboardEvent = {};
 
-var $$Window = {};
+var $$Response = {};
+
+var $$Window = {
+  $$Response: $$Response
+};
 
 var Webapi = {
   $$Element: $$Element,

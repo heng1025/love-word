@@ -68,14 +68,20 @@ module Webapi = {
       mode?: string,
       body?: 'body,
     }
+    module Response = {
+      type t<'data>
+      @send external json: t<'data> => Promise.t<'data> = "json"
+    }
+
     @val
-    external fetch: (~input: string, ~init: init<int>=?, unit) => Promise.t<'result> = "fetch"
+    external fetch: (~input: string, ~init: init<int>=?, unit) => Promise.t<Response.t<'result>> =
+      "fetch"
   }
 }
 
 module Chrome = {
   @scope(("chrome", "runtime")) @val
-  external getURL: (. string) => string = "getURL"
+  external getURL: string => string = "getURL"
   @scope(("chrome", "runtime")) @val
   external sendMessage: 'a = "sendMessage"
   @scope(("chrome", "runtime", "onMessage")) @val
