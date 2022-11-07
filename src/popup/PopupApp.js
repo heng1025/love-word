@@ -73,8 +73,9 @@ function PopupApp(Props) {
                   className: "card-body"
                 }, React.createElement("textarea", {
                       ref: setTextInputRef,
-                      className: "textarea textarea-primary",
+                      className: "textarea textarea-primary leading-4 min-h-16",
                       placeholder: "please input...",
+                      rows: 5,
                       value: text,
                       onChange: handleChange
                     }), React.createElement("button", {

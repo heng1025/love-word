@@ -44,9 +44,10 @@ let make = () => {
   <div className="card card-compact w-56 bg-base-100 shadow-xl">
     <div className="card-body">
       <textarea
-        className="textarea textarea-primary"
+        className="textarea textarea-primary leading-4 min-h-16"
         placeholder="please input..."
         value={text}
+        rows={5}
         onChange={handleChange}
         ref={ReactDOM.Ref.callbackDomRef(setTextInputRef)}
       />
