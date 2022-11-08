@@ -1,4 +1,3 @@
-open Promise
 open Common.Chrome
 open Common.Webapi
 open Common.Webapi.Window
@@ -13,9 +12,6 @@ let make = () => {
   let (top, setTop) = React.Uncurried.useState(_ => "0")
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
-  let (loading, setLoading) = React.Uncurried.useState(_ => Noop)
-  let (errText, seErrText) = React.Uncurried.useState(_ => "")
-  let (results, setResults) = React.Uncurried.useState(_ => [])
   let (isMouseClick, setMouseClick) = React.Uncurried.useState(_ => false)
 
   let updatePos = (ev: MouseEvent.t) => {
@@ -27,27 +23,16 @@ let make = () => {
     setTop(._p => `${toString(y)}px`)
     setLeft(._p => `${toString(x)}px`)
   }
-
+  let hook = TranslateHook.useTranslate()
   let showTransPanel = (target: Dom.element) => {
     let text = Js.String2.trim(Js.Int.toString(getSelection()))
-    if text !== "" && loading === Noop && !Element.contains(containerEl.current, target) {
-      setLoading(._ => Yes)
-      seErrText(._ => "")
-      sendMessage(. text)
-      ->thenResolve(ret => {
-        switch ret {
-        | Ok(trans_result) => setResults(._p => trans_result)
-        | Error(msg) => seErrText(._p => msg)
-        }
-        setLoading(._p => No)
-      })
-      ->ignore
-
+    if text !== "" && hook.loading === Noop && !Element.contains(containerEl.current, target) {
+      hook.handleTranslate(. text)
       setOpactity(._p => "1")
     }
   }
 
-  React.useEffect1(() => {
+  React.useEffect0(() => {
     let firtTime = ref(Js.Int.toFloat(0))
     let lastTime = ref(Js.Int.toFloat(0))
 
@@ -98,14 +83,13 @@ let make = () => {
         removeKeyboardEventListener("keyup", handleKeyup)
       },
     )
-  }, [])
+  })
 
   React.useEffect2(() => {
     let handleClick = (e: MouseEvent.t) => {
       e.stopPropagation(.)
       if isMouseClick && opacity === "1" && !Element.contains(containerEl.current, e.target) {
         setOpactity(._p => "0")
-        setResults(._p => [])
         setMouseClick(._p => false)
       }
     }
@@ -123,7 +107,12 @@ let make = () => {
     <div className="card w-52 bg-primary text-primary-content">
       <div className="card-body p-4">
         <h4 className="card-title text-sm"> {React.string("译文：")} </h4>
-        <TranslateResult loading errText results className="text-sm min-h-6" />
+        <TranslateResult
+          loading={hook.loading}
+          errText={hook.errText}
+          results={hook.results}
+          className="text-sm min-h-6"
+        />
       </div>
     </div>
   </div>

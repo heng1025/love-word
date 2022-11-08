@@ -5,6 +5,7 @@ export default {
   appType: "mpa",
   build: {
     watch: {},
+    minify: false,
     rollupOptions: {
       input: {
         popup: resolve(__dirname, "popup.html"),

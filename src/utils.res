@@ -3,7 +3,6 @@ open Common
 open Common.Chrome
 open Common.Webapi.Window
 
-type loading = Yes | No | Noop
 module Baidu = {
   type config = {
     appid: string,

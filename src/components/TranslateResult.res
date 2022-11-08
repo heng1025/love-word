@@ -1,4 +1,4 @@
-open Utils
+open TranslateHook
 
 @react.component
 let make = (~loading, ~errText, ~results, ~className) => {
