@@ -9,4 +9,4 @@ setAttribute(host, "id", id)
 let shadow = attachShadow(host, {"mode": "open"})
 appendChild(document->documentElement, host)
 
-ReactDOM.render(<ContentApp />, shadow)
+ReactDOM.render(<ContentApp host/>, shadow)

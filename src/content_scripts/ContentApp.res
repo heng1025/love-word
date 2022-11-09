@@ -1,96 +1,56 @@
 open Common.Chrome
 open Common.Webapi
 open Common.Webapi.Window
-open Utils
 
 @@warning("-44")
 let common = getURL("assets/common.css")
 
 @react.component
-let make = () => {
-  let containerEl = React.useRef(Js.Nullable.null)
+let make = (~host) => {
   let (top, setTop) = React.Uncurried.useState(_ => "0")
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
-  let (isMouseClick, setMouseClick) = React.Uncurried.useState(_ => false)
 
-  let updatePos = (ev: MouseEvent.t) => {
-    // get mouse position
-    let x = ev.pageX - 50
-    let y = ev.pageY + 30
-    open Js.Int
-
-    setTop(._p => `${toString(y)}px`)
-    setLeft(._p => `${toString(x)}px`)
-  }
   let hook = TranslateHook.useTranslate()
-  let showTransPanel = (target: Dom.element) => {
-    let text = Js.String2.trim(Js.Int.toString(getSelection()))
-    if text !== "" && hook.loading === Noop && !Element.contains(containerEl.current, target) {
+
+  let showTransPanel = () => {
+    let selection = getSelection()
+    let range = getRangeAt(selection, 0)
+    let rect = range->getBoundingClientRect
+
+    open Js.Float
+
+    setTop(._p => `${toString(rect.top +. rect.height)}px`)
+    setLeft(._p => `${toString(rect.left)}px`)
+    let text = Js.String2.trim(selection->selectionToString)
+    if text !== "" {
       hook.handleTranslate(. text)
       setOpactity(._p => "1")
     }
   }
 
   React.useEffect0(() => {
-    let firtTime = ref(Js.Int.toFloat(0))
-    let lastTime = ref(Js.Int.toFloat(0))
-
-    let handleMouseDown = (e: MouseEvent.t) => {
-      e.stopPropagation(.)
-      firtTime := Js.Date.now()
-    }
-
-    let handleMouseUp = (ev: MouseEvent.t) => {
-      ev.stopPropagation(.)
-      lastTime := Js.Date.now()
-      open Belt.Float
-      let delta = Belt.Float.toInt(lastTime.contents - firtTime.contents)
-
-      let clickState = delta < 250
-      setMouseClick(._p => clickState)
-
-      if !clickState && ev.altKey {
-        updatePos(ev)
-        showTransPanel(ev.target)
-      }
-    }
-
-    let handleDblclick = (ev: MouseEvent.t) => {
-      if ev.altKey {
-        updatePos(ev)
-        showTransPanel(ev.target)
-      }
-    }
-
     let handleKeyup = (ev: KeyboardEvent.t) => {
       // altkey (left or right)
       if ev.keyCode === 18 {
-        showTransPanel(ev.target)
+        showTransPanel()
       }
     }
 
-    addMouseEventListener("mousedown", handleMouseDown)
-    addMouseEventListener("dblclick", handleDblclick)
-    addMouseEventListener("mouseup", handleMouseUp)
     addKeyboardEventListener("keyup", handleKeyup)
 
     Some(
       () => {
-        removeMouseEventListener("mousedown", handleMouseDown)
-        removeMouseEventListener("dblclick", handleDblclick)
-        removeMouseEventListener("mouseup", handleMouseUp)
         removeKeyboardEventListener("keyup", handleKeyup)
       },
     )
   })
 
-  React.useEffect2(() => {
+  React.useEffect1(() => {
     let handleClick = (e: MouseEvent.t) => {
       e.stopPropagation(.)
-      if isMouseClick && opacity === "1" && !Element.contains(containerEl.current, e.target) {
+      if opacity === "1" && !Element.contains(host, e.target) {
         setOpactity(._p => "0")
-        setMouseClick(._p => false)
       }
     }
     addMouseEventListener("click", handleClick)
@@ -99,10 +59,10 @@ let make = () => {
         removeMouseEventListener("click", handleClick)
       },
     )
-  }, (isMouseClick, opacity))
+  }, [opacity])
 
   let style = ReactDOM.Style.make(~top, ~left, ~opacity, ())
-  <div style className="absolute z-[99999]" ref={ReactDOM.Ref.domRef(containerEl)}>
+  <div style className="absolute z-[99999]">
     <link rel="stylesheet" href={common} />
     <div className="card w-52 bg-primary text-primary-content">
       <div className="card-body p-4">

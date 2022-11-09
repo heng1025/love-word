@@ -46,10 +46,30 @@ module Webapi = {
   }
 
   module Window = {
+    type selection
+    type selectionRange
+    type domRect = {
+      bottom: float,
+      height: float,
+      left: float,
+      right: float,
+      top: float,
+      width: float,
+      x: float,
+      y: float,
+    }
     @scope("window") @val
     external windowInnerWidth: int = "innerWidth"
     @scope("window") @val
-    external getSelection: unit => int = "getSelection"
+    external getSelection: unit => selection = "getSelection"
+    @send
+    external getRangeAt: (selection, int) => selectionRange = "getRangeAt"
+    @send
+    external selectionToString: selection => string = "toString"
+    @send
+    external rangeToString: selectionRange => string = "toString"
+    @send
+    external getBoundingClientRect: selectionRange => domRect = "getBoundingClientRect"
     @scope("window") @val
     external addMouseEventListener: (string, @uncurry (MouseEvent.t => unit)) => unit =
       "addEventListener"

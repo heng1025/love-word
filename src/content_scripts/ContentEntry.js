@@ -16,7 +16,9 @@ var shadow = host.attachShadow({
 
 document.documentElement.appendChild(host);
 
-ReactDom.render(React.createElement(ContentApp.make, {}), shadow);
+ReactDom.render(React.createElement(ContentApp.make, {
+          host: host
+        }), shadow);
 
 export {
   id ,
