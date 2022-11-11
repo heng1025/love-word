@@ -66,13 +66,20 @@ function ContentApp(Props) {
                     window.removeEventListener("click", handleClick);
                   });
         }), [opacity]);
+  var mouseState = React.useMemo((function () {
+          if (opacity === "1") {
+            return "auto";
+          } else {
+            return "none";
+          }
+        }), [opacity]);
   var style = {
     left: match$1[0],
     top: match[0],
     opacity: opacity
   };
   return React.createElement("div", {
-              className: "absolute z-[99999]",
+              className: "absolute z-[99999] pointer-events-" + mouseState + " select-" + mouseState + "",
               style: style
             }, React.createElement("link", {
                   href: common,
@@ -82,7 +89,7 @@ function ContentApp(Props) {
                 }, React.createElement("div", {
                       className: "card-body p-4"
                     }, React.createElement("h4", {
-                          className: "card-title text-sm"
+                          className: "card-title text-sm border-b"
                         }, "译文："), React.createElement(TranslateResult.make, {
                           loading: hook.loading,
                           errText: hook.errText,

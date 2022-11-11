@@ -61,12 +61,19 @@ let make = (~host) => {
     )
   }, [opacity])
 
+  let mouseState = React.useMemo1(() => {
+    switch opacity {
+    | "1" => "auto"
+    | _ => "none"
+    }
+  }, [opacity])
+  
   let style = ReactDOM.Style.make(~top, ~left, ~opacity, ())
-  <div style className="absolute z-[99999]">
+  <div style className={`absolute z-[99999] pointer-events-${mouseState} select-${mouseState}`}>
     <link rel="stylesheet" href={common} />
     <div className="card w-52 bg-primary text-primary-content">
       <div className="card-body p-4">
-        <h4 className="card-title text-sm"> {React.string("译文：")} </h4>
+        <h4 className="card-title text-sm border-b"> {React.string("译文：")} </h4>
         <TranslateResult
           loading={hook.loading}
           errText={hook.errText}
