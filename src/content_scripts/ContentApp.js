@@ -24,27 +24,28 @@ function ContentApp(Props) {
   var hook = TranslateHook.useTranslate(undefined);
   React.useEffect((function () {
           var handleKeyup = function (ev) {
-            if (ev.keyCode === 18) {
-              var selection = window.getSelection();
-              var range = selection.getRangeAt(0);
-              var rect = range.getBoundingClientRect();
-              setTop(function (_p) {
-                    return "" + (rect.top + rect.height).toString() + "px";
-                  });
-              setLeft(function (_p) {
-                    return "" + rect.left.toString() + "px";
-                  });
-              var text = selection.toString().trim();
-              if (text !== "") {
-                hook.handleTranslate(text);
-                return setOpactity(function (_p) {
-                            return "1";
-                          });
-              } else {
-                return ;
-              }
+            if (ev.keyCode !== 18) {
+              return ;
             }
-            
+            var selection = window.getSelection();
+            var text = selection.toString().trim();
+            if (!(selection.rangeCount > 0 && text !== "")) {
+              return ;
+            }
+            var range = selection.getRangeAt(0);
+            var rect = range.getBoundingClientRect();
+            var top = rect.top + rect.height + window.scrollY;
+            var left = rect.left + window.scrollX;
+            setTop(function (_p) {
+                  return "" + (top + 8.0).toString() + "px";
+                });
+            setLeft(function (_p) {
+                  return "" + left.toString() + "px";
+                });
+            hook.handleTranslate(text);
+            setOpactity(function (_p) {
+                  return "1";
+                });
           };
           window.addEventListener("keyup", handleKeyup);
           return (function (param) {

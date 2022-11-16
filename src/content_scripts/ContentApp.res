@@ -13,27 +13,28 @@ let make = (~host) => {
 
   let hook = TranslateHook.useTranslate()
 
-  let showTransPanel = () => {
-    let selection = getSelection()
-    let range = getRangeAt(selection, 0)
+  let showTransPanel = (range, text) => {
     let rect = range->getBoundingClientRect
-
     open Js.Float
-
-    setTop(._p => `${toString(rect.top +. rect.height)}px`)
-    setLeft(._p => `${toString(rect.left)}px`)
-    let text = Js.String2.trim(selection->selectionToString)
-    if text !== "" {
-      hook.handleTranslate(. text)
-      setOpactity(._p => "1")
-    }
+    let posOffset = 8.0
+    let top = rect.top +. rect.height +. Js.Int.toFloat(Window.scrollY)
+    let left = rect.left +. Js.Int.toFloat(Window.scrollX)
+    setTop(._p => `${toString(top +. posOffset)}px`)
+    setLeft(._p => `${toString(left)}px`)
+    hook.handleTranslate(. text)
+    setOpactity(._p => "1")
   }
 
   React.useEffect0(() => {
     let handleKeyup = (ev: KeyboardEvent.t) => {
       // altkey (left or right)
       if ev.keyCode === 18 {
-        showTransPanel()
+        let selection = getSelection()
+        let text = Js.String2.trim(selection->selectionToString)
+        if rangeCount(selection) > 0 && text !== "" {
+          let range = getRangeAt(selection, 0)
+          showTransPanel(range, text)
+        }
       }
     }
 
@@ -67,7 +68,7 @@ let make = (~host) => {
     | _ => "none"
     }
   }, [opacity])
-  
+
   let style = ReactDOM.Style.make(~top, ~left, ~opacity, ())
   <div style className={`absolute z-[99999] pointer-events-${mouseState} select-${mouseState}`}>
     <link rel="stylesheet" href={common} />
