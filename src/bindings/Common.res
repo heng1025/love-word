@@ -61,7 +61,13 @@ module Webapi = {
     @scope("window") @val
     external windowInnerWidth: int = "innerWidth"
     @scope("window") @val
+    external scrollY: int = "scrollY"
+    @scope("window") @val
+    external scrollX: int = "scrollX"
+    @scope("window") @val
     external getSelection: unit => selection = "getSelection"
+    @get
+    external rangeCount: selection => int = "rangeCount"
     @send
     external getRangeAt: (selection, int) => selectionRange = "getRangeAt"
     @send
@@ -121,4 +127,9 @@ module Md5 = {
 }
 module Qs = {
   @module("qs") @val external stringify: 'a => string = "stringify"
+}
+
+module FrancMin = {
+  type options = {minLength: int, only: Js.Array2.t<string>}
+  @module("franc-min") @val external createFranc: (string, options) => string = "franc"
 }

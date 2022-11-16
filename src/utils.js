@@ -2,7 +2,9 @@
 
 import * as Qs from "qs";
 import Md5 from "md5";
+import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as $$Promise from "@ryyppy/rescript-promise/src/Promise.js";
+import * as FrancMin from "franc-min";
 
 var endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate";
 
@@ -12,10 +14,25 @@ function translate(q) {
                         var key = result.baiduKey.secret;
                         var salt = Date.now().toString();
                         var sign = Md5(appid + q + salt + key);
+                        var sl = FrancMin.franc(q, {
+                              minLength: 1,
+                              only: [
+                                "eng",
+                                "cmn"
+                              ]
+                            });
+                        var tlDict = Js_dict.fromList({
+                              hd: [
+                                "cmn",
+                                "en"
+                              ],
+                              tl: /* [] */0
+                            });
+                        var val = Js_dict.get(tlDict, sl);
                         var query = Qs.stringify({
                               q: q,
                               from: "auto",
-                              to: "zh",
+                              to: val !== undefined ? val : "zh",
                               appid: appid,
                               salt: salt,
                               sign: sign

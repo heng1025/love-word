@@ -4,16 +4,8 @@ open Common.Chrome
 open Common.Webapi.Window
 
 module Baidu = {
-  type config = {
-    appid: string,
-    key: string,
-  }
-
   type result = {
-    error_code?: string,
     error_msg?: string,
-    from?: string,
-    to?: string,
     trans_result?: Js.Array2.t<{"src": string, "dst": string}>,
   }
 
@@ -26,10 +18,17 @@ module Baidu = {
       let key = result["baiduKey"]["secret"]
       let salt = Js.Float.toString(Js.Date.now())
       let sign = Md5.createMd5(appid ++ q ++ salt ++ key)
+      let sl = FrancMin.createFranc(q, {minLength: 1, only: ["eng", "cmn"]})
+      // zh->eng, other -> zh
+      let tlDict = Js.Dict.fromList(list{("cmn", "en")})
+
       let query = Qs.stringify({
         "q": q,
         "from": "auto",
-        "to": "zh",
+        "to": switch Js.Dict.get(tlDict, sl) {
+        | Some(val) => val
+        | _ => "zh"
+        },
         "appid": appid,
         "salt": salt,
         "sign": sign,

@@ -29,10 +29,13 @@ var Md5 = {};
 
 var Qs = {};
 
+var FrancMin = {};
+
 export {
   Webapi ,
   Chrome ,
   Md5 ,
   Qs ,
+  FrancMin ,
 }
 /* No side effect */
