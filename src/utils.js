@@ -8,6 +8,14 @@ import * as FrancMin from "franc-min";
 
 var endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate";
 
+function textToSpeech(text) {
+  var query = Qs.stringify({
+        word: text,
+        le: "zh"
+      });
+  return "https://tts.youdao.com/fanyivoice?" + query + "";
+}
+
 function translate(q) {
   return $$Promise.$$catch(chrome.storage.local.get(["baiduKey"]).then(function (result) {
                         var appid = result.baiduKey.appid;
@@ -78,6 +86,7 @@ function translate(q) {
 
 var Baidu = {
   endpoint: endpoint,
+  textToSpeech: textToSpeech,
   translate: translate
 };
 

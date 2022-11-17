@@ -5,7 +5,7 @@ specifiers:
   '@ryyppy/rescript-promise': ^2.1.0
   '@vitejs/plugin-react': ^2.2.0
   autoprefixer: ^10.4.13
-  daisyui: ^2.38.1
+  daisyui: ^2.41.0
   franc-min: ^6.0.0
   md5: ^2.3.0
   postcss: ^8.4.18
@@ -13,7 +13,7 @@ specifiers:
   react: ^18.2.0
   react-dom: ^18.2.0
   rescript: ^10.0.1
-  tailwindcss: ^3.2.2
+  tailwindcss: ^3.2.4
   vite: ^3.2.3
 
 dependencies:
@@ -28,10 +28,10 @@ dependencies:
 devDependencies:
   '@vitejs/plugin-react': 2.2.0_vite@3.2.3
   autoprefixer: 10.4.13_postcss@8.4.18
-  daisyui: 2.38.1_lycaqaeny3mp632atgvyvqdgwe
+  daisyui: 2.41.0_lycaqaeny3mp632atgvyvqdgwe
   postcss: 8.4.18
   rescript: 10.0.1
-  tailwindcss: 3.2.2
+  tailwindcss: 3.2.4
   vite: 3.2.3
 
 packages:
@@ -595,8 +595,8 @@ packages:
     hasBin: true
     dev: true
 
-  /daisyui/2.38.1_lycaqaeny3mp632atgvyvqdgwe:
-    resolution: {integrity: sha512-fHAVi+bT3H9QCNM7LNEH1EMPT0IwqufuW2RNhTJZorX3TftB1bWW437BVmSt70AZH72Xvp0mVxwVS3ChSKSj0w==}
+  /daisyui/2.41.0_lycaqaeny3mp632atgvyvqdgwe:
+    resolution: {integrity: sha512-M/MPbTERJK4iBIXRGQpQdHTmy53HRqrgca4rsbPhio1Sqq0w2GH/RJSVX8b14hYB0E9E8R+t5bHIeqW1oHT97A==}
     peerDependencies:
       autoprefixer: ^10.0.2
       postcss: ^8.1.6
@@ -606,7 +606,7 @@ packages:
       css-selector-tokenizer: 0.8.0
       postcss: 8.4.18
       postcss-js: 4.0.0_postcss@8.4.18
-      tailwindcss: 3.2.2
+      tailwindcss: 3.2.4
     transitivePeerDependencies:
       - ts-node
     dev: true
@@ -1319,8 +1319,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /tailwindcss/3.2.2:
-    resolution: {integrity: sha512-c2GtSdqg+harR4QeoTmex0Ngfg8IIHNeLQH5yr2B9uZbZR1Xt1rYbjWOWTcj3YLTZhrmZnPowoQDbSRFyZHQ5Q==}
+  /tailwindcss/3.2.4:
+    resolution: {integrity: sha512-AhwtHCKMtR71JgeYDaswmZXhPcW9iuI9Sp2LvZPo9upDZ7231ZJ7eA9RaURbhpXGVlrjX4cFNlB4ieTetEb7hQ==}
     engines: {node: '>=12.13.0'}
     hasBin: true
     dependencies:

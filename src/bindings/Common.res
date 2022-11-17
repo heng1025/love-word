@@ -4,6 +4,9 @@ module Webapi = {
     @send external text: (Dom.element, string) => string = "text"
     @send external contains: (Js.Nullable.t<Dom.element>, Dom.element) => bool = "contains"
     @send external focus: Dom.element => unit = "focus"
+    @send external play: Dom.element => unit = "play"
+    @send external stop: Dom.element => unit = "stop"
+    @set external createAudioSrc: (Dom.element, string) => unit = "src"
     @send external attachShadow: (Js.Nullable.t<Dom.element>, 'a) => Dom.element = "attachShadow"
     @send external appendChild: (Dom.element, Js.Nullable.t<Dom.element>) => unit = "appendChild"
     @send

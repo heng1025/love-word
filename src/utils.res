@@ -11,6 +11,15 @@ module Baidu = {
 
   let endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate"
 
+  let textToSpeech = text => {
+    let query = Qs.stringify({
+      "word": text,
+      "le": "zh"
+    })
+
+    `https://tts.youdao.com/fanyivoice?${query}`
+  }
+
   let translate = q => {
     getExtStorage(~keys=["baiduKey"])
     ->thenResolve(result => {
