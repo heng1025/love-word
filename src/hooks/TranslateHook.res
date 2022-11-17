@@ -6,7 +6,7 @@ type loading = Yes | No | Noop
 type return = {
   loading: loading,
   errText: string,
-  results: Js.Array2.t<{"dst": string}>,
+  results: Js.Array2.t<{"dst": string, @set "checked": bool}>,
   handleTranslate: (. string) => unit,
 }
 
