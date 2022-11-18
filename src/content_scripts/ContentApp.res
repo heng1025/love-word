@@ -51,6 +51,8 @@ let make = (~host) => {
     let handleClick = (e: MouseEvent.t) => {
       e.stopPropagation(.)
       if opacity === "1" && !Element.contains(host, e.target) {
+        setTop(._ => "0")
+        setLeft(._ => "0")
         setOpactity(._p => "0")
       }
     }
@@ -64,22 +66,19 @@ let make = (~host) => {
 
   let mouseState = React.useMemo1(() => {
     switch opacity {
-    | "1" => "auto"
-    | _ => "none"
+    | "1" => "pointer-events-auto select-auto"
+    | _ => "pointer-events-none select-none"
     }
   }, [opacity])
 
   let style = ReactDOM.Style.make(~top, ~left, ~opacity, ())
-  <div style className={`absolute z-[99999] pointer-events-${mouseState} select-${mouseState}`}>
+  <div style className={`absolute z-[99999] ${mouseState}`}>
     <link rel="stylesheet" href={common} />
     <div className="card w-52 bg-primary text-primary-content">
       <div className="card-body p-4">
         <h4 className="card-title text-sm border-b"> {React.string("译文：")} </h4>
         <TranslateResult
-          loading={hook.loading}
-          errText={hook.errText}
-          results={hook.results}
-          className="text-sm min-h-6"
+          loading={hook.loading} errText={hook.errText} results={hook.results} className="text-sm"
         />
       </div>
     </div>

@@ -56,6 +56,12 @@ function ContentApp(Props) {
           var handleClick = function (e) {
             e.stopPropagation();
             if (opacity === "1" && !host.contains(e.target)) {
+              setTop(function (param) {
+                    return "0";
+                  });
+              setLeft(function (param) {
+                    return "0";
+                  });
               return setOpactity(function (_p) {
                           return "0";
                         });
@@ -69,9 +75,9 @@ function ContentApp(Props) {
         }), [opacity]);
   var mouseState = React.useMemo((function () {
           if (opacity === "1") {
-            return "auto";
+            return "pointer-events-auto select-auto";
           } else {
-            return "none";
+            return "pointer-events-none select-none";
           }
         }), [opacity]);
   var style = {
@@ -80,7 +86,7 @@ function ContentApp(Props) {
     opacity: opacity
   };
   return React.createElement("div", {
-              className: "absolute z-[99999] pointer-events-" + mouseState + " select-" + mouseState + "",
+              className: "absolute z-[99999] " + mouseState + "",
               style: style
             }, React.createElement("link", {
                   href: common,
@@ -95,7 +101,7 @@ function ContentApp(Props) {
                           loading: hook.loading,
                           errText: hook.errText,
                           results: hook.results,
-                          className: "text-sm min-h-6"
+                          className: "text-sm"
                         }))));
 }
 
