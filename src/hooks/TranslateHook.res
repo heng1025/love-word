@@ -3,10 +3,10 @@ open Common.Chrome
 
 type loading = Yes | No | Noop
 
-type return = {
+type return<'a> = {
   loading: loading,
   errText: string,
-  results: Js.Array2.t<{"dst": string, @set "checked": bool}>,
+  results: Js.Array2.t<'a>,
   handleTranslate: (. string) => unit,
 }
 
