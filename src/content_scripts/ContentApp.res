@@ -75,7 +75,7 @@ let make = (~host) => {
   <div style className={`absolute z-[99999] ${mouseState}`}>
     <link rel="stylesheet" href={common} />
     <div className="card w-52 bg-primary text-primary-content">
-      <div className="card-body p-4">
+      <div className="card-body p-3">
         <h4 className="card-title text-sm border-b"> {React.string("译文：")} </h4>
         <TranslateResult
           loading={hook.loading} errText={hook.errText} results={hook.results} className="text-sm"

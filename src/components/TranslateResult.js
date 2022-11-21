@@ -127,7 +127,7 @@ function TranslateResult(Props) {
     
   }
   return React.createElement("div", {
-              className: className
+              className: "" + className + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
             }, React.createElement("audio", {
                   ref: audioEl,
                   className: "w-full h-8 mb-1",

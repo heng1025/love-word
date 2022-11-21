@@ -70,7 +70,7 @@ let make = (~loading, ~errText, ~results, ~className) => {
       })
     )
   }
-  <div className>
+  <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
     <audio ref={ReactDOM.Ref.domRef(audioEl)} className="w-full h-8 mb-1" onEnded />
     {switch loading {
     | Yes => <div> {React.string("loading...")} </div>

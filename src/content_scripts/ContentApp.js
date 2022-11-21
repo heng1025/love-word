@@ -94,7 +94,7 @@ function ContentApp(Props) {
                 }), React.createElement("div", {
                   className: "card w-52 bg-primary text-primary-content"
                 }, React.createElement("div", {
-                      className: "card-body p-4"
+                      className: "card-body p-3"
                     }, React.createElement("h4", {
                           className: "card-title text-sm border-b"
                         }, "译文："), React.createElement(TranslateResult.make, {
