@@ -9,19 +9,38 @@ var common = chrome.runtime.getURL("assets/common.css");
 function ContentApp(Props) {
   var host = Props.host;
   var match = React.useState(function () {
-        return "0";
+        return "";
       });
-  var setTop = match[1];
+  var setSourceText = match[1];
   var match$1 = React.useState(function () {
         return "0";
       });
-  var setLeft = match$1[1];
+  var setTop = match$1[1];
   var match$2 = React.useState(function () {
         return "0";
       });
-  var setOpactity = match$2[1];
-  var opacity = match$2[0];
+  var setLeft = match$2[1];
+  var match$3 = React.useState(function () {
+        return "0";
+      });
+  var setOpactity = match$3[1];
+  var opacity = match$3[0];
   var hook = TranslateHook.useTranslate(undefined);
+  var showTransPanel = function (range, text) {
+    var rect = range.getBoundingClientRect();
+    var top = rect.top + rect.height + window.scrollY;
+    var left = rect.left + window.scrollX;
+    setTop(function (_p) {
+          return "" + (top + 8.0).toString() + "px";
+        });
+    setLeft(function (_p) {
+          return "" + left.toString() + "px";
+        });
+    hook.handleTranslate(text);
+    setOpactity(function (_p) {
+          return "1";
+        });
+  };
   React.useEffect((function () {
           var handleKeyup = function (ev) {
             if (ev.keyCode !== 18) {
@@ -33,18 +52,9 @@ function ContentApp(Props) {
               return ;
             }
             var range = selection.getRangeAt(0);
-            var rect = range.getBoundingClientRect();
-            var top = rect.top + rect.height + window.scrollY;
-            var left = rect.left + window.scrollX;
-            setTop(function (_p) {
-                  return "" + (top + 8.0).toString() + "px";
-                });
-            setLeft(function (_p) {
-                  return "" + left.toString() + "px";
-                });
-            hook.handleTranslate(text);
-            setOpactity(function (_p) {
-                  return "1";
+            showTransPanel(range, text);
+            setSourceText(function (param) {
+                  return text;
                 });
           };
           window.addEventListener("keyup", handleKeyup);
@@ -81,8 +91,8 @@ function ContentApp(Props) {
           }
         }), [opacity]);
   var style = {
-    left: match$1[0],
-    top: match[0],
+    left: match$2[0],
+    top: match$1[0],
     opacity: opacity
   };
   return React.createElement("div", {
@@ -96,8 +106,20 @@ function ContentApp(Props) {
                 }, React.createElement("div", {
                       className: "card-body p-3"
                     }, React.createElement("h4", {
-                          className: "card-title text-sm border-b"
-                        }, "译文："), React.createElement(TranslateResult.make, {
+                          className: "card-title text-sm border-b justify-between"
+                        }, React.createElement("span", undefined, "译文："), React.createElement("a", {
+                              className: "w-5 link link-primary",
+                              title: "show detail",
+                              href: "https://fanyi.baidu.com/#en/zh/" + match[0] + "",
+                              target: "_blank"
+                            }, React.createElement("svg", {
+                                  className: "fill-white",
+                                  version: "1.1",
+                                  viewBox: "0 0 1024 1024",
+                                  xmlns: "http://www.w3.org/2000/svg"
+                                }, React.createElement("path", {
+                                      d: "M646.43969701 681.06311061L604.18627955 639.12280248 696.05944825 544.20092748 404.47131347 544.20092748 404.47131347 479.43652318 703.90368678 479.43652318 604.18627955 384.43225123 646.43969701 342.49194311 816.93652344 511.76928686 646.43969701 681.06311061ZM266.81811549 511.76928686C266.81811549 642.61645508 374.03369115 749.07397436 505.82019042 749.07397436L505.82019042 808.40014623C341.07470728 808.40014623 207.06347656 675.32824733 207.06347656 511.76928686 207.06347656 348.22680639 341.07470728 215.13842748 505.82019042 215.13842748L505.82019042 274.46459936C374.03369115 274.46459936 266.81811549 380.92211939 266.81811549 511.76928686Z"
+                                    })))), React.createElement(TranslateResult.make, {
                           loading: hook.loading,
                           errText: hook.errText,
                           results: hook.results,
