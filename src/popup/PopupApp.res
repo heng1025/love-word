@@ -3,6 +3,8 @@ open Common.Webapi
 @react.component
 let make = () => {
   let (text, setText) = React.Uncurried.useState(_ => "")
+  let (sourceText, setSourceText) = React.Uncurried.useState(_ => "")
+
   let textInput = React.useRef(Js.Nullable.null)
 
   let setTextInputRef = element => {
@@ -13,11 +15,9 @@ let make = () => {
     textInput.current->Js.Nullable.toOption->Belt.Option.forEach(input => input->Element.focus)
   }
 
-  let hook = TranslateHook.useTranslate()
-
   let handleTranslate = _ => {
     if text !== "" {
-      hook.handleTranslate(. text)
+      setSourceText(._ => text)
     } else {
       focusTextInput()
     }
@@ -33,7 +33,7 @@ let make = () => {
     let key = ReactEvent.Keyboard.key(evt)
 
     if isCtrlKey && key === "Enter" {
-      hook.handleTranslate(. text)
+      setSourceText(._=> text)
     }
   }
 
@@ -57,12 +57,7 @@ let make = () => {
       <button className="btn btn-primary btn-sm m-2" onClick={handleTranslate}>
         {React.string("Translate")}
       </button>
-      <TranslateResult
-        loading={hook.loading}
-        errText={hook.errText}
-        results={hook.results}
-        className="text-secondary p-2 min-h-8"
-      />
+      <TranslateResult q={sourceText} className="text-secondary p-2 min-h-8" />
     </div>
   </div>
 }

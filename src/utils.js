@@ -6,7 +6,41 @@ import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as $$Promise from "@ryyppy/rescript-promise/src/Promise.js";
 import * as FrancMin from "franc-min";
 
-var endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate";
+var endpoint = "http://dict.1r21.cn/dict";
+
+function translate(q) {
+  return $$Promise.$$catch(fetch("" + endpoint + "?q=" + q + "", undefined).then(function (res) {
+                    return res.json();
+                  }).then(function (data) {
+                  var val = data.translation;
+                  return Promise.resolve(val !== undefined ? ({
+                                  TAG: /* Ok */0,
+                                  _0: val
+                                }) : ({
+                                  TAG: /* Error */1,
+                                  _0: "No Tralation"
+                                }));
+                }), (function (e) {
+                var msg;
+                if (e.RE_EXN_ID === $$Promise.JsError) {
+                  var msg$1 = e._1.message;
+                  msg = msg$1 !== undefined ? msg$1 : "";
+                } else {
+                  msg = "Unexpected error occurred";
+                }
+                return Promise.resolve({
+                            TAG: /* Error */1,
+                            _0: msg
+                          });
+              }));
+}
+
+var OfflineDict = {
+  endpoint: endpoint,
+  translate: translate
+};
+
+var endpoint$1 = "https://api.fanyi.baidu.com/api/trans/vip/translate";
 
 function textToSpeech(text) {
   var query = Qs.stringify({
@@ -16,7 +50,7 @@ function textToSpeech(text) {
   return "https://tts.youdao.com/fanyivoice?" + query + "";
 }
 
-function translate(q) {
+function translate$1(q) {
   return $$Promise.$$catch(chrome.storage.local.get(["baiduKey"]).then(function (result) {
                         var appid = result.baiduKey.appid;
                         var key = result.baiduKey.secret;
@@ -45,7 +79,7 @@ function translate(q) {
                               salt: salt,
                               sign: sign
                             });
-                        return "" + endpoint + "?" + query + "";
+                        return "" + endpoint$1 + "?" + query + "";
                       }).then(function (ret) {
                       return fetch(ret, undefined);
                     }).then(function (res) {
@@ -85,12 +119,13 @@ function translate(q) {
 }
 
 var Baidu = {
-  endpoint: endpoint,
+  endpoint: endpoint$1,
   textToSpeech: textToSpeech,
-  translate: translate
+  translate: translate$1
 };
 
 export {
+  OfflineDict ,
   Baidu ,
 }
 /* qs Not a pure module */

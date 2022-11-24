@@ -2,6 +2,51 @@ open Promise
 open Common
 open Common.Chrome
 open Common.Webapi.Window
+// {
+//   "id": 617986,
+//   "word": "script",
+//   "sw": "script",
+//   "phonetic": "skript",
+//   "definition": "n. a written version of a play or other dramatic composition; used in preparing for a performance\nn. a particular orthography or writing system\nv. write a script for",
+//   "translation": "n. 手迹, 手稿, 正本, 手写体\nvt. 改编为演出本\n[计] 手写体, 小型程序",
+//   "pos": "",
+//   "collins": 3,
+//   "oxford": null,
+//   "tag": "cet6 ky ielts gre",
+//   "bnc": 4130,
+//   "frq": 3286,
+//   "exchange": "s:scripts/d:scripted/p:scripted/i:scripting/3:scripts",
+//   "detail": null,
+//   "audio": "",
+// }
+module OfflineDict = {
+  let endpoint = "http://dict.1r21.cn/dict"
+
+  type result = {translation?: string}
+
+  let translate = q => {
+    fetch(~input=`${endpoint}?q=${q}`, ())
+    ->then(res => Response.json(res))
+    ->then(data => {
+      switch data.translation {
+      | Some(val) => Ok(val)
+      | None => Error("No Tralation")
+      }->resolve
+    })
+    ->catch(e => {
+      let msg = switch e {
+      | JsError(err) =>
+        switch Js.Exn.message(err) {
+        | Some(msg) => msg
+        | None => ""
+        }
+      | _ => "Unexpected error occurred"
+      }
+
+      Error(msg)->resolve
+    })
+  }
+}
 
 module Baidu = {
   type result = {
@@ -14,7 +59,7 @@ module Baidu = {
   let textToSpeech = text => {
     let query = Qs.stringify({
       "word": text,
-      "le": "zh"
+      "le": "zh",
     })
 
     `https://tts.youdao.com/fanyivoice?${query}`

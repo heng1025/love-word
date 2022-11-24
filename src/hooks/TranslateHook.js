@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-function useTranslate(param) {
+function useTranslate(text) {
   var match = React.useState(function () {
         return /* Noop */2;
       });
@@ -15,35 +15,37 @@ function useTranslate(param) {
         return [];
       });
   var setResults = match$2[1];
-  var handleTranslate = function (text) {
-    setLoading(function (_p) {
-          return /* Yes */0;
-        });
-    seErrText(function (param) {
-          return "";
-        });
-    chrome.runtime.sendMessage(text).then(function (ret) {
-          if (ret.TAG === /* Ok */0) {
-            var trans_result = ret._0;
-            setResults(function (_p) {
-                  return trans_result;
+  React.useEffect((function () {
+          if (text !== "") {
+            setLoading(function (_p) {
+                  return /* Yes */0;
                 });
-          } else {
-            var msg = ret._0;
-            seErrText(function (_p) {
-                  return msg;
+            seErrText(function (param) {
+                  return "";
+                });
+            chrome.runtime.sendMessage(text).then(function (ret) {
+                  if (ret.TAG === /* Ok */0) {
+                    var trans_result = ret._0;
+                    setResults(function (_p) {
+                          return trans_result;
+                        });
+                  } else {
+                    var msg = ret._0;
+                    seErrText(function (_p) {
+                          return msg;
+                        });
+                  }
+                  setLoading(function (_p) {
+                        return /* No */1;
+                      });
                 });
           }
-          setLoading(function (_p) {
-                return /* No */1;
-              });
-        });
-  };
+          
+        }), [text]);
   return {
           loading: match[0],
           errText: match$1[0],
-          results: match$2[0],
-          handleTranslate: handleTranslate
+          results: match$2[0]
         };
 }
 

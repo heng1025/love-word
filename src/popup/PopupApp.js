@@ -3,7 +3,6 @@
 import * as React from "react";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
-import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
 function PopupApp(Props) {
@@ -12,6 +11,10 @@ function PopupApp(Props) {
       });
   var setText = match[1];
   var text = match[0];
+  var match$1 = React.useState(function () {
+        return "";
+      });
+  var setSourceText = match$1[1];
   var textInput = React.useRef(null);
   var setTextInputRef = function (element) {
     textInput.current = element;
@@ -21,10 +24,11 @@ function PopupApp(Props) {
             input.focus();
           }));
   };
-  var hook = TranslateHook.useTranslate(undefined);
   var handleTranslate = function (param) {
     if (text !== "") {
-      return hook.handleTranslate(text);
+      return setSourceText(function (param) {
+                  return text;
+                });
     } else {
       return focusTextInput(undefined);
     }
@@ -39,7 +43,9 @@ function PopupApp(Props) {
     var isCtrlKey = evt.ctrlKey;
     var key = evt.key;
     if (isCtrlKey && key === "Enter") {
-      return hook.handleTranslate(text);
+      return setSourceText(function (param) {
+                  return text;
+                });
     }
     
   };
@@ -62,9 +68,7 @@ function PopupApp(Props) {
                       className: "btn btn-primary btn-sm m-2",
                       onClick: handleTranslate
                     }, "Translate"), React.createElement(TranslateResult.make, {
-                      loading: hook.loading,
-                      errText: hook.errText,
-                      results: hook.results,
+                      q: match$1[0],
                       className: "text-secondary p-2 min-h-8"
                     })));
 }

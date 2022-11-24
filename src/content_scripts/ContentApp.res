@@ -12,9 +12,7 @@ let make = (~host) => {
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
 
-  let hook = TranslateHook.useTranslate()
-
-  let showTransPanel = (range, text) => {
+  let showTransPanel = range => {
     let rect = range->getBoundingClientRect
     open Js.Float
     let posOffset = 8.0
@@ -22,7 +20,6 @@ let make = (~host) => {
     let left = rect.left +. Js.Int.toFloat(Window.scrollX)
     setTop(._p => `${toString(top +. posOffset)}px`)
     setLeft(._p => `${toString(left)}px`)
-    hook.handleTranslate(. text)
     setOpactity(._p => "1")
   }
 
@@ -34,8 +31,8 @@ let make = (~host) => {
         let text = Js.String2.trim(selection->selectionToString)
         if rangeCount(selection) > 0 && text !== "" {
           let range = getRangeAt(selection, 0)
-          showTransPanel(range, text)
           setSourceText(._ => text)
+          showTransPanel(range)
         }
       }
     }
@@ -56,6 +53,7 @@ let make = (~host) => {
         setTop(._ => "0")
         setLeft(._ => "0")
         setOpactity(._p => "0")
+        setSourceText(._ => "")
       }
     }
     addMouseEventListener("click", handleClick)
@@ -96,9 +94,7 @@ let make = (~host) => {
             </svg>
           </a>
         </h4>
-        <TranslateResult
-          loading={hook.loading} errText={hook.errText} results={hook.results} className="text-sm"
-        />
+        <TranslateResult q={sourceText} className="text-sm" />
       </div>
     </div>
   </div>
