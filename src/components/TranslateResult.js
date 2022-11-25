@@ -19,7 +19,9 @@ function TranslateResult(Props) {
         break;
     case /* No */1 :
         if (errText !== "") {
-          tmp = React.createElement("div", undefined, errText);
+          tmp = React.createElement("div", {
+                className: "text-error"
+              }, errText);
         } else {
           switch (data.TAG | 0) {
             case /* Dict */0 :

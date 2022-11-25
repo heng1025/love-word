@@ -10,7 +10,7 @@ let make = (~q, ~className) => {
     | Yes => <Loading />
     | No =>
       switch errText !== "" {
-      | true => <div> {React.string(errText)} </div>
+      | true => <div className="text-error"> {React.string(errText)} </div>
       | false =>
         switch data {
         | Baidu(br) => <MachineTPanel data=br />

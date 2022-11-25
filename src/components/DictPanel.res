@@ -12,7 +12,7 @@ let make = (~data) => {
     | true => <p> {React.string(`[ ${data.phonetic} ]`)} </p>
     | _ => React.null
     }}
-    <div className="mt-1 mb-1"> {React.array(trans)} </div>
+    <div className="my-2"> {React.array(trans)} </div>
     <div>
       {switch data.tag !== "" {
       | true =>

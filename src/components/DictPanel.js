@@ -14,7 +14,7 @@ function DictPanel(Props) {
   var match = data.phonetic !== "";
   var match$1 = data.tag !== "";
   return React.createElement("div", undefined, match ? React.createElement("p", undefined, "[ " + data.phonetic + " ]") : null, React.createElement("div", {
-                  className: "mt-1 mb-1"
+                  className: "my-2"
                 }, trans), React.createElement("div", undefined, match$1 ? data.tag.split(" ").map(function (v) {
                         return React.createElement(Widget.Tag.make, {
                                     className: "bg-secondary mr-1 mb-1",
