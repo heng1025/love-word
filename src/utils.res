@@ -2,35 +2,25 @@ open Promise
 open Common
 open Common.Chrome
 open Common.Webapi.Window
-// {
-//   "id": 617986,
-//   "word": "script",
-//   "sw": "script",
-//   "phonetic": "skript",
-//   "definition": "n. a written version of a play or other dramatic composition; used in preparing for a performance\nn. a particular orthography or writing system\nv. write a script for",
-//   "translation": "n. 手迹, 手稿, 正本, 手写体\nvt. 改编为演出本\n[计] 手写体, 小型程序",
-//   "pos": "",
-//   "collins": 3,
-//   "oxford": null,
-//   "tag": "cet6 ky ielts gre",
-//   "bnc": 4130,
-//   "frq": 3286,
-//   "exchange": "s:scripts/d:scripted/p:scripted/i:scripting/3:scripts",
-//   "detail": null,
-//   "audio": "",
-// }
+
 module OfflineDict = {
   let endpoint = "http://dict.1r21.cn/dict"
-
-  type result = {translation?: string}
+  type dictOk = {
+    id: int,
+    translation: string,
+    phonetic: string,
+    definition: string,
+    tag: string,
+    exchange: string,
+  }
 
   let translate = q => {
     fetch(~input=`${endpoint}?q=${q}`, ())
     ->then(res => Response.json(res))
     ->then(data => {
-      switch data.translation {
+      switch data {
       | Some(val) => Ok(val)
-      | None => Error("No Tralation")
+      | _ => Error("Word can not find")
       }->resolve
     })
     ->catch(e => {
@@ -49,12 +39,20 @@ module OfflineDict = {
 }
 
 module Baidu = {
-  type result = {
-    error_msg?: string,
-    trans_result?: Js.Array2.t<{"src": string, "dst": string}>,
-  }
-
   let endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate"
+  type baiduOk = Js.Array2.t<{
+    "src": string,
+    "dst": string,
+    @set
+    "isPlay": bool,
+    @set
+    "sourceVisible": bool,
+  }>
+
+  type response = {
+    error_msg?: string,
+    trans_result?: baiduOk,
+  }
 
   let textToSpeech = text => {
     let query = Qs.stringify({
@@ -96,8 +94,8 @@ module Baidu = {
       | Some(msg) => Error(msg)
       | None =>
         switch data.trans_result {
-        | Some(trans_result) => Ok(trans_result)
-        | None => Error("No Tralation")
+        | Some(val) => Ok(val)
+        | None => Error("No Translation")
         }
       }->resolve
     })
@@ -112,6 +110,31 @@ module Baidu = {
       }
 
       Error(msg)->resolve
+    })
+  }
+}
+
+type resultT = Dict(OfflineDict.dictOk) | Baidu(Baidu.baiduOk) | Message(string)
+
+let adapterTrans = text => {
+  let sl = FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
+  let wordCount = Js.String2.split(text, " ")
+
+  let baiduResult = Baidu.translate(text)->then(br => {
+    switch br {
+    | Ok(res) => Baidu(res)
+    | Error(msg) => Message(msg)
+    }->resolve
+  })
+
+  if Js.Array2.length(wordCount) > 4 || sl !== "eng" {
+    baiduResult
+  } else {
+    OfflineDict.translate(text)->then(ret => {
+      switch ret {
+      | Ok(val) => Dict(val)->resolve
+      | _ => baiduResult
+      }
     })
   }
 }

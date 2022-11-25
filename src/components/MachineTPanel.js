@@ -6,7 +6,7 @@ import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 function MachineTPanel(Props) {
-  var results = Props.results;
+  var data = Props.data;
   var audioEl = React.useRef(null);
   var match = React.useState(function () {
         return [];
@@ -15,13 +15,13 @@ function MachineTPanel(Props) {
   var transList = match[0];
   React.useEffect((function () {
           setTransList(function (param) {
-                return results.map(function (v) {
+                return data.map(function (v) {
                             v.isPlay = false;
                             v.sourceVisible = false;
                             return v;
                           });
               });
-        }), [results]);
+        }), [data]);
   var onEnded = function (param) {
     setTransList(function (p) {
           return p.map(function (v) {

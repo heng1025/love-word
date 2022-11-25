@@ -5,6 +5,7 @@ import Md5 from "md5";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as $$Promise from "@ryyppy/rescript-promise/src/Promise.js";
 import * as FrancMin from "franc-min";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var endpoint = "http://dict.1r21.cn/dict";
 
@@ -12,13 +13,12 @@ function translate(q) {
   return $$Promise.$$catch(fetch("" + endpoint + "?q=" + q + "", undefined).then(function (res) {
                     return res.json();
                   }).then(function (data) {
-                  var val = data.translation;
-                  return Promise.resolve(val !== undefined ? ({
+                  return Promise.resolve(data !== undefined ? ({
                                   TAG: /* Ok */0,
-                                  _0: val
+                                  _0: Caml_option.valFromOption(data)
                                 }) : ({
                                   TAG: /* Error */1,
-                                  _0: "No Tralation"
+                                  _0: "Word can not find"
                                 }));
                 }), (function (e) {
                 var msg;
@@ -93,13 +93,13 @@ function translate$1(q) {
                       _0: msg
                     };
                   } else {
-                    var trans_result = data.trans_result;
-                    tmp = trans_result !== undefined ? ({
+                    var val = data.trans_result;
+                    tmp = val !== undefined ? ({
                           TAG: /* Ok */0,
-                          _0: trans_result
+                          _0: val
                         }) : ({
                           TAG: /* Error */1,
-                          _0: "No Tralation"
+                          _0: "No Translation"
                         });
                   }
                   return Promise.resolve(tmp);
@@ -124,8 +124,45 @@ var Baidu = {
   translate: translate$1
 };
 
+function adapterTrans(text) {
+  var sl = FrancMin.franc(text, {
+        minLength: 1,
+        only: [
+          "eng",
+          "cmn"
+        ]
+      });
+  var wordCount = text.split(" ");
+  var baiduResult = translate$1(text).then(function (br) {
+        var tmp;
+        tmp = br.TAG === /* Ok */0 ? ({
+              TAG: /* Baidu */1,
+              _0: br._0
+            }) : ({
+              TAG: /* Message */2,
+              _0: br._0
+            });
+        return Promise.resolve(tmp);
+      });
+  if (wordCount.length > 4 || sl !== "eng") {
+    return baiduResult;
+  } else {
+    return translate(text).then(function (ret) {
+                if (ret.TAG === /* Ok */0) {
+                  return Promise.resolve({
+                              TAG: /* Dict */0,
+                              _0: ret._0
+                            });
+                } else {
+                  return baiduResult;
+                }
+              });
+  }
+}
+
 export {
   OfflineDict ,
   Baidu ,
+  adapterTrans ,
 }
 /* qs Not a pure module */

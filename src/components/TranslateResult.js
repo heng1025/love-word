@@ -3,7 +3,6 @@
 import * as React from "react";
 import * as Loading from "./Loading.js";
 import * as DictPanel from "./DictPanel.js";
-import * as FrancMin from "franc-min";
 import * as MachineTPanel from "./MachineTPanel.js";
 import * as TranslateHook from "../hooks/TranslateHook.js";
 
@@ -11,6 +10,7 @@ function TranslateResult(Props) {
   var q = Props.q;
   var className = Props.className;
   var match = TranslateHook.useTranslate(q);
+  var data = match.data;
   var errText = match.errText;
   var tmp;
   switch (match.loading) {
@@ -21,17 +21,22 @@ function TranslateResult(Props) {
         if (errText !== "") {
           tmp = React.createElement("div", undefined, errText);
         } else {
-          var sl = FrancMin.franc(q, {
-                minLength: 1,
-                only: [
-                  "eng",
-                  "cmn"
-                ]
-              });
-          var len = q.split(" ");
-          tmp = len.length === 1 && sl === "eng" ? React.createElement(DictPanel.make, {}) : React.createElement(MachineTPanel.make, {
-                  results: match.results
-                });
+          switch (data.TAG | 0) {
+            case /* Dict */0 :
+                tmp = React.createElement(DictPanel.make, {
+                      data: data._0
+                    });
+                break;
+            case /* Baidu */1 :
+                tmp = React.createElement(MachineTPanel.make, {
+                      data: data._0
+                    });
+                break;
+            case /* Message */2 :
+                tmp = null;
+                break;
+            
+          }
         }
         break;
     case /* Noop */2 :

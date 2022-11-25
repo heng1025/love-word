@@ -3,7 +3,23 @@
 import * as React from "react";
 
 function DictPanel(Props) {
-  return React.createElement("div", undefined, "dict panel");
+  var data = Props.data;
+  var trans = data.translation.split("\n").map(function (v) {
+        return React.createElement("p", {
+                    key: v,
+                    className: "mt-[2px]"
+                  }, v);
+      });
+  var match = data.phonetic !== "";
+  var match$1 = data.tag !== "";
+  return React.createElement("div", undefined, match ? React.createElement("p", undefined, "[ " + data.phonetic + " ]") : null, React.createElement("div", {
+                  className: "mt-1 mb-1"
+                }, trans), React.createElement("div", undefined, match$1 ? data.tag.split(" ").map(function (v) {
+                        return React.createElement("span", {
+                                    key: v,
+                                    className: "bg-secondary rounded-sm inline-block px-1 mr-1 mb-1"
+                                  }, v);
+                      }) : null));
 }
 
 var make = DictPanel;

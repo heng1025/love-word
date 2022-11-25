@@ -3,7 +3,7 @@ open Utils
 open Common
 
 Chrome.addMessageListener((message, _, sendResponse) => {
-  Baidu.translate(message)
+  adapterTrans(message)
   ->then(ret => {
     sendResponse(. ret)
   })

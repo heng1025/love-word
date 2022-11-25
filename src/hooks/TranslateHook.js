@@ -12,9 +12,12 @@ function useTranslate(text) {
       });
   var seErrText = match$1[1];
   var match$2 = React.useState(function () {
-        return [];
+        return {
+                TAG: /* Message */2,
+                _0: ""
+              };
       });
-  var setResults = match$2[1];
+  var setData = match$2[1];
   React.useEffect((function () {
           if (text !== "") {
             setLoading(function (_p) {
@@ -24,15 +27,23 @@ function useTranslate(text) {
                   return "";
                 });
             chrome.runtime.sendMessage(text).then(function (ret) {
-                  if (ret.TAG === /* Ok */0) {
-                    var trans_result = ret._0;
-                    setResults(function (_p) {
-                          return trans_result;
-                        });
-                  } else {
-                    var msg = ret._0;
-                    seErrText(function (_p) {
-                          return msg;
+                  var exit = 0;
+                  switch (ret.TAG | 0) {
+                    case /* Dict */0 :
+                    case /* Baidu */1 :
+                        exit = 1;
+                        break;
+                    case /* Message */2 :
+                        var msg = ret._0;
+                        seErrText(function (_p) {
+                              return msg;
+                            });
+                        break;
+
+                  }
+                  if (exit === 1) {
+                    setData(function (_p) {
+                          return ret;
                         });
                   }
                   setLoading(function (_p) {
@@ -40,12 +51,12 @@ function useTranslate(text) {
                       });
                 });
           }
-          
+
         }), [text]);
   return {
           loading: match[0],
           errText: match$1[0],
-          results: match$2[0]
+          data: match$2[0]
         };
 }
 

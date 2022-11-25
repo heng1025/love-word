@@ -17,3 +17,9 @@
   border-radius: 100px;
   background-color: rgba(0, 0, 0, 0.61);
 }
+
+@layer components {
+  .btn-xxs {
+    @apply h-[20px] min-h-[20px] py-[2px] px-1 text-[12px];
+  }
+}

@@ -1,18 +1,19 @@
 open Promise
+open Utils
 open Common.Chrome
 
 type loading = Yes | No | Noop
 
-type return<'a> = {
+type return = {
   loading: loading,
   errText: string,
-  results: Js.Array2.t<'a>,
+  data: resultT,
 }
 
 let useTranslate = (text: string) => {
   let (loading, setLoading) = React.Uncurried.useState(_ => Noop)
   let (errText, seErrText) = React.Uncurried.useState(_ => "")
-  let (results, setResults) = React.Uncurried.useState(_ => [])
+  let (data, setData) = React.Uncurried.useState(_ => Message(""))
 
   React.useEffect1(() => {
     if text !== "" {
@@ -21,8 +22,8 @@ let useTranslate = (text: string) => {
       sendMessage(. text)
       ->thenResolve(ret => {
         switch ret {
-        | Ok(trans_result) => setResults(. _p => trans_result)
-        | Error(msg) => seErrText(. _p => msg)
+        | Message(msg) => seErrText(. _p => msg)
+        | val => setData(. _p => val)
         }
         setLoading(. _p => No)
       })
@@ -32,5 +33,5 @@ let useTranslate = (text: string) => {
     None
   }, [text])
 
-  {loading, errText, results}
+  {loading, errText, data}
 }
