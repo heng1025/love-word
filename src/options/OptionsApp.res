@@ -1,6 +1,13 @@
 open Promise
 open Common.Chrome
 
+type baiduConfig = {
+  appid: string,
+  secret: string,
+}
+
+type baiduStore = {baiduKey?: baiduConfig}
+
 @react.component
 let make = () => {
   let (appid, setAppid) = React.Uncurried.useState(_ => "")
@@ -10,8 +17,14 @@ let make = () => {
   React.useEffect0(() => {
     getExtStorage(~keys=["baiduKey"])
     ->then(result => {
-      setAppid(. _ => result["baiduKey"]["appid"])
-      setSecret(. _ => result["baiduKey"]["secret"])
+      switch result.baiduKey {
+      | Some(config) => {
+          setAppid(. _ => config.appid)
+          setSecret(. _ => config.secret)
+        }
+
+      | _ => ()
+      }
       resolve()
     })
     ->ignore
@@ -22,8 +35,9 @@ let make = () => {
     if appid === "" || secret === "" {
       setWarnVisibleClass(._ => "block")
     } else {
+      let config = {appid, secret}
       setWarnVisibleClass(._ => "hidden")
-      setExtStorage(~items={"baiduKey": {"appid": appid, "secret": secret}})->ignore
+      setExtStorage(~items={baiduKey: config})->ignore
     }
   }
 

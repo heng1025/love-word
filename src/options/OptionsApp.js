@@ -19,12 +19,15 @@ function OptionsApp(Props) {
   var setWarnVisibleClass = match$2[1];
   React.useEffect((function () {
           chrome.storage.local.get(["baiduKey"]).then(function (result) {
-                setAppid(function (param) {
-                      return result.baiduKey.appid;
-                    });
-                setSecret(function (param) {
-                      return result.baiduKey.secret;
-                    });
+                var config = result.baiduKey;
+                if (config !== undefined) {
+                  setAppid(function (param) {
+                        return config.appid;
+                      });
+                  setSecret(function (param) {
+                        return config.secret;
+                      });
+                }
                 return Promise.resolve(undefined);
               });
         }), []);
@@ -33,18 +36,17 @@ function OptionsApp(Props) {
       return setWarnVisibleClass(function (param) {
                   return "block";
                 });
-    } else {
-      setWarnVisibleClass(function (param) {
-            return "hidden";
-          });
-      chrome.storage.local.set({
-            baiduKey: {
-              appid: appid,
-              secret: secret
-            }
-          });
-      return ;
     }
+    var config = {
+      appid: appid,
+      secret: secret
+    };
+    setWarnVisibleClass(function (param) {
+          return "hidden";
+        });
+    chrome.storage.local.set({
+          baiduKey: config
+        });
   };
   return React.createElement("div", {
               className: "flex justify-center"
