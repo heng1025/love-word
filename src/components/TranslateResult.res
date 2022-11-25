@@ -1,3 +1,4 @@
+open Widget
 open TranslateHook
 
 @react.component

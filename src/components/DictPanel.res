@@ -1,4 +1,5 @@
 open Utils.OfflineDict
+open Widget
 
 @react.component
 let make = (~data) => {
@@ -17,9 +18,7 @@ let make = (~data) => {
       | true =>
         React.array(
           Js.Array2.map(Js.String2.split(data.tag, " "), v => {
-            <span key=v className="bg-secondary rounded-sm inline-block px-1 mr-1 mb-1">
-              {React.string(v)}
-            </span>
+            <Tag key=v className="bg-secondary mr-1 mb-1"> {React.string(v)} </Tag>
           }),
         )
       | _ => React.null
