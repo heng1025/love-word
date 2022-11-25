@@ -1,15 +1,48 @@
+open Common.Webapi.Window
 open Utils.OfflineDict
 open Widget
 
 @react.component
 let make = (~data) => {
+  let (audio, setAudio) = React.Uncurried.useState(_ => Js.null)
+  let (playState, setAudioState) = React.Uncurried.useState(_ => false)
   let trans = Js.Array2.map(Js.String2.split(data.translation, "\n"), v => {
     <p key=v className="mt-[2px]"> {React.string(v)} </p>
   })
 
+  React.useEffect0(() => {
+    // type 1 为英音 2 为美音
+    let src = `https://dict.youdao.com/dictvoice?audio=${data.word}&type=1`
+    let au = createAudio(~url=src, ())
+    setAudio(._ => au)
+
+    switch Js.Null.toOption(au) {
+    | Some(val) =>
+      onEnded(val, () => {
+        setAudioState(. p => false)
+      })
+    | _ => ()
+    }
+
+    None
+  })
+
+  let play = _ => {
+    setAudioState(.p => !p)
+
+    switch Js.Null.toOption(audio) {
+    | Some(au) => au->playAudio
+
+    | _ => ()
+    }
+  }
   <div>
     {switch data.phonetic !== "" {
-    | true => <p> {React.string(`[ ${data.phonetic} ]`)} </p>
+    | true =>
+      <div>
+        <span className="mr-2"> {React.string(`[ ${data.phonetic} ]`)} </span>
+        <Speaker isPlay=playState onClick=play />
+      </div>
     | _ => React.null
     }}
     <div className="my-2"> {React.array(trans)} </div>

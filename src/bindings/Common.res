@@ -80,6 +80,16 @@ module Webapi = {
     external rangeToString: selectionRange => string = "toString"
     @send
     external getBoundingClientRect: selectionRange => domRect = "getBoundingClientRect"
+
+    type audio
+    @new
+    external createAudio: (~url: string=?, unit) => Js.null<audio> = "Audio"
+    @set
+    external setAudioSrc: (audio, string) => unit = "src"
+    @set
+    external onEnded: (audio, @uncurry ('e => unit)) => unit = "onended"
+    @send
+    external playAudio: audio => unit = "play"
     @scope("window") @val
     external addMouseEventListener: (string, @uncurry (MouseEvent.t => unit)) => unit =
       "addEventListener"

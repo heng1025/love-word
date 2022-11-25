@@ -39,7 +39,7 @@ function useTranslate(text) {
                               return msg;
                             });
                         break;
-
+                    
                   }
                   if (exit === 1) {
                     setData(function (_p) {
@@ -51,7 +51,7 @@ function useTranslate(text) {
                       });
                 });
           }
-
+          
         }), [text]);
   return {
           loading: match[0],

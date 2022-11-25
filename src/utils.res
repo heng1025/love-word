@@ -7,6 +7,7 @@ module OfflineDict = {
   let endpoint = "http://dict.1r21.cn/dict"
   type dictOk = {
     id: int,
+    word: string,
     translation: string,
     phonetic: string,
     definition: string,
