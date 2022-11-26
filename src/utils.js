@@ -133,19 +133,21 @@ function adapterTrans(text) {
         ]
       });
   var wordCount = text.split(" ");
-  var baiduResult = translate$1(text).then(function (br) {
-        var tmp;
-        tmp = br.TAG === /* Ok */0 ? ({
-              TAG: /* Baidu */1,
-              _0: br._0
-            }) : ({
-              TAG: /* Message */2,
-              _0: br._0
-            });
-        return Promise.resolve(tmp);
-      });
-  if (wordCount.length > 4 || sl !== "eng") {
-    return baiduResult;
+  var baiduResult = function (param) {
+    return translate$1(text).then(function (br) {
+                var tmp;
+                tmp = br.TAG === /* Ok */0 ? ({
+                      TAG: /* Baidu */1,
+                      _0: br._0
+                    }) : ({
+                      TAG: /* Message */2,
+                      _0: br._0
+                    });
+                return Promise.resolve(tmp);
+              });
+  };
+  if (sl !== "eng" || wordCount.length > 4) {
+    return baiduResult(undefined);
   } else {
     return translate(text).then(function (ret) {
                 if (ret.TAG === /* Ok */0) {
@@ -154,7 +156,7 @@ function adapterTrans(text) {
                               _0: ret._0
                             });
                 } else {
-                  return baiduResult;
+                  return baiduResult(undefined);
                 }
               });
   }

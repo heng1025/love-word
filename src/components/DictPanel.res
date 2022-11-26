@@ -19,7 +19,7 @@ let make = (~data) => {
     switch Js.Null.toOption(au) {
     | Some(val) =>
       onEnded(val, () => {
-        setAudioState(. p => false)
+        setAudioState(. _p => false)
       })
     | _ => ()
     }

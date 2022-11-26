@@ -121,20 +121,21 @@ let adapterTrans = text => {
   let sl = FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
   let wordCount = Js.String2.split(text, " ")
 
-  let baiduResult = Baidu.translate(text)->then(br => {
-    switch br {
-    | Ok(res) => Baidu(res)
-    | Error(msg) => Message(msg)
-    }->resolve
-  })
+  let baiduResult = () =>
+    Baidu.translate(text)->then(br => {
+      switch br {
+      | Ok(res) => Baidu(res)
+      | Error(msg) => Message(msg)
+      }->resolve
+    })
 
-  if Js.Array2.length(wordCount) > 4 || sl !== "eng" {
-    baiduResult
+  if sl !== "eng" || Js.Array2.length(wordCount) > 4 {
+    baiduResult()
   } else {
     OfflineDict.translate(text)->then(ret => {
       switch ret {
       | Ok(val) => Dict(val)->resolve
-      | _ => baiduResult
+      | _ => baiduResult()
       }
     })
   }

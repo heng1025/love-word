@@ -15,7 +15,7 @@ function Widget$Tag(Props) {
   var children = Props.children;
   var className = classNameOpt !== undefined ? classNameOpt : "";
   return React.createElement("span", {
-              className: "rounded-sm inline-block px-1 " + className + ""
+              className: "rounded-sm inline-block text-white px-1 " + className + ""
             }, children);
 }
 

@@ -8,7 +8,7 @@ module Loading = {
 module Tag = {
   @react.component
   let make = (~className="", ~children) => {
-    <span className={`rounded-sm inline-block px-1 ${className}`}> children </span>
+    <span className={`rounded-sm inline-block text-white px-1 ${className}`}> children </span>
   }
 }
 

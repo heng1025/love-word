@@ -28,7 +28,7 @@ function DictPanel(Props) {
               });
           if (au !== null) {
             au.onended = (function (param) {
-                setAudioState(function (p) {
+                setAudioState(function (_p) {
                       return false;
                     });
               });
