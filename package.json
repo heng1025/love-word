@@ -1,6 +1,6 @@
 {
   "name": "love-word",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a translation extension for chrome browser",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,8 @@
     "rescript",
     "vite",
     "daisyui",
-    "react"
+    "react",
+    "IndexedDB"
   ],
   "author": "heng1025",
   "license": "MIT",
@@ -29,6 +30,7 @@
     "@rescript/react": "^0.10.3",
     "@ryyppy/rescript-promise": "^2.1.0",
     "franc-min": "^6.0.0",
+    "idb": "^7.1.1",
     "md5": "^2.3.0",
     "qs": "^6.11.0",
     "react": "^18.2.0",

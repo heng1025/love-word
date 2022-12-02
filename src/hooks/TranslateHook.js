@@ -26,7 +26,17 @@ function useTranslate(text) {
             seErrText(function (param) {
                   return "";
                 });
-            chrome.runtime.sendMessage(text).then(function (ret) {
+            chrome.runtime.sendMessage({
+                  type: {
+                    TAG: /* HISTORY */0,
+                    _0: /* ADD */0
+                  },
+                  value: text
+                });
+            chrome.runtime.sendMessage({
+                    type: /* TRASTALTE */0,
+                    value: text
+                  }).then(function (ret) {
                   var exit = 0;
                   switch (ret.TAG | 0) {
                     case /* Dict */0 :

@@ -7,6 +7,7 @@ specifiers:
   autoprefixer: ^10.4.13
   daisyui: ^2.41.0
   franc-min: ^6.0.0
+  idb: ^7.1.1
   md5: ^2.3.0
   postcss: ^8.4.18
   qs: ^6.11.0
@@ -20,6 +21,7 @@ dependencies:
   '@rescript/react': 0.10.3_biqbaboplfbrettd7655fr4n2y
   '@ryyppy/rescript-promise': 2.1.0
   franc-min: 6.0.0
+  idb: 7.1.1
   md5: 2.3.0
   qs: 6.11.0
   react: 18.2.0
@@ -31,7 +33,7 @@ devDependencies:
   daisyui: 2.41.0_lycaqaeny3mp632atgvyvqdgwe
   postcss: 8.4.18
   rescript: 10.0.1
-  tailwindcss: 3.2.4
+  tailwindcss: 3.2.4_postcss@8.4.18
   vite: 3.2.3
 
 packages:
@@ -606,7 +608,7 @@ packages:
       css-selector-tokenizer: 0.8.0
       postcss: 8.4.18
       postcss-js: 4.0.0_postcss@8.4.18
-      tailwindcss: 3.2.4
+      tailwindcss: 3.2.4_postcss@8.4.18
     transitivePeerDependencies:
       - ts-node
     dev: true
@@ -966,6 +968,10 @@ packages:
     dependencies:
       function-bind: 1.1.1
 
+  /idb/7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
+    dev: false
+
   /is-arrayish/0.3.2:
     resolution: {integrity: sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==}
     dev: true
@@ -1319,10 +1325,12 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /tailwindcss/3.2.4:
+  /tailwindcss/3.2.4_postcss@8.4.18:
     resolution: {integrity: sha512-AhwtHCKMtR71JgeYDaswmZXhPcW9iuI9Sp2LvZPo9upDZ7231ZJ7eA9RaURbhpXGVlrjX4cFNlB4ieTetEb7hQ==}
     engines: {node: '>=12.13.0'}
     hasBin: true
+    peerDependencies:
+      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3

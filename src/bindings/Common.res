@@ -120,12 +120,16 @@ module Webapi = {
 }
 
 module Chrome = {
+  type actionType = ADD | GET | DELETE | CLEAR
+  type msgType = TRASTALTE | HISTORY(actionType) | FAVORITE(actionType)
+
   @scope(("chrome", "runtime")) @val
   external getURL: string => string = "getURL"
   @scope(("chrome", "runtime")) @val
   external sendMessage: 'a = "sendMessage"
   @scope(("chrome", "runtime", "onMessage")) @val
-  external addMessageListener: (@uncurry ('a, 'b, 'c) => bool) => unit = "addListener"
+  external addMessageListener: (@uncurry ('message, 'sender, (. 'params) => unit) => bool) => unit =
+    "addListener"
 
   @scope(("chrome", "storage", "onChanged")) @val
   external addStorageListener: (@uncurry ('changes, 'areaName) => unit) => unit = "addListener"
@@ -137,13 +141,91 @@ module Chrome = {
 }
 
 module Md5 = {
-  @module("md5") @val external createMd5: string => string = "default"
+  @module("md5") external createMd5: string => string = "default"
 }
 module Qs = {
-  @module("qs") @val external stringify: 'a => string = "stringify"
+  @module("qs") external stringify: 'a => string = "stringify"
 }
 
 module FrancMin = {
   type options = {minLength: int, only: Js.Array2.t<string>}
-  @module("franc-min") @val external createFranc: (string, options) => string = "franc"
+  @module("franc-min") external createFranc: (string, options) => string = "franc"
+}
+
+module Idb = {
+  type db
+  type wrappedDB
+  type unWrappedDB
+
+  type objStoreOptions = {
+    keyPath?: string,
+    autoIncrement?: bool,
+  }
+  type data
+  type objStore = {add: data => unit, index: string => unit}
+  type transaction = {objectStore: string => objStore, store: objStore}
+
+  type openDbOptions = {
+    upgrade?: db => unit,
+    blocked?: (~currentVersion: int, ~blockedVersion: int, ~event: unit) => unit,
+    blocking?: (~currentVersion: int, ~blockedVersion: int, ~event: unit) => unit,
+    terminated?: unit => unit,
+  }
+  type deleteDbOptions = {blocked: unit => unit}
+  @module("idb")
+  external openDB: (
+    ~name: string,
+    ~version: int=?,
+    ~options: openDbOptions=?,
+    unit,
+  ) => Promise.t<db> = "openDB"
+  @module("idb")
+  external deleteDB: (~name: string, ~options: deleteDbOptions=?, unit) => Promise.t<unit> =
+    "deleteDB"
+  @module("idb") external wrap: unWrappedDB => wrappedDB = "wrap"
+  @module("idb") external unwrap: wrappedDB => unWrappedDB = "unwrap"
+  @send
+  external createObjectStore: (~db: db, ~storeName: string, ~options: objStoreOptions) => objStore =
+    "createObjectStore"
+  @send
+  external createTransaction: (~db: db, ~storeName: string, ~mode: string=?, unit) => transaction =
+    "transaction"
+  @send
+  external createIndex: (~objStore: objStore, ~indexName: string, ~keyPath: string) => unit =
+    "createIndex"
+  @send external getDBValue: (~db: db, ~storeName: string, ~key: 'key) => Promise.t<'val> = "get"
+  @send
+  external getDBValueFromIndex: (
+    ~db: db,
+    ~storeName: string,
+    ~indexName: string,
+    ~key: 'key,
+  ) => Promise.t<'val> = "getFromIndex"
+  @send
+  external getDBKeyFromIndex: (
+    ~db: db,
+    ~storeName: string,
+    ~indexName: string,
+    ~key: 'key,
+  ) => Promise.t<'val> = "getKeyFromIndex"
+  @send
+  external addDBValue: (
+    ~db: db,
+    ~storeName: string,
+    ~data: 'data,
+    ~key: 'key=?,
+    unit,
+  ) => Promise.t<unit> = "add"
+  @send
+  external putDBValue: (
+    ~db: db,
+    ~storeName: string,
+    ~data: 'data,
+    ~key: 'key=?,
+    unit,
+  ) => Promise.t<'val> = "put"
+  @send
+  external deleteDBValue: (~db: db, ~storeName: string, ~key: 'key) => Promise.t<'val> = "delete"
+  @send
+  external clearDBValue: (~db: db, ~storeName: string) => Promise.t<unit> = "clear"
 }

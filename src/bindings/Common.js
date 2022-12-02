@@ -31,11 +31,14 @@ var Qs = {};
 
 var FrancMin = {};
 
+var Idb = {};
+
 export {
   Webapi ,
   Chrome ,
   Md5 ,
   Qs ,
   FrancMin ,
+  Idb ,
 }
 /* No side effect */

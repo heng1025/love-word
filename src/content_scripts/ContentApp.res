@@ -1,6 +1,8 @@
+open Promise
 open Common.Chrome
 open Common.Webapi
 open Common.Webapi.Window
+open Widget
 
 @@warning("-44")
 let common = getURL("assets/common.css")
@@ -11,6 +13,7 @@ let make = (~host) => {
   let (top, setTop) = React.Uncurried.useState(_ => "0")
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
+  let (isFaved, setFaved) = React.Uncurried.useState(_ => false)
 
   let showTransPanel = range => {
     let rect = range->getBoundingClientRect
@@ -22,6 +25,23 @@ let make = (~host) => {
     setLeft(._p => `${toString(left)}px`)
     setOpactity(._p => "1")
   }
+
+  let favAction = action => {
+    if sourceText !== "" {
+      sendMessage(. {"type": FAVORITE(action), "value": sourceText})
+      ->then(faved => {
+        setFaved(._ => faved)
+
+        resolve()
+      })
+      ->ignore
+    }
+  }
+
+  React.useEffect1(() => {
+    favAction(GET)
+    None
+  }, [sourceText])
 
   React.useEffect0(() => {
     let handleKeyup = (ev: KeyboardEvent.t) => {
@@ -78,21 +98,23 @@ let make = (~host) => {
       <div className="card-body p-3">
         <h4 className="card-title text-sm border-b justify-between">
           <span> {React.string("译文：")} </span>
-          <a
-            className="w-5 link link-primary"
-            target="_blank"
-            title="show detail"
-            href={`https://fanyi.baidu.com/#en/zh/${sourceText}`}>
-            <svg
-              className="fill-white"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M646.43969701 681.06311061L604.18627955 639.12280248 696.05944825 544.20092748 404.47131347 544.20092748 404.47131347 479.43652318 703.90368678 479.43652318 604.18627955 384.43225123 646.43969701 342.49194311 816.93652344 511.76928686 646.43969701 681.06311061ZM266.81811549 511.76928686C266.81811549 642.61645508 374.03369115 749.07397436 505.82019042 749.07397436L505.82019042 808.40014623C341.07470728 808.40014623 207.06347656 675.32824733 207.06347656 511.76928686 207.06347656 348.22680639 341.07470728 215.13842748 505.82019042 215.13842748L505.82019042 274.46459936C374.03369115 274.46459936 266.81811549 380.92211939 266.81811549 511.76928686Z"
-              />
-            </svg>
-          </a>
+          <div className="flex">
+            <button
+              className="btn btn-xs w-5 h-5 fill-white min-h-0 btn-circle btn-ghost"
+              onClick={_ => favAction(isFaved ? DELETE : ADD)}>
+              {switch isFaved {
+              | false => <Star />
+              | true => <StarFill />
+              }}
+            </button>
+            <a
+              className="w-5 link fill-white link-primary"
+              target="_blank"
+              title="show detail"
+              href={`https://fanyi.baidu.com/#en/zh/${sourceText}`}>
+              <Jump />
+            </a>
+          </div>
         </h4>
         <TranslateResult q={sourceText} className="text-sm" />
       </div>
