@@ -2,23 +2,25 @@
 
 import * as Idb from "idb";
 
+function createStoreWithIndex(db, storeName) {
+  var favoriteStore = db.createObjectStore(storeName, {
+        keyPath: "date"
+      });
+  favoriteStore.createIndex("date", "date");
+  favoriteStore.createIndex("text", "text");
+}
+
 function getDB(param) {
   return Idb.openDB("loveWord", undefined, {
               upgrade: (function (db) {
-                  var favoriteStore = db.createObjectStore("favorite", {
-                        keyPath: "date"
-                      });
-                  favoriteStore.createIndex("date", "date");
-                  favoriteStore.createIndex("text", "text");
-                  var historyStore = db.createObjectStore("history", {
-                        keyPath: "date"
-                      });
-                  historyStore.createIndex("date", "date");
+                  createStoreWithIndex(db, "favorite");
+                  createStoreWithIndex(db, "history");
                 })
             });
 }
 
 export {
+  createStoreWithIndex ,
   getDB ,
 }
 /* idb Not a pure module */

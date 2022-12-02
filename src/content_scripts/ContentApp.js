@@ -3,6 +3,7 @@
 import * as Utils from "../utils.js";
 import * as React from "react";
 import * as Widget from "../components/Widget.js";
+import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
 var common = chrome.runtime.getURL("assets/common.css");
@@ -36,14 +37,17 @@ function ContentApp(Props) {
       });
   var setFaved = match$5[1];
   var isFaved = match$5[0];
+  var match$6 = TranslateHook.useTranslate(sourceText);
+  var data = match$6.data;
   var favAction = function (action) {
     if (sourceText !== "") {
       chrome.runtime.sendMessage({
-              type: {
+              _type: {
                 TAG: /* FAVORITE */1,
                 _0: action
               },
-              value: sourceText
+              text: sourceText,
+              trans: data
             }).then(function (faved) {
             setFaved(function (param) {
                   return faved;
@@ -165,7 +169,9 @@ function ContentApp(Props) {
                                   href: "https://fanyi.baidu.com/#en/zh/" + sourceText + "",
                                   target: "_blank"
                                 }, React.createElement(Widget.Jump.make, {})))), React.createElement(TranslateResult.make, {
-                          q: sourceText,
+                          loading: match$6.loading,
+                          data: data,
+                          errText: match$6.errText,
                           className: "text-sm"
                         }))));
 }

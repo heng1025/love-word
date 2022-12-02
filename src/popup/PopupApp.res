@@ -1,4 +1,5 @@
 open Common.Webapi
+open TranslateHook
 
 @react.component
 let make = () => {
@@ -6,6 +7,7 @@ let make = () => {
   let (sourceText, setSourceText) = React.Uncurried.useState(_ => "")
 
   let textInput = React.useRef(Js.Nullable.null)
+  let {loading, data, errText} = useTranslate(sourceText)
 
   let setTextInputRef = element => {
     textInput.current = element
@@ -33,7 +35,7 @@ let make = () => {
     let key = ReactEvent.Keyboard.key(evt)
 
     if isCtrlKey && key === "Enter" {
-      setSourceText(._=> text)
+      setSourceText(._ => text)
     }
   }
 
@@ -57,7 +59,7 @@ let make = () => {
       <button className="btn btn-primary btn-sm m-2" onClick={handleTranslate}>
         {React.string("Translate")}
       </button>
-      <TranslateResult q={sourceText} className="text-secondary p-2 min-h-8" />
+      <TranslateResult className="text-secondary p-2 min-h-8" loading data errText />
     </div>
   </div>
 }

@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
+import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
 function PopupApp(Props) {
@@ -16,6 +17,7 @@ function PopupApp(Props) {
       });
   var setSourceText = match$1[1];
   var textInput = React.useRef(null);
+  var match$2 = TranslateHook.useTranslate(match$1[0]);
   var setTextInputRef = function (element) {
     textInput.current = element;
   };
@@ -68,7 +70,9 @@ function PopupApp(Props) {
                       className: "btn btn-primary btn-sm m-2",
                       onClick: handleTranslate
                     }, "Translate"), React.createElement(TranslateResult.make, {
-                      q: match$1[0],
+                      loading: match$2.loading,
+                      data: match$2.data,
+                      errText: match$2.errText,
                       className: "text-secondary p-2 min-h-8"
                     })));
 }

@@ -1,5 +1,6 @@
 open Promise
 open Utils
+open TranslateHook
 open Common.Chrome
 open Common.Webapi
 open Common.Webapi.Window
@@ -18,6 +19,8 @@ let make = (~host) => {
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
   let (isFaved, setFaved) = React.Uncurried.useState(_ => false)
 
+  let {loading, data, errText} = useTranslate(sourceText)
+
   let showTransPanel = range => {
     let rect = range->getBoundingClientRect
     open Js.Float
@@ -31,7 +34,7 @@ let make = (~host) => {
 
   let favAction = action => {
     if sourceText !== "" {
-      sendMessage(. {"type": FAVORITE(action), "value": sourceText})
+      sendMessage(. {_type: FAVORITE(action), text: sourceText, trans: data})
       ->then(faved => {
         setFaved(._ => faved)
 
@@ -127,7 +130,7 @@ let make = (~host) => {
             </a>
           </div>
         </h4>
-        <TranslateResult q={sourceText} className="text-sm" />
+        <TranslateResult className="text-sm" loading data errText />
       </div>
     </div>
   </div>

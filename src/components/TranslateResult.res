@@ -1,10 +1,9 @@
 open Widget
+open Utils
 open TranslateHook
 
 @react.component
-let make = (~q, ~className) => {
-  let {loading, data, errText} = useTranslate(q)
-
+let make = (~loading, ~data, ~errText, ~className) => {
   <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
     {switch loading {
     | Yes => <Loading />

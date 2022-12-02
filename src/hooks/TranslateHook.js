@@ -27,15 +27,15 @@ function useTranslate(text) {
                   return "";
                 });
             chrome.runtime.sendMessage({
-                  type: {
+                  _type: {
                     TAG: /* HISTORY */0,
                     _0: /* ADD */0
                   },
-                  value: text
+                  text: text
                 });
             chrome.runtime.sendMessage({
-                    type: /* TRASTALTE */0,
-                    value: text
+                    _type: /* TRASTALTE */0,
+                    text: text
                   }).then(function (ret) {
                   var exit = 0;
                   switch (ret.TAG | 0) {

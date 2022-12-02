@@ -120,9 +120,6 @@ module Webapi = {
 }
 
 module Chrome = {
-  type actionType = ADD | GET | DELETE | CLEAR
-  type msgType = TRASTALTE | HISTORY(actionType) | FAVORITE(actionType)
-
   @scope(("chrome", "runtime")) @val
   external getURL: string => string = "getURL"
   @scope(("chrome", "runtime")) @val

@@ -19,8 +19,8 @@ let useTranslate = (text: string) => {
     if text !== "" {
       setLoading(._p => Yes)
       seErrText(._ => "")
-      sendMessage(. {"type": HISTORY(ADD), "value": text})->ignore
-      sendMessage(. {"type": TRASTALTE, "value": text})
+      sendMessage(. {_type: HISTORY(ADD), text})->ignore
+      sendMessage(. {_type: TRASTALTE, text})
       ->thenResolve(ret => {
         switch ret {
         | Message(msg) => seErrText(. _p => msg)

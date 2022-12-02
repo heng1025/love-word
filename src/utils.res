@@ -3,6 +3,9 @@ open Common
 open Common.Chrome
 open Common.Webapi.Window
 
+type actionType = ADD | GET | DELETE | CLEAR
+type msgType = TRASTALTE | HISTORY(actionType) | FAVORITE(actionType)
+
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
 
 module OfflineDict = {
@@ -118,6 +121,12 @@ module Baidu = {
 }
 
 type resultT = Dict(OfflineDict.dictOk) | Baidu(Baidu.baiduOk) | Message(string)
+
+type msgContent = {
+  _type: msgType,
+  text: string,
+  trans?: resultT,
+}
 
 let adapterTrans = text => {
   let sl = getSourceLang(text)

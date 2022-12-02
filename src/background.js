@@ -5,11 +5,12 @@ import * as Database from "./Database.js";
 
 var dbInstance = Database.getDB(undefined);
 
-chrome.runtime.onMessage.addListener(function (message, param, sendResponse) {
-      var mType = message.type;
-      var mVal = message.value;
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+      var mType = message._type;
+      var mText = message.text;
+      var tab = sender.tab;
       if (typeof mType === "number") {
-        Utils.adapterTrans(mVal).then(function (ret) {
+        Utils.adapterTrans(mText).then(function (ret) {
               sendResponse(ret);
               return Promise.resolve(undefined);
             });
@@ -18,11 +19,14 @@ chrome.runtime.onMessage.addListener(function (message, param, sendResponse) {
           Promise.resolve(undefined);
         } else {
           dbInstance.then(function (db) {
-                return db.getFromIndex("history", "date", mVal).then(function (ret) {
+                return db.getFromIndex("history", "text", mText).then(function (ret) {
                             if (!ret) {
                               db.add("history", {
                                     date: Date.now(),
-                                    text: mVal
+                                    text: mText,
+                                    url: tab.url,
+                                    title: tab.title,
+                                    favIconUrl: tab.favIconUrl
                                   }, undefined);
                             }
                             return Promise.resolve(undefined);
@@ -35,7 +39,11 @@ chrome.runtime.onMessage.addListener(function (message, param, sendResponse) {
               dbInstance.then(function (db) {
                     db.add("favorite", {
                           date: Date.now(),
-                          text: mVal
+                          text: mText,
+                          trans: message.trans,
+                          url: tab.url,
+                          title: tab.title,
+                          favIconUrl: tab.favIconUrl
                         }, undefined);
                     sendResponse(true);
                     return Promise.resolve(undefined);
@@ -43,7 +51,7 @@ chrome.runtime.onMessage.addListener(function (message, param, sendResponse) {
               break;
           case /* GET */1 :
               dbInstance.then(function (db) {
-                    return db.getFromIndex("favorite", "text", mVal).then(function (ret) {
+                    return db.getFromIndex("favorite", "text", mText).then(function (ret) {
                                 if (ret) {
                                   sendResponse(true);
                                 } else {
@@ -55,7 +63,7 @@ chrome.runtime.onMessage.addListener(function (message, param, sendResponse) {
               break;
           case /* DELETE */2 :
               dbInstance.then(function (db) {
-                    db.getKeyFromIndex("favorite", "text", mVal).then(function (key) {
+                    db.getKeyFromIndex("favorite", "text", mText).then(function (key) {
                           db.delete("favorite", key);
                           sendResponse(false);
                           return Promise.resolve(undefined);

@@ -4,16 +4,14 @@ import * as React from "react";
 import * as Widget from "./Widget.js";
 import * as DictPanel from "./DictPanel.js";
 import * as MachineTPanel from "./MachineTPanel.js";
-import * as TranslateHook from "../hooks/TranslateHook.js";
 
 function TranslateResult(Props) {
-  var q = Props.q;
+  var loading = Props.loading;
+  var data = Props.data;
+  var errText = Props.errText;
   var className = Props.className;
-  var match = TranslateHook.useTranslate(q);
-  var data = match.data;
-  var errText = match.errText;
   var tmp;
-  switch (match.loading) {
+  switch (loading) {
     case /* Yes */0 :
         tmp = React.createElement(Widget.Loading.make, {});
         break;
