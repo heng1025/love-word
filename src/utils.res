@@ -3,6 +3,8 @@ open Common
 open Common.Chrome
 open Common.Webapi.Window
 
+let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
+
 module OfflineDict = {
   let endpoint = "http://dict.1r21.cn/dict"
   type dictOk = {
@@ -71,7 +73,7 @@ module Baidu = {
       let key = result["baiduKey"]["secret"]
       let salt = Js.Float.toString(Js.Date.now())
       let sign = Md5.createMd5(appid ++ q ++ salt ++ key)
-      let sl = FrancMin.createFranc(q, {minLength: 1, only: ["eng", "cmn"]})
+      let sl = getSourceLang(q)
       // zh->eng, other -> zh
       let tlDict = Js.Dict.fromList(list{("cmn", "en")})
 
@@ -118,7 +120,7 @@ module Baidu = {
 type resultT = Dict(OfflineDict.dictOk) | Baidu(Baidu.baiduOk) | Message(string)
 
 let adapterTrans = text => {
-  let sl = FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
+  let sl = getSourceLang(text)
   let wordCount = Js.String2.split(text, " ")
 
   let baiduResult = () =>

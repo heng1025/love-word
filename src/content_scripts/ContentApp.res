@@ -1,7 +1,9 @@
 open Promise
+open Utils
 open Common.Chrome
 open Common.Webapi
 open Common.Webapi.Window
+
 open Widget
 
 @@warning("-44")
@@ -10,6 +12,7 @@ let common = getURL("assets/common.css")
 @react.component
 let make = (~host) => {
   let (sourceText, setSourceText) = React.Uncurried.useState(_ => "")
+  let (srcLang, setSrcLang) = React.Uncurried.useState(_ => "eng")
   let (top, setTop) = React.Uncurried.useState(_ => "0")
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
@@ -51,6 +54,8 @@ let make = (~host) => {
         let text = Js.String2.trim(selection->selectionToString)
         if rangeCount(selection) > 0 && text !== "" {
           let range = getRangeAt(selection, 0)
+          let sl = getSourceLang(text)
+          setSrcLang(._ => sl)
           setSourceText(._ => text)
           showTransPanel(range)
         }
@@ -97,7 +102,13 @@ let make = (~host) => {
     <div className="card w-52 bg-primary text-primary-content">
       <div className="card-body p-3">
         <h4 className="card-title text-sm border-b justify-between">
-          <span> {React.string("译文：")} </span>
+          <span>
+            {switch srcLang {
+            | "eng" => <En2zh />
+            | "cmn" => <Zh2en />
+            | _ => React.null
+            }}
+          </span>
           <div className="flex">
             <button
               className="btn btn-xs w-5 h-5 fill-white min-h-0 btn-circle btn-ghost"

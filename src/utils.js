@@ -7,6 +7,16 @@ import * as $$Promise from "@ryyppy/rescript-promise/src/Promise.js";
 import * as FrancMin from "franc-min";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
+function getSourceLang(text) {
+  return FrancMin.franc(text, {
+              minLength: 1,
+              only: [
+                "eng",
+                "cmn"
+              ]
+            });
+}
+
 var endpoint = "http://dict.1r21.cn/dict";
 
 function translate(q) {
@@ -56,13 +66,7 @@ function translate$1(q) {
                         var key = result.baiduKey.secret;
                         var salt = Date.now().toString();
                         var sign = Md5(appid + q + salt + key);
-                        var sl = FrancMin.franc(q, {
-                              minLength: 1,
-                              only: [
-                                "eng",
-                                "cmn"
-                              ]
-                            });
+                        var sl = getSourceLang(q);
                         var tlDict = Js_dict.fromList({
                               hd: [
                                 "cmn",
@@ -125,13 +129,7 @@ var Baidu = {
 };
 
 function adapterTrans(text) {
-  var sl = FrancMin.franc(text, {
-        minLength: 1,
-        only: [
-          "eng",
-          "cmn"
-        ]
-      });
+  var sl = getSourceLang(text);
   var wordCount = text.split(" ");
   var baiduResult = function (param) {
     return translate$1(text).then(function (br) {
@@ -163,6 +161,7 @@ function adapterTrans(text) {
 }
 
 export {
+  getSourceLang ,
   OfflineDict ,
   Baidu ,
   adapterTrans ,
