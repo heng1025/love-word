@@ -28,6 +28,7 @@
         "assets/common.js",
         "assets/common.css",
         "assets/content.js",
+        "assets/Widget.js",
         "assets/TranslateResult.js"
       ]
     }

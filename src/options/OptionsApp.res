@@ -1,92 +1,32 @@
-open Promise
-open Common.Chrome
-
-type baiduConfig = {
-  appid: string,
-  secret: string,
-}
-
-type baiduStore = {baiduKey?: baiduConfig}
-
 @react.component
 let make = () => {
-  let (appid, setAppid) = React.Uncurried.useState(_ => "")
-  let (secret, setSecret) = React.Uncurried.useState(_ => "")
-  let (warnVisibleClass, setWarnVisibleClass) = React.Uncurried.useState(_ => "hidden")
-
-  React.useEffect0(() => {
-    getExtStorage(~keys=["baiduKey"])
-    ->then(result => {
-      switch result.baiduKey {
-      | Some(config) => {
-          setAppid(. _ => config.appid)
-          setSecret(. _ => config.secret)
-        }
-
-      | _ => ()
-      }
-      resolve()
-    })
-    ->ignore
-    None
-  })
-
-  let handleSubmit = _ => {
-    if appid === "" || secret === "" {
-      setWarnVisibleClass(._ => "block")
-    } else {
-      let config = {appid, secret}
-      setWarnVisibleClass(._ => "hidden")
-      setExtStorage(~items={baiduKey: config})->ignore
-    }
-  }
-
-  <div className="flex justify-center">
-    <div className="w-2/5">
-      <div className="form-control w-full">
-        <label className="label">
-          <span className="label-text"> {React.string("baidu appid")} </span>
-        </label>
-        <input
-          type_="text"
-          placeholder="Appid"
-          value={appid}
-          onChange={e => setAppid(._ => ReactEvent.Form.target(e)["value"])}
-          className="input input-bordered input-primary w-full"
-        />
-      </div>
-      <div className="form-control w-full mt-5">
-        <label className="label">
-          <span className="label-text"> {React.string("baidu secret")} </span>
-        </label>
-        <input
-          type_="text"
-          placeholder="Secret"
-          value={secret}
-          onChange={e => setSecret(._ => ReactEvent.Form.target(e)["value"])}
-          className="input input-bordered input-primary w-full"
-        />
-      </div>
-      <div className={`alert alert-warning shadow-lg mt-5 ${warnVisibleClass}`}>
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current flex-shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-          <span> {React.string("Warning: input can not be empty!")} </span>
+  <div className="flex flex-col h-screen">
+    <div className="navbar bg-primary text-primary-content">
+      <a className="btn btn-ghost normal-case text-xl"> {React.string("Love Word")} </a>
+    </div>
+    <div className="flex flex-1">
+      <ul className="menu bg-base-100 w-56 p-2 border-r text-base">
+        <li>
+          <span className="active"> {React.string("Translate Service")} </span>
+        </li>
+        <div className="divider" />
+        <li className="menu-title">
+          <span> {React.string("User")} </span>
+        </li>
+        <li>
+          <a> {React.string("Favorite")} </a>
+        </li>
+        <li>
+          <a> {React.string("History Query")} </a>
+        </li>
+      </ul>
+      <div className="flex-1 p-5 bg-base-200">
+        <div className="card w-1/3 bg-base-100 shadow-xl">
+          <div className="card-body">
+            <TranslateService />
+          </div>
         </div>
       </div>
-      <button className="btn btn-primary w-full mt-5" onClick={handleSubmit}>
-        {React.string("Submit")}
-      </button>
     </div>
   </div>
 }
