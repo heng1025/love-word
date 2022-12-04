@@ -7,7 +7,8 @@ var dbInstance = Database.getDB(undefined);
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       var mType = message._type;
-      var mText = message.text;
+      var v = message.text;
+      var mText = v !== undefined ? v : "";
       var tab = sender.tab;
       if (typeof mType === "number") {
         Utils.adapterTrans(mText).then(function (ret) {
@@ -61,17 +62,25 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                               });
                   });
               break;
-          case /* DELETE */2 :
+          case /* GETALL */2 :
+              dbInstance.then(function (db) {
+                    return db.getAllFromIndex("favorite", "text").then(function (ret) {
+                                sendResponse(ret);
+                                return Promise.resolve(undefined);
+                              });
+                  });
+              break;
+          case /* DELETE */3 :
               dbInstance.then(function (db) {
                     db.getKeyFromIndex("favorite", "text", mText).then(function (key) {
                           db.delete("favorite", key);
-                          sendResponse(false);
+                          sendResponse(undefined);
                           return Promise.resolve(undefined);
                         });
                     return Promise.resolve(undefined);
                   });
               break;
-          case /* CLEAR */3 :
+          case /* CLEAR */4 :
               Promise.resolve(undefined);
               break;
           

@@ -22,15 +22,7 @@
   "web_accessible_resources": [
     {
       "matches": ["<all_urls>"],
-      "resources": [
-        "images/*.jpeg",
-        "assets/vendor.js",
-        "assets/common.js",
-        "assets/common.css",
-        "assets/content.js",
-        "assets/Widget.js",
-        "assets/TranslateResult.js"
-      ]
+      "resources": ["images/*.jpeg", "assets/*.css", "assets/*.js"]
     }
   ],
   "permissions": ["tabs", "activeTab", "scripting", "storage"],

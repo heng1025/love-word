@@ -3,7 +3,7 @@ open Utils
 open TranslateHook
 
 @react.component
-let make = (~loading, ~data, ~errText, ~className) => {
+let make = (~loading=No, ~data, ~errText="", ~className="") => {
   <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
     {switch loading {
     | Yes => <Loading />

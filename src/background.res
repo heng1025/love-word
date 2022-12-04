@@ -8,14 +8,17 @@ let dbInstance = getDB()
 
 Chrome.addMessageListener((message, sender, sendResponse) => {
   let mType = message._type
-  let mText = message.text
+  let mText = switch message.text {
+  | Some(v) => v
+  | _ => ""
+  }
   let tab = sender["tab"]
 
   switch mType {
   | TRASTALTE =>
     adapterTrans(mText)->then(ret => {
       // https://forum.rescript-lang.org/t/modeling-polymorphic-callback/3129
-      sendResponse(. Obj.magic(ret))
+      sendResponse(. ret)
       resolve()
     })
   | FAVORITE(GET) =>
@@ -27,6 +30,15 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
           } else {
             sendResponse(. Obj.magic(true))
           }
+          resolve()
+        },
+      )
+    })
+  | FAVORITE(GETALL) =>
+    dbInstance->then(db => {
+      getDBAllValueFromIndex(~db, ~storeName="favorite", ~indexName="text")->then(
+        ret => {
+          sendResponse(. ret)
           resolve()
         },
       )
@@ -49,14 +61,13 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
       sendResponse(. Obj.magic(true))
       resolve()
     })
-
   | FAVORITE(DELETE) =>
     dbInstance->then(db => {
       getDBKeyFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)
       ->then(
         key => {
           deleteDBValue(~db, ~storeName="favorite", ~key)->ignore
-          sendResponse(. Obj.magic(false))
+          sendResponse(. Obj.magic())
           resolve()
         },
       )

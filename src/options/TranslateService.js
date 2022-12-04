@@ -50,45 +50,47 @@ function TranslateService(Props) {
         });
   };
   return React.createElement("div", {
-              className: "text-center"
+              className: "card w-1/3 bg-base-100 shadow-xl"
             }, React.createElement("div", {
-                  className: "form-control "
-                }, React.createElement("label", {
-                      className: "label"
-                    }, React.createElement("span", {
-                          className: "label-text"
-                        }, "baidu appid")), React.createElement("input", {
-                      className: "input input-bordered input-primary w-full",
-                      placeholder: "Appid",
-                      type: "text",
-                      value: appid,
-                      onChange: (function (e) {
-                          setAppid(function (param) {
-                                return e.target.value;
-                              });
-                        })
-                    })), React.createElement("div", {
-                  className: "form-control mt-5"
-                }, React.createElement("label", {
-                      className: "label"
-                    }, React.createElement("span", {
-                          className: "label-text"
-                        }, "baidu secret")), React.createElement("input", {
-                      className: "input input-bordered input-primary w-full",
-                      placeholder: "Secret",
-                      type: "text",
-                      value: secret,
-                      onChange: (function (e) {
-                          setSecret(function (param) {
-                                return e.target.value;
-                              });
-                        })
-                    })), React.createElement("div", {
-                  className: "alert alert-warning shadow-lg mt-5 " + match$2[0] + ""
-                }, React.createElement("div", undefined, React.createElement(Widget.Alert.make, {}), React.createElement("span", undefined, "Warning: input can not be empty!"))), React.createElement("button", {
-                  className: "btn btn-primary w-5/6 mt-8",
-                  onClick: handleSubmit
-                }, "Submit"));
+                  className: "card-body"
+                }, React.createElement("div", {
+                      className: "form-control "
+                    }, React.createElement("label", {
+                          className: "label"
+                        }, React.createElement("span", {
+                              className: "label-text"
+                            }, "baidu appid")), React.createElement("input", {
+                          className: "input input-bordered input-primary w-full",
+                          placeholder: "Appid",
+                          type: "text",
+                          value: appid,
+                          onChange: (function (e) {
+                              setAppid(function (param) {
+                                    return e.target.value;
+                                  });
+                            })
+                        })), React.createElement("div", {
+                      className: "form-control mt-5"
+                    }, React.createElement("label", {
+                          className: "label"
+                        }, React.createElement("span", {
+                              className: "label-text"
+                            }, "baidu secret")), React.createElement("input", {
+                          className: "input input-bordered input-primary w-full",
+                          placeholder: "Secret",
+                          type: "text",
+                          value: secret,
+                          onChange: (function (e) {
+                              setSecret(function (param) {
+                                    return e.target.value;
+                                  });
+                            })
+                        })), React.createElement("div", {
+                      className: "alert alert-warning shadow-lg mt-5 " + match$2[0] + ""
+                    }, React.createElement("div", undefined, React.createElement(Widget.Alert.make, {}), React.createElement("span", undefined, "Warning: input can not be empty!"))), React.createElement("button", {
+                      className: "btn btn-primary w-5/6 mt-8 mx-auto",
+                      onClick: handleSubmit
+                    }, "Submit")));
 }
 
 var make = TranslateService;

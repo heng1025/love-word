@@ -161,7 +161,7 @@ function ContentApp(Props) {
                             }, React.createElement("button", {
                                   className: "btn btn-xs w-5 h-5 fill-white min-h-0 btn-circle btn-ghost",
                                   onClick: (function (param) {
-                                      favAction(isFaved ? /* DELETE */2 : /* ADD */0);
+                                      favAction(isFaved ? /* DELETE */3 : /* ADD */0);
                                     })
                                 }, isFaved ? React.createElement(Widget.StarFill.make, {}) : React.createElement(Widget.Star.make, {})), React.createElement("a", {
                                   className: "w-5 link fill-white link-primary",

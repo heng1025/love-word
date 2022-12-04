@@ -6,10 +6,13 @@ import * as DictPanel from "./DictPanel.js";
 import * as MachineTPanel from "./MachineTPanel.js";
 
 function TranslateResult(Props) {
-  var loading = Props.loading;
+  var loadingOpt = Props.loading;
   var data = Props.data;
-  var errText = Props.errText;
-  var className = Props.className;
+  var errTextOpt = Props.errText;
+  var classNameOpt = Props.className;
+  var loading = loadingOpt !== undefined ? loadingOpt : /* No */1;
+  var errText = errTextOpt !== undefined ? errTextOpt : "";
+  var className = classNameOpt !== undefined ? classNameOpt : "";
   var tmp;
   switch (loading) {
     case /* Yes */0 :

@@ -199,6 +199,12 @@ module Idb = {
     ~key: 'key,
   ) => Promise.t<'val> = "getFromIndex"
   @send
+  external getDBAllValueFromIndex: (
+    ~db: db,
+    ~storeName: string,
+    ~indexName: string,
+  ) => Promise.t<'val> = "getAllFromIndex"
+  @send
   external getDBKeyFromIndex: (
     ~db: db,
     ~storeName: string,
