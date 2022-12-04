@@ -4,25 +4,24 @@ open Common.Chrome
 
 @react.component
 let make = () => {
-  let (texts, setTexts) = React.Uncurried.useState(_ => [])
+  let (records, setRecords) = React.Uncurried.useState(_ => [])
   React.useEffect0(() => {
     sendMessage(. {_type: FAVORITE(GETALL)})
-    ->then(ret => {
-      setTexts(. _ => ret)
-      resolve()
+    ->thenResolve(ret => {
+      setRecords(. _ => ret)
     })
     ->ignore
 
     None
   })
-  let textsEle = Js.Array2.map(texts, v => {
+  let recordEles = Js.Array2.map(records, v => {
     <div className="card card-compact w-80 bg-base-100 shadow-xl m-4">
       <div className="card-body">
         <div className="border-b pb-1">
           <div className="flex justify-between">
             <span> {React.string(Js.Date.toLocaleDateString(Js.Date.fromFloat(v["date"])))} </span>
-            <a className="w-5" target="_blank" title={v["title"]} href={v["url"]}>
-              <img src={v["favIconUrl"]} />
+            <a target="_blank" title={v["title"]} href={v["url"]}>
+              <img className="w-5" src={v["favIconUrl"]} />
             </a>
           </div>
           <p className="font-bold text-xl line-clamp-1"> {React.string(v["text"])} </p>
@@ -31,5 +30,5 @@ let make = () => {
       </div>
     </div>
   })
-  <div className="flex flex-wrap"> {React.array(textsEle)} </div>
+  <div className="flex flex-wrap"> {React.array(recordEles)} </div>
 }

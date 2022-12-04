@@ -16,23 +16,40 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
               return Promise.resolve(undefined);
             });
       } else if (mType.TAG === /* HISTORY */0) {
-        if (mType._0 !== 0) {
+        var match = mType._0;
+        if (match >= 3) {
           Promise.resolve(undefined);
         } else {
-          dbInstance.then(function (db) {
-                return db.getFromIndex("history", "text", mText).then(function (ret) {
-                            if (!ret) {
-                              db.add("history", {
-                                    date: Date.now(),
-                                    text: mText,
-                                    url: tab.url,
-                                    title: tab.title,
-                                    favIconUrl: tab.favIconUrl
-                                  }, undefined);
-                            }
-                            return Promise.resolve(undefined);
-                          });
-              });
+          switch (match) {
+            case /* ADD */0 :
+                dbInstance.then(function (db) {
+                      return db.getFromIndex("history", "text", mText).then(function (ret) {
+                                  if (!ret) {
+                                    db.add("history", {
+                                          date: Date.now(),
+                                          text: mText,
+                                          url: tab.url,
+                                          title: tab.title,
+                                          favIconUrl: tab.favIconUrl
+                                        }, undefined);
+                                    return ;
+                                  }
+                                  
+                                });
+                    });
+                break;
+            case /* GET */1 :
+                Promise.resolve(undefined);
+                break;
+            case /* GETALL */2 :
+                dbInstance.then(function (db) {
+                      return db.getAllFromIndex("history", "text").then(function (ret) {
+                                  sendResponse(ret);
+                                });
+                    });
+                break;
+            
+          }
         }
       } else {
         switch (mType._0) {
@@ -47,18 +64,16 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                           favIconUrl: tab.favIconUrl
                         }, undefined);
                     sendResponse(true);
-                    return Promise.resolve(undefined);
                   });
               break;
           case /* GET */1 :
               dbInstance.then(function (db) {
                     return db.getFromIndex("favorite", "text", mText).then(function (ret) {
                                 if (ret) {
-                                  sendResponse(true);
+                                  return sendResponse(true);
                                 } else {
-                                  sendResponse(false);
+                                  return sendResponse(false);
                                 }
-                                return Promise.resolve(undefined);
                               });
                   });
               break;
@@ -66,7 +81,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
               dbInstance.then(function (db) {
                     return db.getAllFromIndex("favorite", "text").then(function (ret) {
                                 sendResponse(ret);
-                                return Promise.resolve(undefined);
                               });
                   });
               break;
@@ -74,10 +88,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
               dbInstance.then(function (db) {
                     db.getKeyFromIndex("favorite", "text", mText).then(function (key) {
                           db.delete("favorite", key);
-                          sendResponse(undefined);
-                          return Promise.resolve(undefined);
+                          sendResponse(false);
                         });
-                    return Promise.resolve(undefined);
                   });
               break;
           case /* CLEAR */4 :

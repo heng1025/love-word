@@ -7,7 +7,7 @@ function Favorite(Props) {
   var match = React.useState(function () {
         return [];
       });
-  var setTexts = match[1];
+  var setRecords = match[1];
   React.useEffect((function () {
           chrome.runtime.sendMessage({
                   _type: {
@@ -15,13 +15,12 @@ function Favorite(Props) {
                     _0: /* GETALL */2
                   }
                 }).then(function (ret) {
-                setTexts(function (param) {
+                setRecords(function (param) {
                       return ret;
                     });
-                return Promise.resolve(undefined);
               });
         }), []);
-  var textsEle = match[0].map(function (v) {
+  var recordEles = match[0].map(function (v) {
         return React.createElement("div", {
                     className: "card card-compact w-80 bg-base-100 shadow-xl m-4"
                   }, React.createElement("div", {
@@ -31,11 +30,11 @@ function Favorite(Props) {
                           }, React.createElement("div", {
                                 className: "flex justify-between"
                               }, React.createElement("span", undefined, new Date(v.date).toLocaleDateString()), React.createElement("a", {
-                                    className: "w-5",
                                     title: v.title,
                                     href: v.url,
                                     target: "_blank"
                                   }, React.createElement("img", {
+                                        className: "w-5",
                                         src: v.favIconUrl
                                       }))), React.createElement("p", {
                                 className: "font-bold text-xl line-clamp-1"
@@ -45,7 +44,7 @@ function Favorite(Props) {
       });
   return React.createElement("div", {
               className: "flex flex-wrap"
-            }, textsEle);
+            }, recordEles);
 }
 
 var make = Favorite;

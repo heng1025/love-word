@@ -23,28 +23,26 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
     })
   | FAVORITE(GET) =>
     dbInstance->then(db => {
-      getDBValueFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)->then(
+      getDBValueFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)->thenResolve(
         ret => {
           if !ret {
             sendResponse(. Obj.magic(false))
           } else {
             sendResponse(. Obj.magic(true))
           }
-          resolve()
         },
       )
     })
   | FAVORITE(GETALL) =>
     dbInstance->then(db => {
-      getDBAllValueFromIndex(~db, ~storeName="favorite", ~indexName="text")->then(
+      getDBAllValueFromIndex(~db, ~storeName="favorite", ~indexName="text")->thenResolve(
         ret => {
           sendResponse(. ret)
-          resolve()
         },
       )
     })
   | FAVORITE(ADD) =>
-    dbInstance->then(db => {
+    dbInstance->thenResolve(db => {
       addDBValue(
         ~db,
         ~storeName="favorite",
@@ -59,25 +57,21 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
         (),
       )->ignore
       sendResponse(. Obj.magic(true))
-      resolve()
     })
   | FAVORITE(DELETE) =>
-    dbInstance->then(db => {
+    dbInstance->thenResolve(db => {
       getDBKeyFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)
-      ->then(
+      ->thenResolve(
         key => {
           deleteDBValue(~db, ~storeName="favorite", ~key)->ignore
-          sendResponse(. Obj.magic())
-          resolve()
+          sendResponse(. Obj.magic(false))
         },
       )
       ->ignore
-
-      resolve()
     })
   | HISTORY(ADD) =>
     dbInstance->then(db => {
-      getDBValueFromIndex(~db, ~storeName="history", ~indexName="text", ~key=mText)->then(
+      getDBValueFromIndex(~db, ~storeName="history", ~indexName="text", ~key=mText)->thenResolve(
         ret => {
           if !ret {
             addDBValue(
@@ -93,7 +87,14 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
               (),
             )->ignore
           }
-          resolve()
+        },
+      )
+    })
+  | HISTORY(GETALL) =>
+    dbInstance->then(db => {
+      getDBAllValueFromIndex(~db, ~storeName="history", ~indexName="text")->thenResolve(
+        ret => {
+          sendResponse(. ret)
         },
       )
     })

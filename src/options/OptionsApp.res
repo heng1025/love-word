@@ -2,6 +2,13 @@
 let make = () => {
   let url = RescriptReactRouter.useUrl()
 
+  React.useEffect1(() => {
+    if url.hash === "" {
+      RescriptReactRouter.push("#service")
+    }
+    None
+  }, [url])
+
   let activeClass = match => {
     switch url.hash === match {
     | true => "active"
@@ -42,8 +49,8 @@ let make = () => {
         {switch url.hash {
         | "service" => <TranslateService />
         | "favorite" => <Favorite />
-        | "history" => <div> {React.string("history")} </div>
-        | _ => React.null
+        | "history" => <History />
+        | _ => React.string("Page Not Found")
         }}
       </div>
     </div>
