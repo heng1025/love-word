@@ -159,8 +159,14 @@ module Idb = {
     autoIncrement?: bool,
   }
   type data
-  type objStore = {add: data => unit, index: string => unit}
-  type transaction = {objectStore: string => objStore, store: objStore}
+  type cursor
+  type rec objStore = {
+    add: (. data) => Promise.t<unit>,
+    delete: (. data) => Promise.t<unit>,
+    index: string => objStore,
+    openCursor: (. unit) => Promise.t<cursor>,
+  }
+  type transaction = {objectStore: string => objStore, store: objStore, done: Promise.t<unit>}
 
   type openDbOptions = {
     upgrade?: db => unit,

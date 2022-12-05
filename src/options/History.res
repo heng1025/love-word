@@ -1,6 +1,7 @@
 open Promise
 open Utils
 open Common.Chrome
+open Belt.Float
 
 @react.component
 let make = () => {
@@ -12,7 +13,7 @@ let make = () => {
       let rs = Js.Array2.map(ret, v => {
         v["checked"] = false
         v
-      })
+      })->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2["date"] - v1["date"]))
       setRecords(._ => rs)
     })
     ->ignore

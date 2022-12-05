@@ -93,14 +93,23 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
   | HISTORY(DELETE) =>
     dbInstance->thenResolve(db => {
       switch message.date {
-      | Some(v) =>
-        Js.Array2.forEach(
-          v,
-          item => {
-            deleteDBValue(~db, ~storeName="history", ~key=item)->ignore
-          },
-        )
-        sendResponse(. Obj.magic(None))
+      | Some(v) => {
+          let tx = createTransaction(~db, ~storeName="history", ~mode="readwrite", ())
+          let pstores = Js.Array2.map(
+            v,
+            item => {
+              tx.store.delete(. Obj.magic(item))
+            },
+          )
+          all(pstores)
+          ->thenResolve(
+            _ => {
+              sendResponse(. Obj.magic(None))
+            },
+          )
+          ->ignore
+        }
+
       | _ => ()
       }
     })
@@ -116,7 +125,7 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
     })
   | HISTORY(GETALL) =>
     dbInstance->then(db => {
-      getDBAllValueFromIndex(~db, ~storeName="history", ~indexName="text")->thenResolve(
+      getDBAllValueFromIndex(~db, ~storeName="history", ~indexName="date")->thenResolve(
         ret => {
           sendResponse(. ret)
         },

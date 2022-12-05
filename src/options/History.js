@@ -17,8 +17,10 @@ function $$History(Props) {
             }
           }).then(function (ret) {
           var rs = ret.map(function (v) {
-                v.checked = false;
-                return v;
+                  v.checked = false;
+                  return v;
+                }).sort(function (v1, v2) {
+                return v2.date - v1.date | 0;
               });
           setRecords(function (param) {
                 return rs;
