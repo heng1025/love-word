@@ -15,7 +15,7 @@ let make = () => {
     None
   })
   let recordEles = Js.Array2.map(records, v => {
-    <div className="card card-compact w-80 bg-base-100 shadow-xl m-4">
+    <div className="card card-compact w-80 bg-base-100 shadow-xl">
       <div className="card-body">
         <div className="border-b pb-1">
           <div className="flex justify-between">
@@ -30,5 +30,5 @@ let make = () => {
       </div>
     </div>
   })
-  <div className="flex flex-wrap"> {React.array(recordEles)} </div>
+  <div className="flex flex-wrap gap-4"> {React.array(recordEles)} </div>
 }

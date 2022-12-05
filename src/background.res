@@ -90,6 +90,30 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
         },
       )
     })
+  | HISTORY(DELETE) =>
+    dbInstance->thenResolve(db => {
+      switch message.date {
+      | Some(v) =>
+        Js.Array2.forEach(
+          v,
+          item => {
+            deleteDBValue(~db, ~storeName="history", ~key=item)->ignore
+          },
+        )
+        sendResponse(. Obj.magic(None))
+      | _ => ()
+      }
+    })
+  | HISTORY(CLEAR) =>
+    dbInstance->thenResolve(db => {
+      clearDBValue(~db, ~storeName="history")
+      ->thenResolve(
+        _ => {
+          sendResponse(. Obj.magic(None))
+        },
+      )
+      ->ignore
+    })
   | HISTORY(GETALL) =>
     dbInstance->then(db => {
       getDBAllValueFromIndex(~db, ~storeName="history", ~indexName="text")->thenResolve(

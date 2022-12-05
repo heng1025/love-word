@@ -4,7 +4,7 @@ let make = () => {
 
   React.useEffect1(() => {
     if url.hash === "" {
-      RescriptReactRouter.push("#service")
+      RescriptReactRouter.push("#history")
     }
     None
   }, [url])

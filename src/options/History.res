@@ -5,21 +5,63 @@ open Common.Chrome
 @react.component
 let make = () => {
   let (records, setRecords) = React.Uncurried.useState(_ => [])
-  React.useEffect0(() => {
+
+  let getAll = () => {
     sendMessage(. {_type: HISTORY(GETALL)})
     ->thenResolve(ret => {
-      setRecords(. _ => ret)
+      let rs = Js.Array2.map(ret, v => {
+        v["checked"] = false
+        v
+      })
+      setRecords(._ => rs)
     })
     ->ignore
+  }
 
+  React.useEffect0(() => {
+    getAll()
     None
   })
 
+  let onCheck = record => {
+    let rs = Js.Array2.map(records, v => {
+      let date = record["date"]
+      let checked = record["checked"]
+
+      if date === v["date"] {
+        v["checked"] = !checked
+      }
+      v
+    })
+    setRecords(._ => rs)
+  }
+
+  let onDelete = checkedRecords => {
+    sendMessage(. {_type: HISTORY(DELETE), date: Js.Array2.map(checkedRecords, v => v["date"])})
+    ->thenResolve(_ => {
+      getAll()
+    })
+    ->ignore
+  }
+
+  let onClear = () => {
+    sendMessage(. {_type: HISTORY(CLEAR)})
+    ->thenResolve(_ => {
+      getAll()
+    })
+    ->ignore
+  }
+
   let recordEles = Js.Array2.map(records, v => {
-    <div className="card card-compact bg-base-100 shadow-xl m-4">
+    let date = v["date"]
+    let boarderClass = v["checked"] ? "border-primary" : ""
+    <div
+      key={Js.Float.toString(date)}
+      onClick={_ => onCheck(v)}
+      className={`card card-compact card-bordered cursor-pointer bg-base-100 shadow-xl ${boarderClass}`}>
       <div className="card-body">
         <div className="flex justify-between">
-          <span> {React.string(Js.Date.toLocaleString(Js.Date.fromFloat(v["date"])))} </span>
+          <span> {React.string(Js.Date.toLocaleString(Js.Date.fromFloat(date)))} </span>
           <a className="inline-flex gap-2" target="_blank" href={v["url"]}>
             <span> {React.string(v["title"])} </span>
             <img className="w-5" src={v["favIconUrl"]} />
@@ -29,5 +71,10 @@ let make = () => {
       </div>
     </div>
   })
-  <div> {React.array(recordEles)} </div>
+  <div>
+    <RecordAction
+      className="mb-4" records={Js.Array2.filter(records, v => v["checked"])} onDelete onClear
+    />
+    <div className="flex flex-col gap-4"> {React.array(recordEles)} </div>
+  </div>
 }

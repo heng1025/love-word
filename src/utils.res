@@ -124,6 +124,7 @@ type resultT = Dict(OfflineDict.dictOk) | Baidu(Baidu.baiduOk) | Message(string)
 
 type msgContent = {
   _type: msgType,
+  date?: array<float>,
   text?: string,
   trans?: resultT,
 }

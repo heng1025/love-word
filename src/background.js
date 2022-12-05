@@ -6,102 +6,120 @@ import * as Database from "./Database.js";
 var dbInstance = Database.getDB(undefined);
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-      var mType = message._type;
-      var v = message.text;
-      var mText = v !== undefined ? v : "";
-      var tab = sender.tab;
-      if (typeof mType === "number") {
-        Utils.adapterTrans(mText).then(function (ret) {
-              sendResponse(ret);
-              return Promise.resolve(undefined);
-            });
-      } else if (mType.TAG === /* HISTORY */0) {
-        var match = mType._0;
-        if (match >= 3) {
-          Promise.resolve(undefined);
-        } else {
-          switch (match) {
-            case /* ADD */0 :
-                dbInstance.then(function (db) {
-                      return db.getFromIndex("history", "text", mText).then(function (ret) {
-                                  if (!ret) {
-                                    db.add("history", {
-                                          date: Date.now(),
-                                          text: mText,
-                                          url: tab.url,
-                                          title: tab.title,
-                                          favIconUrl: tab.favIconUrl
-                                        }, undefined);
-                                    return ;
-                                  }
-                                  
-                                });
-                    });
-                break;
-            case /* GET */1 :
-                Promise.resolve(undefined);
-                break;
-            case /* GETALL */2 :
-                dbInstance.then(function (db) {
-                      return db.getAllFromIndex("history", "text").then(function (ret) {
-                                  sendResponse(ret);
-                                });
-                    });
-                break;
-            
-          }
-        }
-      } else {
-        switch (mType._0) {
-          case /* ADD */0 :
-              dbInstance.then(function (db) {
-                    db.add("favorite", {
-                          date: Date.now(),
-                          text: mText,
-                          trans: message.trans,
-                          url: tab.url,
-                          title: tab.title,
-                          favIconUrl: tab.favIconUrl
-                        }, undefined);
-                    sendResponse(true);
-                  });
-              break;
-          case /* GET */1 :
-              dbInstance.then(function (db) {
-                    return db.getFromIndex("favorite", "text", mText).then(function (ret) {
-                                if (ret) {
-                                  return sendResponse(true);
-                                } else {
-                                  return sendResponse(false);
-                                }
-                              });
-                  });
-              break;
-          case /* GETALL */2 :
-              dbInstance.then(function (db) {
-                    return db.getAllFromIndex("favorite", "text").then(function (ret) {
-                                sendResponse(ret);
-                              });
-                  });
-              break;
-          case /* DELETE */3 :
-              dbInstance.then(function (db) {
-                    db.getKeyFromIndex("favorite", "text", mText).then(function (key) {
-                          db.delete("favorite", key);
-                          sendResponse(false);
-                        });
-                  });
-              break;
-          case /* CLEAR */4 :
-              Promise.resolve(undefined);
-              break;
-          
-        }
-      }
-      return true;
+  var mType = message._type;
+  var v = message.text;
+  var mText = v !== undefined ? v : "";
+  var tab = sender.tab;
+  if (typeof mType === "number") {
+    Utils.adapterTrans(mText).then(function (ret) {
+      sendResponse(ret);
+      return Promise.resolve(undefined);
     });
+  } else if (mType.TAG === /* HISTORY */ 0) {
+    switch (mType._0) {
+      case /* ADD */ 0:
+        dbInstance.then(function (db) {
+          return db.getFromIndex("history", "text", mText).then(function (ret) {
+            if (!ret) {
+              db.add(
+                "history",
+                {
+                  date: Date.now(),
+                  text: mText,
+                  url: tab.url,
+                  title: tab.title,
+                  favIconUrl: tab.favIconUrl,
+                },
+                undefined
+              );
+              return;
+            }
+          });
+        });
+        break;
+      case /* GET */ 1:
+        Promise.resolve(undefined);
+        break;
+      case /* GETALL */ 2:
+        dbInstance.then(function (db) {
+          return db.getAllFromIndex("history", "text").then(function (ret) {
+            sendResponse(ret);
+          });
+        });
+        break;
+      case /* DELETE */ 3:
+        dbInstance.then(function (db) {
+          var v = message.date;
+          if (v !== undefined) {
+            v.forEach(function (item) {
+              db.delete("history", item);
+            });
+            return sendResponse(undefined);
+          }
+        });
+        break;
+      case /* CLEAR */ 4:
+        dbInstance.then(function (db) {
+          db.clear("history").then(function (param) {
+            sendResponse(undefined);
+          });
+        });
+        break;
+    }
+  } else {
+    switch (mType._0) {
+      case /* ADD */ 0:
+        dbInstance.then(function (db) {
+          db.add(
+            "favorite",
+            {
+              date: Date.now(),
+              text: mText,
+              trans: message.trans,
+              url: tab.url,
+              title: tab.title,
+              favIconUrl: tab.favIconUrl,
+            },
+            undefined
+          );
+          sendResponse(true);
+        });
+        break;
+      case /* GET */ 1:
+        dbInstance.then(function (db) {
+          return db
+            .getFromIndex("favorite", "text", mText)
+            .then(function (ret) {
+              if (ret) {
+                return sendResponse(true);
+              } else {
+                return sendResponse(false);
+              }
+            });
+        });
+        break;
+      case /* GETALL */ 2:
+        dbInstance.then(function (db) {
+          return db.getAllFromIndex("favorite", "text").then(function (ret) {
+            sendResponse(ret);
+          });
+        });
+        break;
+      case /* DELETE */ 3:
+        dbInstance.then(function (db) {
+          db.getKeyFromIndex("favorite", "text", mText).then(function (key) {
+            db.delete("favorite", key);
+            sendResponse(false);
+          });
+        });
+        break;
+      case /* CLEAR */ 4:
+        Promise.resolve(undefined);
+        break;
+    }
+  }
+  return true;
+});
 
-export {
-  dbInstance ,
-}
+export { dbInstance };
 /* dbInstance Not a pure module */

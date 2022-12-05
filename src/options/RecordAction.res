@@ -1,0 +1,52 @@
+type state = DELETE | CLEAR | None
+@react.component
+let make = (~className as cl, ~records=[], ~onDelete, ~onClear) => {
+  let (btnState, setBtnState) = React.Uncurried.useState(_ => None)
+  let checkedLen = Js.Array2.length(records)
+
+  let onClick = _ => {
+    switch btnState {
+    | DELETE => onDelete(records)
+    | CLEAR => onClear()
+    | _ => ()
+    }
+  }
+
+  <div>
+    <input type_="checkbox" id="my-modal" className="modal-toggle" />
+    <div className="modal">
+      <div className="modal-box">
+        <h3 className="font-bold text-lg"> {React.string("Do you confirm?")} </h3>
+        <div className="modal-action">
+          <div className="btn-group">
+            <label htmlFor="my-modal" className="btn btn-error" onClick>
+              {React.string("Confirm")}
+            </label>
+            <label htmlFor="my-modal" className="btn"> {React.string("Cancel")} </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className={`${cl} flex gap-5 items-center`}>
+      <input type_="text" placeholder="Search..." className="input input-primary w-full max-w-xs" />
+      {switch checkedLen > 0 {
+      | true =>
+        <div className="btn-group">
+          <label
+            htmlFor="my-modal"
+            className="btn btn-warning gap-2"
+            onClick={_ => setBtnState(._ => DELETE)}>
+            <span> {React.string("Delete")} </span>
+            <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>
+          </label>
+          <label
+            htmlFor="my-modal" className="btn btn-error" onClick={_ => setBtnState(._ => CLEAR)}>
+            {React.string("Clear")}
+          </label>
+          <button className="btn"> {React.string("Cancel")} </button>
+        </div>
+      | false => React.null
+      }}
+    </div>
+  </div>
+}

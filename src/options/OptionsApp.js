@@ -10,7 +10,7 @@ function OptionsApp(Props) {
   var url = RescriptReactRouter.useUrl(undefined, undefined);
   React.useEffect((function () {
           if (url.hash === "") {
-            RescriptReactRouter.push("#service");
+            RescriptReactRouter.push("#history");
           }
           
         }), [url]);

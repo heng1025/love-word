@@ -22,7 +22,7 @@ function Favorite(Props) {
         }), []);
   var recordEles = match[0].map(function (v) {
         return React.createElement("div", {
-                    className: "card card-compact w-80 bg-base-100 shadow-xl m-4"
+                    className: "card card-compact w-80 bg-base-100 shadow-xl"
                   }, React.createElement("div", {
                         className: "card-body"
                       }, React.createElement("div", {
@@ -43,7 +43,7 @@ function Favorite(Props) {
                           })));
       });
   return React.createElement("div", {
-              className: "flex flex-wrap"
+              className: "flex flex-wrap gap-4"
             }, recordEles);
 }
 
