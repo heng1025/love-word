@@ -17,10 +17,8 @@ function $$History(Props) {
             }
           }).then(function (ret) {
           var rs = ret.map(function (v) {
-                  v.checked = false;
-                  return v;
-                }).sort(function (v1, v2) {
-                return v2.date - v1.date | 0;
+                v.checked = false;
+                return v;
               });
           setRecords(function (param) {
                 return rs;
@@ -53,7 +51,9 @@ function $$History(Props) {
           getAll(undefined);
         });
   };
-  var recordEles = records.map(function (v) {
+  var recordEles = records.sort(function (v1, v2) {
+          return v2.date - v1.date | 0;
+        }).map(function (v) {
         var date = v.date;
         var boarderClass = v.checked ? "border-primary" : "";
         return React.createElement("div", {

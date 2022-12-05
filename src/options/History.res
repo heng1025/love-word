@@ -13,7 +13,7 @@ let make = () => {
       let rs = Js.Array2.map(ret, v => {
         v["checked"] = false
         v
-      })->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2["date"] - v1["date"]))
+      })
       setRecords(._ => rs)
     })
     ->ignore
@@ -53,25 +53,28 @@ let make = () => {
     ->ignore
   }
 
-  let recordEles = Js.Array2.map(records, v => {
-    let date = v["date"]
-    let boarderClass = v["checked"] ? "border-primary" : ""
-    <div
-      key={Js.Float.toString(date)}
-      onClick={_ => onCheck(v)}
-      className={`card card-compact card-bordered cursor-pointer bg-base-100 shadow-xl ${boarderClass}`}>
-      <div className="card-body">
-        <div className="flex justify-between">
-          <span> {React.string(Js.Date.toLocaleString(Js.Date.fromFloat(date)))} </span>
-          <a className="inline-flex gap-2" target="_blank" href={v["url"]}>
-            <span> {React.string(v["title"])} </span>
-            <img className="w-5" src={v["favIconUrl"]} />
-          </a>
+  let recordEles =
+    records
+    ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2["date"] - v1["date"]))
+    ->Js.Array2.map(v => {
+      let date = v["date"]
+      let boarderClass = v["checked"] ? "border-primary" : ""
+      <div
+        key={Js.Float.toString(date)}
+        onClick={_ => onCheck(v)}
+        className={`card card-compact card-bordered cursor-pointer bg-base-100 shadow-xl ${boarderClass}`}>
+        <div className="card-body">
+          <div className="flex justify-between">
+            <span> {React.string(Js.Date.toLocaleString(Js.Date.fromFloat(date)))} </span>
+            <a className="inline-flex gap-2" target="_blank" href={v["url"]}>
+              <span> {React.string(v["title"])} </span>
+              <img className="w-5" src={v["favIconUrl"]} />
+            </a>
+          </div>
+          <p className="font-bold text-xl"> {React.string(v["text"])} </p>
         </div>
-        <p className="font-bold text-xl"> {React.string(v["text"])} </p>
       </div>
-    </div>
-  })
+    })
   <div>
     <RecordAction
       className="mb-4" records={Js.Array2.filter(records, v => v["checked"])} onDelete onClear

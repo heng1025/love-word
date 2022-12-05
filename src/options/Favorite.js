@@ -20,9 +20,11 @@ function Favorite(Props) {
                     });
               });
         }), []);
-  var recordEles = match[0].map(function (v) {
+  var recordEles = match[0].sort(function (v1, v2) {
+          return v2.date - v1.date | 0;
+        }).map(function (v) {
         return React.createElement("div", {
-                    className: "card card-compact w-80 bg-base-100 shadow-xl"
+                    className: "card card-compact w-[19.5rem] bg-base-100 shadow-xl"
                   }, React.createElement("div", {
                         className: "card-body"
                       }, React.createElement("div", {
