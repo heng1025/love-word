@@ -3,6 +3,8 @@ open Utils
 open Common.Chrome
 open Belt.Float
 
+let includeWith = (target, substring) => Js.Re.fromString(substring)->Js.Re.test_(target)
+
 @react.component
 let make = () => {
   let (records, setRecords) = React.Uncurried.useState(_ => [])
@@ -24,6 +26,17 @@ let make = () => {
     None
   })
 
+  let onSearch = (. val) => {
+    if val !== "" {
+      let rs = Js.Array2.filter(records, item => {
+        item["text"]->includeWith(val)
+      })
+      setRecords(._ => rs)
+    } else {
+      getAll()
+    }
+  }
+
   let onCheck = record => {
     let rs = Js.Array2.map(records, v => {
       let date = record["date"]
@@ -37,7 +50,7 @@ let make = () => {
     setRecords(._ => rs)
   }
 
-  let onDelete = checkedRecords => {
+  let onDelete = (. checkedRecords) => {
     sendMessage(. {_type: HISTORY(DELETE), date: Js.Array2.map(checkedRecords, v => v["date"])})
     ->thenResolve(_ => {
       getAll()
@@ -45,7 +58,7 @@ let make = () => {
     ->ignore
   }
 
-  let onClear = () => {
+  let onClear = (. ()) => {
     sendMessage(. {_type: HISTORY(CLEAR)})
     ->thenResolve(_ => {
       getAll()
@@ -77,7 +90,11 @@ let make = () => {
     })
   <div>
     <RecordAction
-      className="mb-4" records={Js.Array2.filter(records, v => v["checked"])} onDelete onClear
+      className="mb-4"
+      records={Js.Array2.filter(records, v => v["checked"])}
+      onDelete
+      onClear
+      onSearch
     />
     <div className="flex flex-col gap-4"> {React.array(recordEles)} </div>
   </div>

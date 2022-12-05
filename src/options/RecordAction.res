@@ -1,17 +1,20 @@
 type state = DELETE | CLEAR | None
 @react.component
-let make = (~className as cl, ~records=[], ~onDelete, ~onClear) => {
+let make = (~className as cl, ~records=[], ~onDelete, ~onClear, ~onSearch) => {
   let (btnState, setBtnState) = React.Uncurried.useState(_ => None)
   let checkedLen = Js.Array2.length(records)
 
   let onClick = _ => {
     switch btnState {
-    | DELETE => onDelete(records)
-    | CLEAR => onClear()
+    | DELETE => onDelete(. records)
+    | CLEAR => onClear(.)
     | _ => ()
     }
   }
 
+  let handleChange = val => {
+    onSearch(. val)
+  }
   <div>
     <input type_="checkbox" id="my-modal" className="modal-toggle" />
     <div className="modal">
@@ -28,7 +31,12 @@ let make = (~className as cl, ~records=[], ~onDelete, ~onClear) => {
       </div>
     </div>
     <div className={`${cl} flex gap-5 items-center`}>
-      <input type_="text" placeholder="Search..." className="input input-primary w-full max-w-xs" />
+      <input
+        type_="text"
+        placeholder="Search..."
+        className="input input-primary w-full max-w-xs"
+        onChange={e => handleChange(ReactEvent.Form.target(e)["value"])}
+      />
       {switch checkedLen > 0 {
       | true =>
         <div className="btn-group">

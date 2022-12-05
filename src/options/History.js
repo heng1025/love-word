@@ -3,6 +3,10 @@
 import * as React from "react";
 import * as RecordAction from "./RecordAction.js";
 
+function includeWith(target, substring) {
+  return new RegExp(substring).test(target);
+}
+
 function $$History(Props) {
   var match = React.useState(function () {
         return [];
@@ -28,6 +32,18 @@ function $$History(Props) {
   React.useEffect((function () {
           getAll(undefined);
         }), []);
+  var onSearch = function (val) {
+    if (val === "") {
+      return getAll(undefined);
+    }
+    var rs = records.filter(function (item) {
+          var target = item.text;
+          return new RegExp(val).test(target);
+        });
+    setRecords(function (param) {
+          return rs;
+        });
+  };
   var onDelete = function (checkedRecords) {
     chrome.runtime.sendMessage({
             _type: {
@@ -41,7 +57,7 @@ function $$History(Props) {
           getAll(undefined);
         });
   };
-  var onClear = function (param) {
+  var onClear = function () {
     chrome.runtime.sendMessage({
             _type: {
               TAG: /* HISTORY */0,
@@ -93,7 +109,8 @@ function $$History(Props) {
                         return v.checked;
                       }),
                   onDelete: onDelete,
-                  onClear: onClear
+                  onClear: onClear,
+                  onSearch: onSearch
                 }), React.createElement("div", {
                   className: "flex flex-col gap-4"
                 }, recordEles));
@@ -102,6 +119,7 @@ function $$History(Props) {
 var make = $$History;
 
 export {
+  includeWith ,
   make ,
 }
 /* react Not a pure module */
