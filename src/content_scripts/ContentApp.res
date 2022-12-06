@@ -8,6 +8,7 @@ open Common.Webapi.Window
 open Widget
 
 @@warning("-44")
+
 let common = getURL("assets/common.css")
 
 @react.component
