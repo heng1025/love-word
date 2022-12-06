@@ -4,7 +4,8 @@ open Common.Chrome
 open Common.Webapi.Window
 
 type actionType = ADD | GET | GETALL | DELETE | CLEAR
-type msgType = TRASTALTE | HISTORY(actionType) | FAVORITE(actionType)
+type recordType = HISTORY | FAVORITE
+type msgType = TRASTALTE | Message(recordType, actionType)
 
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
 

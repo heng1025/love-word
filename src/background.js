@@ -10,110 +10,127 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       var v = message.text;
       var mText = v !== undefined ? v : "";
       var tab = sender.tab;
-      if (typeof mType === "number") {
+      if (mType) {
+        if (mType._0) {
+          switch (mType._1) {
+            case /* ADD */0 :
+                dbInstance.then(function (db) {
+                      db.add("favorite", {
+                            date: Date.now(),
+                            text: mText,
+                            trans: message.trans,
+                            url: tab.url,
+                            title: tab.title,
+                            favIconUrl: tab.favIconUrl
+                          }, undefined);
+                      sendResponse(true);
+                    });
+                break;
+            case /* GET */1 :
+                dbInstance.then(function (db) {
+                      return db.getFromIndex("favorite", "text", mText).then(function (ret) {
+                                  if (ret) {
+                                    return sendResponse(true);
+                                  } else {
+                                    return sendResponse(false);
+                                  }
+                                });
+                    });
+                break;
+            case /* GETALL */2 :
+                dbInstance.then(function (db) {
+                      return db.getAllFromIndex("favorite", "text").then(function (ret) {
+                                  sendResponse(ret);
+                                });
+                    });
+                break;
+            case /* DELETE */3 :
+                dbInstance.then(function (db) {
+                      var v = message.date;
+                      if (v !== undefined) {
+                        var tx = db.transaction("favorite", "readwrite");
+                        var pstores = v.map(function (item) {
+                              return tx.store.delete(item);
+                            });
+                        Promise.all(pstores).then(function (param) {
+                              sendResponse(false);
+                            });
+                        return ;
+                      }
+                      db.getKeyFromIndex("favorite", "text", mText).then(function (key) {
+                            db.delete("favorite", key);
+                            sendResponse(false);
+                          });
+                    });
+                break;
+            case /* CLEAR */4 :
+                dbInstance.then(function (db) {
+                      db.clear("favorite").then(function (param) {
+                            sendResponse(undefined);
+                          });
+                    });
+                break;
+            
+          }
+        } else {
+          switch (mType._1) {
+            case /* ADD */0 :
+                dbInstance.then(function (db) {
+                      return db.getFromIndex("history", "text", mText).then(function (ret) {
+                                  if (!ret) {
+                                    db.add("history", {
+                                          date: Date.now(),
+                                          text: mText,
+                                          url: tab.url,
+                                          title: tab.title,
+                                          favIconUrl: tab.favIconUrl
+                                        }, undefined);
+                                    return ;
+                                  }
+                                  
+                                });
+                    });
+                break;
+            case /* GET */1 :
+                Promise.resolve(undefined);
+                break;
+            case /* GETALL */2 :
+                dbInstance.then(function (db) {
+                      return db.getAllFromIndex("history", "date").then(function (ret) {
+                                  sendResponse(ret);
+                                });
+                    });
+                break;
+            case /* DELETE */3 :
+                dbInstance.then(function (db) {
+                      var v = message.date;
+                      if (v === undefined) {
+                        return ;
+                      }
+                      var tx = db.transaction("history", "readwrite");
+                      var pstores = v.map(function (item) {
+                            return tx.store.delete(item);
+                          });
+                      Promise.all(pstores).then(function (param) {
+                            sendResponse(undefined);
+                          });
+                    });
+                break;
+            case /* CLEAR */4 :
+                dbInstance.then(function (db) {
+                      db.clear("history").then(function (param) {
+                            sendResponse(undefined);
+                          });
+                    });
+                break;
+            
+          }
+        }
+      } else {
         Utils.adapterTrans(mText).then(function (ret) {
               sendResponse(ret);
               return Promise.resolve(undefined);
             });
-      } else if (mType.TAG === /* HISTORY */0) {
-        switch (mType._0) {
-          case /* ADD */0 :
-              dbInstance.then(function (db) {
-                    return db.getFromIndex("history", "text", mText).then(function (ret) {
-                                if (!ret) {
-                                  db.add("history", {
-                                        date: Date.now(),
-                                        text: mText,
-                                        url: tab.url,
-                                        title: tab.title,
-                                        favIconUrl: tab.favIconUrl
-                                      }, undefined);
-                                  return ;
-                                }
-                                
-                              });
-                  });
-              break;
-          case /* GET */1 :
-              Promise.resolve(undefined);
-              break;
-          case /* GETALL */2 :
-              dbInstance.then(function (db) {
-                    return db.getAllFromIndex("history", "date").then(function (ret) {
-                                sendResponse(ret);
-                              });
-                  });
-              break;
-          case /* DELETE */3 :
-              dbInstance.then(function (db) {
-                    var v = message.date;
-                    if (v === undefined) {
-                      return ;
-                    }
-                    var tx = db.transaction("history", "readwrite");
-                    var pstores = v.map(function (item) {
-                          return tx.store.delete(item);
-                        });
-                    Promise.all(pstores).then(function (param) {
-                          sendResponse(undefined);
-                        });
-                  });
-              break;
-          case /* CLEAR */4 :
-              dbInstance.then(function (db) {
-                    db.clear("history").then(function (param) {
-                          sendResponse(undefined);
-                        });
-                  });
-              break;
-          
-        }
-      } else {
-        switch (mType._0) {
-          case /* ADD */0 :
-              dbInstance.then(function (db) {
-                    db.add("favorite", {
-                          date: Date.now(),
-                          text: mText,
-                          trans: message.trans,
-                          url: tab.url,
-                          title: tab.title,
-                          favIconUrl: tab.favIconUrl
-                        }, undefined);
-                    sendResponse(true);
-                  });
-              break;
-          case /* GET */1 :
-              dbInstance.then(function (db) {
-                    return db.getFromIndex("favorite", "text", mText).then(function (ret) {
-                                if (ret) {
-                                  return sendResponse(true);
-                                } else {
-                                  return sendResponse(false);
-                                }
-                              });
-                  });
-              break;
-          case /* GETALL */2 :
-              dbInstance.then(function (db) {
-                    return db.getAllFromIndex("favorite", "text").then(function (ret) {
-                                sendResponse(ret);
-                              });
-                  });
-              break;
-          case /* DELETE */3 :
-              dbInstance.then(function (db) {
-                    db.getKeyFromIndex("favorite", "text", mText).then(function (key) {
-                          db.delete("favorite", key);
-                          sendResponse(false);
-                        });
-                  });
-              break;
-          case /* CLEAR */4 :
-              Promise.resolve(undefined);
-              break;
-          
-        }
       }
       return true;
     });

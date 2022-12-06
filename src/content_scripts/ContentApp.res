@@ -35,7 +35,7 @@ let make = (~host) => {
 
   let favAction = action => {
     if sourceText !== "" {
-      sendMessage(. {_type: FAVORITE(action), text: sourceText, trans: data})
+      sendMessage(. {_type: Message(FAVORITE, action), text: sourceText, trans: data})
       ->then(faved => {
         setFaved(._ => faved)
 

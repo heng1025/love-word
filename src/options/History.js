@@ -5,7 +5,7 @@ import * as RecordHook from "../hooks/RecordHook.js";
 import * as RecordAction from "./RecordAction.js";
 
 function $$History(Props) {
-  var match = RecordHook.useRecord(undefined);
+  var match = RecordHook.useRecord(/* HISTORY */0);
   var onCheck = match.onCheck;
   var records = match.records;
   var recordEles = records.map(function (v) {
@@ -39,9 +39,10 @@ function $$History(Props) {
                       }),
                   onDelete: match.onDelete,
                   onClear: match.onClear,
-                  onSearch: match.onSearch
+                  onSearch: match.onSearch,
+                  onCancel: match.onCancel
                 }), React.createElement("div", {
-                  className: "flex flex-col gap-4"
+                  className: "flex flex-col gap-y-4"
                 }, recordEles));
 }
 

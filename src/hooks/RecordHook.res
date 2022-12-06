@@ -14,6 +14,7 @@ type record = {
   "url": string,
   "title": string,
   "favIconUrl": string,
+  "trans": option<resultT>,
 }
 
 type return = {
@@ -22,12 +23,13 @@ type return = {
   onSearch: (. string) => unit,
   onDelete: (. array<record>) => unit,
   onClear: (. unit) => unit,
+  onCancel: (. unit) => unit,
 }
-let useRecord = () => {
+let useRecord = recordType => {
   let (records, setRecords) = React.Uncurried.useState(_ => [])
 
   let getAll = () => {
-    sendMessage(. {_type: HISTORY(GETALL)})
+    sendMessage(. {_type: Message(recordType, GETALL)})
     ->thenResolve(ret => {
       let rs =
         ret
@@ -41,10 +43,10 @@ let useRecord = () => {
     ->ignore
   }
 
-  React.useEffect0(() => {
+  React.useEffect1(() => {
     getAll()
     None
-  })
+  }, [recordType])
 
   let onSearch = (. val) => {
     if val !== "" {
@@ -70,8 +72,19 @@ let useRecord = () => {
     setRecords(._ => rs)
   }
 
+  let onCancel = (. ()) => {
+    let rs = Js.Array2.map(records, v => {
+      v["checked"] = false
+      v
+    })
+    setRecords(._ => rs)
+  }
+
   let onDelete = (. checkedRecords) => {
-    sendMessage(. {_type: HISTORY(DELETE), date: Js.Array2.map(checkedRecords, v => v["date"])})
+    sendMessage(. {
+      _type: Message(recordType, DELETE),
+      date: Js.Array2.map(checkedRecords, v => v["date"]),
+    })
     ->thenResolve(_ => {
       getAll()
     })
@@ -79,12 +92,12 @@ let useRecord = () => {
   }
 
   let onClear = (. ()) => {
-    sendMessage(. {_type: HISTORY(CLEAR)})
+    sendMessage(. {_type: Message(recordType, CLEAR)})
     ->thenResolve(_ => {
       getAll()
     })
     ->ignore
   }
 
-  {records, onCheck, onClear, onDelete, onSearch}
+  {records, onCheck, onCancel, onClear, onDelete, onSearch}
 }

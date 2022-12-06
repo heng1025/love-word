@@ -8,6 +8,7 @@ function RecordAction(Props) {
   var onDelete = Props.onDelete;
   var onClear = Props.onClear;
   var onSearch = Props.onSearch;
+  var onCancel = Props.onCancel;
   var records = recordsOpt !== undefined ? recordsOpt : [];
   var match = React.useState(function () {
         return /* None */2;
@@ -75,7 +76,10 @@ function RecordAction(Props) {
                                     });
                               })
                           }, "Clear"), React.createElement("button", {
-                            className: "btn"
+                            className: "btn",
+                            onClick: (function (param) {
+                                onCancel();
+                              })
                           }, "Cancel")) : null));
 }
 

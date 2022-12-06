@@ -21,7 +21,7 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
       sendResponse(. ret)
       resolve()
     })
-  | FAVORITE(GET) =>
+  | Message(FAVORITE, GET) =>
     dbInstance->then(db => {
       getDBValueFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)->thenResolve(
         ret => {
@@ -33,7 +33,7 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
         },
       )
     })
-  | FAVORITE(GETALL) =>
+  | Message(FAVORITE, GETALL) =>
     dbInstance->then(db => {
       getDBAllValueFromIndex(~db, ~storeName="favorite", ~indexName="text")->thenResolve(
         ret => {
@@ -41,7 +41,7 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
         },
       )
     })
-  | FAVORITE(ADD) =>
+  | Message(FAVORITE, ADD) =>
     dbInstance->thenResolve(db => {
       addDBValue(
         ~db,
@@ -58,18 +58,50 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
       )->ignore
       sendResponse(. Obj.magic(true))
     })
-  | FAVORITE(DELETE) =>
+  | Message(FAVORITE, DELETE) =>
     dbInstance->thenResolve(db => {
-      getDBKeyFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)
+      // delete record according by date
+      switch message.date {
+      | Some(v) => {
+          let tx = createTransaction(~db, ~storeName="favorite", ~mode="readwrite", ())
+          let pstores = Js.Array2.map(
+            v,
+            item => {
+              tx.store.delete(. Obj.magic(item))
+            },
+          )
+          all(pstores)
+          ->thenResolve(
+            _ => {
+              sendResponse(. Obj.magic(false))
+            },
+          )
+          ->ignore
+        }
+
+      | _ =>
+        // delete one text
+        getDBKeyFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)
+        ->thenResolve(
+          key => {
+            deleteDBValue(~db, ~storeName="favorite", ~key)->ignore
+            sendResponse(. Obj.magic(false))
+          },
+        )
+        ->ignore
+      }
+    })
+  | Message(FAVORITE, CLEAR) =>
+    dbInstance->thenResolve(db => {
+      clearDBValue(~db, ~storeName="favorite")
       ->thenResolve(
-        key => {
-          deleteDBValue(~db, ~storeName="favorite", ~key)->ignore
-          sendResponse(. Obj.magic(false))
+        _ => {
+          sendResponse(. Obj.magic(None))
         },
       )
       ->ignore
     })
-  | HISTORY(ADD) =>
+  | Message(HISTORY, ADD) =>
     dbInstance->then(db => {
       getDBValueFromIndex(~db, ~storeName="history", ~indexName="text", ~key=mText)->thenResolve(
         ret => {
@@ -90,7 +122,7 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
         },
       )
     })
-  | HISTORY(DELETE) =>
+  | Message(HISTORY, DELETE) =>
     dbInstance->thenResolve(db => {
       switch message.date {
       | Some(v) => {
@@ -113,7 +145,7 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
       | _ => ()
       }
     })
-  | HISTORY(CLEAR) =>
+  | Message(HISTORY, CLEAR) =>
     dbInstance->thenResolve(db => {
       clearDBValue(~db, ~storeName="history")
       ->thenResolve(
@@ -123,7 +155,7 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
       )
       ->ignore
     })
-  | HISTORY(GETALL) =>
+  | Message(HISTORY, GETALL) =>
     dbInstance->then(db => {
       getDBAllValueFromIndex(~db, ~storeName="history", ~indexName="date")->thenResolve(
         ret => {

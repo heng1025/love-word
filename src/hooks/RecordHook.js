@@ -6,7 +6,7 @@ function includeWith(target, substring) {
   return new RegExp(substring).test(target);
 }
 
-function useRecord(param) {
+function useRecord(recordType) {
   var match = React.useState(function () {
         return [];
       });
@@ -14,9 +14,9 @@ function useRecord(param) {
   var records = match[0];
   var getAll = function (param) {
     chrome.runtime.sendMessage({
-            _type: {
-              TAG: /* HISTORY */0,
-              _0: /* GETALL */2
+            _type: /* Message */{
+              _0: recordType,
+              _1: /* GETALL */2
             }
           }).then(function (ret) {
           var rs = ret.sort(function (v1, v2) {
@@ -32,7 +32,7 @@ function useRecord(param) {
   };
   React.useEffect((function () {
           getAll(undefined);
-        }), []);
+        }), [recordType]);
   var onSearch = function (val) {
     if (val === "") {
       return getAll(undefined);
@@ -58,11 +58,20 @@ function useRecord(param) {
           return rs;
         });
   };
+  var onCancel = function () {
+    var rs = records.map(function (v) {
+          v.checked = false;
+          return v;
+        });
+    return setRecords(function (param) {
+                return rs;
+              });
+  };
   var onDelete = function (checkedRecords) {
     chrome.runtime.sendMessage({
-            _type: {
-              TAG: /* HISTORY */0,
-              _0: /* DELETE */3
+            _type: /* Message */{
+              _0: recordType,
+              _1: /* DELETE */3
             },
             date: checkedRecords.map(function (v) {
                   return v.date;
@@ -73,9 +82,9 @@ function useRecord(param) {
   };
   var onClear = function () {
     chrome.runtime.sendMessage({
-            _type: {
-              TAG: /* HISTORY */0,
-              _0: /* CLEAR */4
+            _type: /* Message */{
+              _0: recordType,
+              _1: /* CLEAR */4
             }
           }).then(function (param) {
           getAll(undefined);
@@ -86,7 +95,8 @@ function useRecord(param) {
           onCheck: onCheck,
           onSearch: onSearch,
           onDelete: onDelete,
-          onClear: onClear
+          onClear: onClear,
+          onCancel: onCancel
         };
 }
 

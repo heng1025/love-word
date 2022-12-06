@@ -1,6 +1,6 @@
 type state = DELETE | CLEAR | None
 @react.component
-let make = (~className as cl, ~records=[], ~onDelete, ~onClear, ~onSearch) => {
+let make = (~className as cl, ~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
   let (btnState, setBtnState) = React.Uncurried.useState(_ => None)
   let checkedLen = Js.Array2.length(records)
 
@@ -51,7 +51,7 @@ let make = (~className as cl, ~records=[], ~onDelete, ~onClear, ~onSearch) => {
             htmlFor="my-modal" className="btn btn-error" onClick={_ => setBtnState(._ => CLEAR)}>
             {React.string("Clear")}
           </label>
-          <button className="btn"> {React.string("Cancel")} </button>
+          <button className="btn" onClick={_ => onCancel(.)}> {React.string("Cancel")} </button>
         </div>
       | false => React.null
       }}

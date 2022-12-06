@@ -42,9 +42,9 @@ function ContentApp(Props) {
   var favAction = function (action) {
     if (sourceText !== "") {
       chrome.runtime.sendMessage({
-              _type: {
-                TAG: /* FAVORITE */1,
-                _0: action
+              _type: /* Message */{
+                _0: /* FAVORITE */1,
+                _1: action
               },
               text: sourceText,
               trans: data

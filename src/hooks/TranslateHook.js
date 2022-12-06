@@ -27,9 +27,9 @@ function useTranslate(text) {
                   return "";
                 });
             chrome.runtime.sendMessage({
-                  _type: {
-                    TAG: /* HISTORY */0,
-                    _0: /* ADD */0
+                  _type: /* Message */{
+                    _0: /* HISTORY */0,
+                    _1: /* ADD */0
                   },
                   text: text
                 });
