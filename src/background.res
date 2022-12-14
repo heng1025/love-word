@@ -12,7 +12,15 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
   | Some(v) => v
   | _ => ""
   }
-  let tab = sender["tab"]
+
+  let tab = switch sender["tab"] {
+  | Some(v) => v
+  | _ => {
+      "url": sender["url"],
+      "title": "Love Word",
+      "favIconUrl": `${sender["origin"]}/icons/lw32x32.png`,
+    }
+  }
 
   switch mType {
   | TRASTALTE =>

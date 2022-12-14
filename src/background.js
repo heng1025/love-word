@@ -2,6 +2,7 @@
 
 import * as Utils from "./utils.js";
 import * as Database from "./Database.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var dbInstance = Database.getDB(undefined);
 
@@ -9,7 +10,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       var mType = message._type;
       var v = message.text;
       var mText = v !== undefined ? v : "";
-      var tab = sender.tab;
+      var v$1 = sender.tab;
+      var tab = v$1 !== undefined ? Caml_option.valFromOption(v$1) : ({
+            url: sender.url,
+            title: "Love Word",
+            favIconUrl: "" + sender.origin + "/icons/lw32x32.png"
+          });
       if (mType) {
         if (mType._0) {
           switch (mType._1) {
