@@ -38,7 +38,7 @@ function Favorite(Props) {
                               data: val
                             }) : null));
       });
-  return React.createElement("div", undefined, React.createElement(RecordAction.make, {
+  return React.createElement(React.Fragment, undefined, React.createElement(RecordAction.make, {
                   className: "mb-4",
                   records: records.filter(function (v) {
                         return v.checked;

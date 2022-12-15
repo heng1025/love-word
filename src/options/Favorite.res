@@ -29,7 +29,7 @@ let make = () => {
     </div>
   })
 
-  <div>
+  <>
     <RecordAction
       className="mb-4"
       records={Js.Array2.filter(records, v => v["checked"])}
@@ -39,5 +39,5 @@ let make = () => {
       onSearch
     />
     <div className="flex flex-wrap gap-4"> {React.array(recordEles)} </div>
-  </div>
+  </>
 }

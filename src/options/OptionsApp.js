@@ -40,26 +40,28 @@ function OptionsApp(Props) {
                       className: "btn btn-ghost normal-case text-xl",
                       href: "#service"
                     }, "Love Word")), React.createElement("div", {
-                  className: "flex flex-1"
-                }, React.createElement("ul", {
-                      className: "menu bg-base-100 w-56 p-2 border-r"
-                    }, React.createElement("li", {
-                          className: "menu-title"
-                        }, React.createElement("span", undefined, "Setting")), React.createElement("li", undefined, React.createElement("a", {
-                              className: match ? "active" : "",
-                              href: "#service"
-                            }, "Translate Service")), React.createElement("div", {
-                          className: "divider"
-                        }), React.createElement("li", {
-                          className: "menu-title"
-                        }, React.createElement("span", undefined, "User")), React.createElement("li", undefined, React.createElement("a", {
-                              className: match$1 ? "active" : "",
-                              href: "#favorite"
-                            }, "Favorite")), React.createElement("li", undefined, React.createElement("a", {
-                              className: match$2 ? "active" : "",
-                              href: "#history"
-                            }, "History Query"))), React.createElement("div", {
-                      className: "flex-1 p-5 bg-base-200"
+                  className: "flex flex-1 overflow-y-hidden"
+                }, React.createElement("div", {
+                      className: "overflow-y-auto"
+                    }, React.createElement("ul", {
+                          className: "menu  bg-base-100 w-56 p-2 border-r"
+                        }, React.createElement("li", {
+                              className: "menu-title"
+                            }, React.createElement("span", undefined, "Setting")), React.createElement("li", undefined, React.createElement("a", {
+                                  className: match ? "active" : "",
+                                  href: "#service"
+                                }, "Translate Service")), React.createElement("div", {
+                              className: "divider"
+                            }), React.createElement("li", {
+                              className: "menu-title"
+                            }, React.createElement("span", undefined, "User")), React.createElement("li", undefined, React.createElement("a", {
+                                  className: match$1 ? "active" : "",
+                                  href: "#favorite"
+                                }, "Favorite")), React.createElement("li", undefined, React.createElement("a", {
+                                  className: match$2 ? "active" : "",
+                                  href: "#history"
+                                }, "History Query")))), React.createElement("div", {
+                      className: "flex-1 p-5 overflow-y-auto bg-base-200"
                     }, tmp)));
 }
 

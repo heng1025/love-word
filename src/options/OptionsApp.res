@@ -22,30 +22,32 @@ let make = () => {
         {React.string("Love Word")}
       </a>
     </div>
-    <div className="flex flex-1">
-      <ul className="menu bg-base-100 w-56 p-2 border-r">
-        <li className="menu-title">
-          <span> {React.string("Setting")} </span>
-        </li>
-        <li>
-          <a className={activeClass("service")} href="#service">
-            {React.string("Translate Service")}
-          </a>
-        </li>
-        <div className="divider" />
-        <li className="menu-title">
-          <span> {React.string("User")} </span>
-        </li>
-        <li>
-          <a className={activeClass("favorite")} href="#favorite"> {React.string("Favorite")} </a>
-        </li>
-        <li>
-          <a className={activeClass("history")} href="#history">
-            {React.string("History Query")}
-          </a>
-        </li>
-      </ul>
-      <div className="flex-1 p-5 bg-base-200">
+    <div className="flex flex-1 overflow-y-hidden">
+      <div className="overflow-y-auto">
+        <ul className="menu  bg-base-100 w-56 p-2 border-r">
+          <li className="menu-title">
+            <span> {React.string("Setting")} </span>
+          </li>
+          <li>
+            <a className={activeClass("service")} href="#service">
+              {React.string("Translate Service")}
+            </a>
+          </li>
+          <div className="divider" />
+          <li className="menu-title">
+            <span> {React.string("User")} </span>
+          </li>
+          <li>
+            <a className={activeClass("favorite")} href="#favorite"> {React.string("Favorite")} </a>
+          </li>
+          <li>
+            <a className={activeClass("history")} href="#history">
+              {React.string("History Query")}
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div className="flex-1 p-5 overflow-y-auto bg-base-200">
         {switch url.hash {
         | "service" => <TranslateService />
         | "favorite" => <Favorite />
