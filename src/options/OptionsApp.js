@@ -14,6 +14,17 @@ function OptionsApp(Props) {
           }
           
         }), [url]);
+  var contentClass = React.useMemo((function () {
+          var isRecordUrl = [
+              "favorite",
+              "history"
+            ].includes(url.hash);
+          if (isRecordUrl) {
+            return "";
+          } else {
+            return "p-5";
+          }
+        }), [url.hash]);
   var match = url.hash === "service";
   var match$1 = url.hash === "favorite";
   var match$2 = url.hash === "history";
@@ -61,7 +72,7 @@ function OptionsApp(Props) {
                                   className: match$2 ? "active" : "",
                                   href: "#history"
                                 }, "History Query")))), React.createElement("div", {
-                      className: "flex-1 p-5 overflow-y-auto bg-base-200"
+                      className: "flex-1 overflow-y-auto bg-base-200 " + contentClass + ""
                     }, tmp)));
 }
 

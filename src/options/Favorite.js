@@ -39,7 +39,6 @@ function Favorite(Props) {
                             }) : null));
       });
   return React.createElement(React.Fragment, undefined, React.createElement(RecordAction.make, {
-                  className: "mb-4",
                   records: records.filter(function (v) {
                         return v.checked;
                       }),
@@ -48,7 +47,7 @@ function Favorite(Props) {
                   onSearch: match.onSearch,
                   onCancel: match.onCancel
                 }), React.createElement("div", {
-                  className: "flex flex-wrap gap-4"
+                  className: "flex flex-wrap gap-4 p-5"
                 }, recordEles));
 }
 

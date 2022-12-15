@@ -3,12 +3,13 @@
 import * as React from "react";
 
 function RecordAction(Props) {
-  var cl = Props.className;
+  var clOpt = Props.className;
   var recordsOpt = Props.records;
   var onDelete = Props.onDelete;
   var onClear = Props.onClear;
   var onSearch = Props.onSearch;
   var onCancel = Props.onCancel;
+  var cl = clOpt !== undefined ? clOpt : "";
   var records = recordsOpt !== undefined ? recordsOpt : [];
   var match = React.useState(function () {
         return /* None */2;
@@ -27,7 +28,9 @@ function RecordAction(Props) {
       
     }
   };
-  return React.createElement("div", undefined, React.createElement("input", {
+  return React.createElement("div", {
+              className: "sticky top-0 z-50 bg-base-100 p-4 border-b-2"
+            }, React.createElement("input", {
                   className: "modal-toggle",
                   id: "my-modal",
                   type: "checkbox"

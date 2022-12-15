@@ -9,6 +9,14 @@ let make = () => {
     None
   }, [url])
 
+  let contentClass = React.useMemo1(() => {
+    let isRecordUrl = Js.Array2.includes(["favorite", "history"], url.hash)
+    switch isRecordUrl {
+    | false => "p-5"
+    | true => ""
+    }
+  }, [url.hash])
+
   let activeClass = match => {
     switch url.hash === match {
     | true => "active"
@@ -47,7 +55,7 @@ let make = () => {
           </li>
         </ul>
       </div>
-      <div className="flex-1 p-5 overflow-y-auto bg-base-200">
+      <div className={`flex-1 overflow-y-auto bg-base-200 ${contentClass}`}>
         {switch url.hash {
         | "service" => <TranslateService />
         | "favorite" => <Favorite />

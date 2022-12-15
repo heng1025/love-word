@@ -1,6 +1,6 @@
 type state = DELETE | CLEAR | None
 @react.component
-let make = (~className as cl, ~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
+let make = (~className as cl="", ~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
   let (btnState, setBtnState) = React.Uncurried.useState(_ => None)
   let checkedLen = Js.Array2.length(records)
 
@@ -15,7 +15,7 @@ let make = (~className as cl, ~records=[], ~onDelete, ~onClear, ~onSearch, ~onCa
   let handleChange = val => {
     onSearch(. val)
   }
-  <div>
+  <div className="sticky top-0 z-50 bg-base-100 p-4 border-b-2">
     <input type_="checkbox" id="my-modal" className="modal-toggle" />
     <div className="modal">
       <div className="modal-box">

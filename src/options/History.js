@@ -21,11 +21,15 @@ function $$History(Props) {
                         className: "card-body"
                       }, React.createElement("div", {
                             className: "flex justify-between"
-                          }, React.createElement("span", undefined, new Date(date).toLocaleString()), React.createElement("a", {
+                          }, React.createElement("span", {
+                                className: "w-40"
+                              }, new Date(date).toLocaleString()), React.createElement("a", {
                                 className: "inline-flex gap-2",
                                 href: v.url,
                                 target: "_blank"
-                              }, React.createElement("span", undefined, v.title), React.createElement("img", {
+                              }, React.createElement("span", {
+                                    className: "line-clamp-1"
+                                  }, v.title), React.createElement("img", {
                                     className: "w-5",
                                     src: v.favIconUrl
                                   }))), React.createElement("p", {
@@ -33,7 +37,6 @@ function $$History(Props) {
                           }, v.text)));
       });
   return React.createElement(React.Fragment, undefined, React.createElement(RecordAction.make, {
-                  className: "mb-4",
                   records: records.filter(function (v) {
                         return v.checked;
                       }),
@@ -42,7 +45,7 @@ function $$History(Props) {
                   onSearch: match.onSearch,
                   onCancel: match.onCancel
                 }), React.createElement("div", {
-                  className: "flex flex-col gap-y-4"
+                  className: "flex flex-col gap-y-4 p-5"
                 }, recordEles));
 }
 
