@@ -3,6 +3,7 @@
 import * as Utils from "../utils.js";
 import * as React from "react";
 import * as Widget from "../components/Widget.js";
+import * as FavButton from "../components/FavButton.js";
 import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
@@ -32,35 +33,8 @@ function ContentApp(Props) {
       });
   var setOpactity = match$4[1];
   var opacity = match$4[0];
-  var match$5 = React.useState(function () {
-        return false;
-      });
-  var setFaved = match$5[1];
-  var isFaved = match$5[0];
-  var match$6 = TranslateHook.useTranslate(sourceText);
-  var data = match$6.data;
-  var favAction = function (action) {
-    if (sourceText !== "") {
-      chrome.runtime.sendMessage({
-              _type: /* Message */{
-                _0: /* FAVORITE */1,
-                _1: action
-              },
-              text: sourceText,
-              trans: data
-            }).then(function (faved) {
-            setFaved(function (param) {
-                  return faved;
-                });
-            return Promise.resolve(undefined);
-          });
-      return ;
-    }
-    
-  };
-  React.useEffect((function () {
-          favAction(/* GET */1);
-        }), [sourceText]);
+  var match$5 = TranslateHook.useTranslate(sourceText);
+  var data = match$5.data;
   React.useEffect((function () {
           var handleKeyup = function (ev) {
             if (ev.keyCode !== 18) {
@@ -158,20 +132,18 @@ function ContentApp(Props) {
                           className: "card-title text-sm border-b justify-between"
                         }, React.createElement("span", undefined, tmp), React.createElement("div", {
                               className: "flex"
-                            }, React.createElement("button", {
-                                  className: "btn btn-xs w-5 h-5 fill-white min-h-0 btn-circle btn-ghost",
-                                  onClick: (function (param) {
-                                      favAction(isFaved ? /* DELETE */3 : /* ADD */0);
-                                    })
-                                }, isFaved ? React.createElement(Widget.StarFill.make, {}) : React.createElement(Widget.Star.make, {})), React.createElement("a", {
+                            }, React.createElement(FavButton.make, {
+                                  text: sourceText,
+                                  trans: data
+                                }), React.createElement("a", {
                                   className: "w-5 link fill-white link-primary",
                                   title: "show detail",
                                   href: "https://fanyi.baidu.com/#en/zh/" + sourceText + "",
                                   target: "_blank"
                                 }, React.createElement(Widget.Jump.make, {})))), React.createElement(TranslateResult.make, {
-                          loading: match$6.loading,
+                          loading: match$5.loading,
                           data: data,
-                          errText: match$6.errText,
+                          errText: match$5.errText,
                           className: "text-sm"
                         }))));
 }

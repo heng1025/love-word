@@ -1,4 +1,3 @@
-open Promise
 open Utils
 open TranslateHook
 open Common.Chrome
@@ -18,7 +17,6 @@ let make = (~host) => {
   let (top, setTop) = React.Uncurried.useState(_ => "0")
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
-  let (isFaved, setFaved) = React.Uncurried.useState(_ => false)
 
   let {loading, data, errText} = useTranslate(sourceText)
 
@@ -32,23 +30,6 @@ let make = (~host) => {
     setLeft(._p => `${toString(left)}px`)
     setOpactity(._p => "1")
   }
-
-  let favAction = action => {
-    if sourceText !== "" {
-      sendMessage(. {_type: Message(FAVORITE, action), text: sourceText, trans: data})
-      ->then(faved => {
-        setFaved(._ => faved)
-
-        resolve()
-      })
-      ->ignore
-    }
-  }
-
-  React.useEffect1(() => {
-    favAction(GET)
-    None
-  }, [sourceText])
 
   React.useEffect0(() => {
     let handleKeyup = (ev: KeyboardEvent.t) => {
@@ -114,14 +95,7 @@ let make = (~host) => {
             }}
           </span>
           <div className="flex">
-            <button
-              className="btn btn-xs w-5 h-5 fill-white min-h-0 btn-circle btn-ghost"
-              onClick={_ => favAction(isFaved ? DELETE : ADD)}>
-              {switch isFaved {
-              | false => <Star />
-              | true => <StarFill />
-              }}
-            </button>
+            <FavButton text=sourceText trans=data />
             <a
               className="w-5 link fill-white link-primary"
               target="_blank"

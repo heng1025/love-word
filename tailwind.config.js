@@ -2,6 +2,9 @@
 module.exports = {
   content: ["./src/**/*.{mjs,js,ts,jsx,tsx}"],
   plugins: [require("daisyui"), require("@tailwindcss/line-clamp")],
+  daisyui: {
+    themes: ["light", "dark"],
+  },
   theme: {
     extend: {
       animation: {

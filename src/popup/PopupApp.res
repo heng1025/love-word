@@ -45,7 +45,10 @@ let make = () => {
     None
   })
 
-  <div className="card card-compact w-56 bg-base-100 shadow-xl">
+  <div className="card card-compact w-56 bg-base-100 shadow-xl rounded-none">
+    <div className="bg-primary text-right">
+      <FavButton text=sourceText trans=data />
+    </div>
     <div className="card-body">
       <textarea
         className="textarea textarea-primary leading-4 min-h-16 p-2"
