@@ -4,11 +4,13 @@ import * as React from "react";
 import * as ReactDom from "react-dom";
 import * as ContentApp from "./ContentApp.js";
 
-var id = "love-word";
+var id = "loveWord";
 
 var host = document.createElement("div");
 
 host.setAttribute("id", id);
+
+host.setAttribute("style", "all: initial;");
 
 var shadow = host.attachShadow({
       mode: "open"
