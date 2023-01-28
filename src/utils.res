@@ -27,7 +27,7 @@ module OfflineDict = {
     fetch(~input=`${endpoint}?q=${q}`, ())
     ->then(res => Response.json(res))
     ->then(data => {
-      switch data {
+      switch Js.toOption(data) {
       | Some(val) => Ok(val)
       | _ => Error("Word can not find")
       }->resolve
@@ -49,6 +49,7 @@ module OfflineDict = {
 
 module Baidu = {
   let endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate"
+
   type baiduOk = Js.Array2.t<{
     "src": string,
     "dst": string,
@@ -75,26 +76,33 @@ module Baidu = {
   let translate = q => {
     getExtStorage(~keys=["baiduKey"])
     ->thenResolve(result => {
-      let appid = result["baiduKey"]["appid"]
-      let key = result["baiduKey"]["secret"]
-      let salt = Js.Float.toString(Js.Date.now())
-      let sign = Md5.createMd5(appid ++ q ++ salt ++ key)
-      let sl = getSourceLang(q)
-      // zh->eng, other -> zh
-      let tlDict = Js.Dict.fromList(list{("cmn", "en")})
+      let baiduKey = result["baiduKey"]
+      switch Js.toOption(baiduKey) {
+      | Some(key) => {
+          let appid = key["appid"]
+          let key = key["secret"]
+          let salt = Js.Float.toString(Js.Date.now())
+          let sign = Md5.createMd5(appid ++ q ++ salt ++ key)
+          let sl = getSourceLang(q)
+          // zh->eng, other -> zh
+          let tlDict = Js.Dict.fromList(list{("cmn", "en")})
 
-      let query = Qs.stringify({
-        "q": q,
-        "from": "auto",
-        "to": switch Js.Dict.get(tlDict, sl) {
-        | Some(val) => val
-        | _ => "zh"
-        },
-        "appid": appid,
-        "salt": salt,
-        "sign": sign,
-      })
-      `${endpoint}?${query}`
+          let query = Qs.stringify({
+            "q": q,
+            "from": "auto",
+            "to": switch Js.Dict.get(tlDict, sl) {
+            | Some(val) => val
+            | _ => "zh"
+            },
+            "appid": appid,
+            "salt": salt,
+            "sign": sign,
+          })
+          `${endpoint}?${query}`
+        }
+
+      | None => Js.Exn.raiseError("No translation key")
+      }
     })
     ->then(ret => fetch(~input=ret, ()))
     ->then(res => Response.json(res))

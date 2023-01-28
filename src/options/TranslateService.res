@@ -1,27 +1,21 @@
 open Promise
 open Common.Chrome
 open Widget
-
-type baiduConfig = {
-  appid: string,
-  secret: string,
-}
-
-type baiduStore = {baiduKey?: baiduConfig}
+open Utils
 
 @react.component
 let make = () => {
   let (appid, setAppid) = React.Uncurried.useState(_ => "")
   let (secret, setSecret) = React.Uncurried.useState(_ => "")
-  let (warnVisibleClass, setWarnVisibleClass) = React.Uncurried.useState(_ => "hidden")
+  let (warnMessage, setWarnMessage) = React.Uncurried.useState(_ => "")
 
   React.useEffect0(() => {
     getExtStorage(~keys=["baiduKey"])
     ->then(result => {
-      switch result.baiduKey {
+      switch Js.toOption(result["baiduKey"]) {
       | Some(config) => {
-          setAppid(. _ => config.appid)
-          setSecret(. _ => config.secret)
+          setAppid(. _ => config["appid"])
+          setSecret(. _ => config["secret"])
         }
 
       | _ => ()
@@ -33,13 +27,24 @@ let make = () => {
   })
 
   let handleSubmit = _ => {
-    if appid === "" || secret === "" {
-      setWarnVisibleClass(._ => "block")
-    } else {
-      let config = {appid, secret}
-      setWarnVisibleClass(._ => "hidden")
-      setExtStorage(~items={baiduKey: config})->ignore
-    }
+    let config = {"appid": appid, "secret": secret}
+    setExtStorage(~items={"baiduKey": config})->ignore
+    // test baidu key
+    Baidu.translate("hello world")
+    ->then(br => {
+      switch br {
+      | Ok(_) => {
+          setWarnMessage(._ => "")
+          setExtStorage(~items={"baiduKey": config})->ignore
+        }
+
+      | Error(msg) => {
+          removeExtStorage(~keys=["baiduKey"])->ignore
+          setWarnMessage(._ => msg)
+        }
+      }->resolve
+    })
+    ->ignore
   }
 
   <div className="card w-1/3 bg-base-100 shadow-xl">
@@ -68,12 +73,16 @@ let make = () => {
           className="input input-bordered input-primary w-full"
         />
       </div>
-      <div className={`alert alert-warning shadow-lg mt-5 ${warnVisibleClass}`}>
-        <div>
-          <Alert />
-          <span> {React.string("Warning: input can not be empty!")} </span>
+      {switch warnMessage !== "" {
+      | true =>
+        <div className="alert alert-warning shadow-lg mt-5">
+          <div>
+            <Alert />
+            <span> {React.string(`Warning: ${warnMessage}!`)} </span>
+          </div>
         </div>
-      </div>
+      | false => React.null
+      }}
       <button className="btn btn-primary w-5/6 mt-8 mx-auto" onClick={handleSubmit}>
         {React.string("Submit")}
       </button>

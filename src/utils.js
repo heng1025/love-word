@@ -2,10 +2,10 @@
 
 import * as Qs from "qs";
 import Md5 from "md5";
+import * as Js_exn from "rescript/lib/es6/js_exn.js";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as $$Promise from "@ryyppy/rescript-promise/src/Promise.js";
 import * as FrancMin from "franc-min";
-import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 function getSourceLang(text) {
   return FrancMin.franc(text, {
@@ -25,12 +25,12 @@ function translate(q) {
   return $$Promise.$$catch(fetch("" + endpoint + "?q=" + q + "", undefined).then(function (res) {
                     return res.json();
                   }).then(function (data) {
-                  return Promise.resolve(data !== undefined ? ({
-                                  TAG: /* Ok */0,
-                                  _0: Caml_option.valFromOption(data)
-                                }) : ({
+                  return Promise.resolve((data == null) ? ({
                                   TAG: /* Error */1,
                                   _0: "Word can not find"
+                                }) : ({
+                                  TAG: /* Ok */0,
+                                  _0: data
                                 }));
                 }), (function (e) {
                 var msg;
@@ -65,8 +65,12 @@ function textToSpeech(text) {
 
 function translate$1(q) {
   return $$Promise.$$catch(chrome.storage.local.get(["baiduKey"]).then(function (result) {
-                        var appid = result.baiduKey.appid;
-                        var key = result.baiduKey.secret;
+                        var baiduKey = result.baiduKey;
+                        if (baiduKey == null) {
+                          return Js_exn.raiseError("No translation key");
+                        }
+                        var appid = baiduKey.appid;
+                        var key = baiduKey.secret;
                         var salt = Date.now().toString();
                         var sign = Md5(appid + q + salt + key);
                         var sl = getSourceLang(q);

@@ -130,11 +130,12 @@ module Chrome = {
 
   @scope(("chrome", "storage", "onChanged")) @val
   external addStorageListener: (@uncurry ('changes, 'areaName) => unit) => unit = "addListener"
-
   @scope(("chrome", "storage", "local")) @val
-  external getExtStorage: (~keys: 'keys=?) => Promise.t<'object> = "get"
+  external getExtStorage: (~keys: 'keys=?) => Promise.t<'obj> = "get"
   @scope(("chrome", "storage", "local")) @val
   external setExtStorage: (~items: 'items) => Promise.t<unit> = "set"
+  @scope(("chrome", "storage", "local")) @val
+  external removeExtStorage: (~keys: 'keys=?) => Promise.t<unit> = "remove"
 }
 
 module Md5 = {
