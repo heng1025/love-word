@@ -10,7 +10,9 @@ type msgType = TRASTALTE | Message(recordType, actionType)
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
 
 module OfflineDict = {
-  let endpoint = "http://dict.1r21.cn/dict"
+  let apiHost = %raw(`import.meta.env.VITE_API_HOST`)
+  let endpoint = `${apiHost}/dict`
+
   type dictOk = {
     id: int,
     word: string,

@@ -17,7 +17,9 @@ function getSourceLang(text) {
             });
 }
 
-var endpoint = "http://dict.1r21.cn/dict";
+var apiHost = import.meta.env.VITE_API_HOST;
+
+var endpoint = "" + apiHost + "/dict";
 
 function translate(q) {
   return $$Promise.$$catch(fetch("" + endpoint + "?q=" + q + "", undefined).then(function (res) {
@@ -46,6 +48,7 @@ function translate(q) {
 }
 
 var OfflineDict = {
+  apiHost: apiHost,
   endpoint: endpoint,
   translate: translate
 };
@@ -166,4 +169,4 @@ export {
   Baidu ,
   adapterTrans ,
 }
-/* qs Not a pure module */
+/* apiHost Not a pure module */
