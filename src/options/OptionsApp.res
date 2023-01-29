@@ -4,7 +4,7 @@ let make = () => {
 
   React.useEffect1(() => {
     if url.hash === "" {
-      RescriptReactRouter.push("#history")
+      RescriptReactRouter.push("#service")
     }
     None
   }, [url])
@@ -32,7 +32,7 @@ let make = () => {
     </div>
     <div className="flex flex-1 overflow-y-hidden">
       <div className="overflow-y-auto">
-        <ul className="menu  bg-base-100 w-56 p-2 border-r">
+        <ul className="menu bg-base-100 w-56 p-2 border-r">
           <li className="menu-title">
             <span> {React.string("Setting")} </span>
           </li>
@@ -40,6 +40,9 @@ let make = () => {
             <a className={activeClass("service")} href="#service">
               {React.string("Translate Service")}
             </a>
+          </li>
+          <li>
+            <a className={activeClass("shortcut")} href="#shortcut"> {React.string("Shortcut")} </a>
           </li>
           <div className="divider" />
           <li className="menu-title">
@@ -58,6 +61,7 @@ let make = () => {
       <div className={`flex-1 overflow-y-auto bg-base-200 ${contentClass}`}>
         {switch url.hash {
         | "service" => <TranslateService />
+        | "shortcut" => <Shortcut />
         | "favorite" => <Favorite />
         | "history" => <History />
         | _ => React.string("Page Not Found")
