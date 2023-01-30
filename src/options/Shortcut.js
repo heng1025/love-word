@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-function Shortcut(Props) {
+function Shortcut(props) {
   return React.createElement("div", {
               className: "card card-compact w-40 bg-base-100 shadow-xl"
             }, React.createElement("div", {

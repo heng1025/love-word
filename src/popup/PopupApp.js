@@ -7,7 +7,7 @@ import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
-function PopupApp(Props) {
+function PopupApp(props) {
   var match = React.useState(function () {
         return "";
       });
@@ -67,7 +67,7 @@ function PopupApp(Props) {
                     })), React.createElement("div", {
                   className: "card-body"
                 }, React.createElement("textarea", {
-                      ref: setTextInputRef,
+                      ref: Caml_option.some(setTextInputRef),
                       className: "textarea textarea-primary leading-4 min-h-16 p-2",
                       placeholder: "please input...",
                       rows: 5,

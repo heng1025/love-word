@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@rescript/react': ^0.10.3
+  '@rescript/react': ^0.11.0
   '@ryyppy/rescript-promise': ^2.1.0
   '@tailwindcss/line-clamp': ^0.4.2
   autoprefixer: ^10.4.13
@@ -13,12 +13,12 @@ specifiers:
   qs: ^6.11.0
   react: ^18.2.0
   react-dom: ^18.2.0
-  rescript: ^10.0.1
+  rescript: ^10.1.2
   tailwindcss: ^3.2.4
   vite: ^4.0.4
 
 dependencies:
-  '@rescript/react': 0.10.3_biqbaboplfbrettd7655fr4n2y
+  '@rescript/react': 0.11.0_biqbaboplfbrettd7655fr4n2y
   '@ryyppy/rescript-promise': 2.1.0
   franc-min: 6.1.0
   idb: 7.1.1
@@ -32,7 +32,7 @@ devDependencies:
   autoprefixer: 10.4.13_postcss@8.4.21
   daisyui: 2.49.0_gbtt6ss3tbiz4yjtvdr6fbrj44
   postcss: 8.4.21
-  rescript: 10.0.1
+  rescript: 10.1.2
   tailwindcss: 3.2.4_postcss@8.4.21
   vite: 4.0.4
 
@@ -257,11 +257,11 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@rescript/react/0.10.3_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-Lf9rzrR3bQPKJjOK3PBRa/B3xrJ7CqQ1HYr9VHPVxJidarIJJFZBhj0Dg1uZURX+Wg/xiP0PHFxXmdj2bK8Vxw==}
+  /@rescript/react/0.11.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-RzoAO+3cJwXE2D7yodMo4tBO2EkeDYCN/I/Sj/yRweI3S1CY1ZBOF/GMcVtjeIurJJt7KMveqQXTaRrqoGZBBg==}
     peerDependencies:
-      react: '>=16.8.1'
-      react-dom: '>=16.8.1'
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -317,7 +317,7 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: 4.21.4
+      browserslist: 4.21.5
       caniuse-lite: 1.0.30001449
       fraction.js: 4.2.0
       normalize-range: 0.1.2
@@ -338,15 +338,15 @@ packages:
       fill-range: 7.0.1
     dev: true
 
-  /browserslist/4.21.4:
-    resolution: {integrity: sha512-CBHJJdDmgjl3daYjN5Cp5kbTf1mUhZoS+beLklHIvkOWscs83YAhLlF3Wsh/lciQYAcbBJgTOD44VtG31ZM4Hw==}
+  /browserslist/4.21.5:
+    resolution: {integrity: sha512-tUkiguQGW7S3IhB7N+c2MV/HZPSCPAAiYBZXLsBhFB/PCy6ZKKsZrmBayHV9fdGV/ARIfJ14NkxKzRDjvp7L6w==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001449
       electron-to-chromium: 1.4.284
       node-releases: 2.0.8
-      update-browserslist-db: 1.0.10_browserslist@4.21.4
+      update-browserslist-db: 1.0.10_browserslist@4.21.5
     dev: true
 
   /call-bind/1.0.2:
@@ -840,8 +840,8 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /rescript/10.0.1:
-    resolution: {integrity: sha512-XwO1GPDtoEU4H03xQE5bp0/qtSVR6YLaJRPxWKrfFgKc+LI36ODOCie7o9UJfgzQdoMYkkZyiTGZ4N9OQEaiUw==}
+  /rescript/10.1.2:
+    resolution: {integrity: sha512-PPdhOiN+lwqxQ0qvzHc1KW0TL12LDy2X+qo/JIMIP3bMfiH0vxQH2e/lXuoutWWm04fGQGTv3hWH+gKW3/UyfA==}
     hasBin: true
     requiresBuild: true
     dev: true
@@ -952,13 +952,13 @@ packages:
       n-gram: 2.0.2
     dev: false
 
-  /update-browserslist-db/1.0.10_browserslist@4.21.4:
+  /update-browserslist-db/1.0.10_browserslist@4.21.5:
     resolution: {integrity: sha512-OztqDenkfFkbSG+tRxBeAnCVPckDBcvibKd35yDONx6OU8N7sqgwc7rCbkJ/WcYtVRZ4ba68d6byhC21GFh7sQ==}
     hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
     dependencies:
-      browserslist: 4.21.4
+      browserslist: 4.21.5
       escalade: 3.1.1
       picocolors: 1.0.0
     dev: true

@@ -4,7 +4,7 @@ import * as Utils from "../utils.js";
 import * as React from "react";
 import * as Widget from "../components/Widget.js";
 
-function TranslateService(Props) {
+function TranslateService(props) {
   var match = React.useState(function () {
         return "";
       });

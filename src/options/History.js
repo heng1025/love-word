@@ -4,7 +4,7 @@ import * as React from "react";
 import * as RecordHook from "../hooks/RecordHook.js";
 import * as RecordAction from "./RecordAction.js";
 
-function $$History(Props) {
+function $$History(props) {
   var match = RecordHook.useRecord(/* HISTORY */0);
   var onCheck = match.onCheck;
   var records = match.records;

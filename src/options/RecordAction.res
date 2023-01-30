@@ -1,6 +1,7 @@
 type state = DELETE | CLEAR | None
+
 @react.component
-let make = (~className as cl="", ~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
+let make = (~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
   let (btnState, setBtnState) = React.Uncurried.useState(_ => None)
   let checkedLen = Js.Array2.length(records)
 
@@ -30,7 +31,7 @@ let make = (~className as cl="", ~records=[], ~onDelete, ~onClear, ~onSearch, ~o
         </div>
       </div>
     </div>
-    <div className={`${cl} flex gap-5 items-center`}>
+    <div className="flex gap-5 items-center">
       <input
         type_="text"
         placeholder="Search..."

@@ -2,25 +2,23 @@
 
 import * as React from "react";
 
-function RecordAction(Props) {
-  var clOpt = Props.className;
-  var recordsOpt = Props.records;
-  var onDelete = Props.onDelete;
-  var onClear = Props.onClear;
-  var onSearch = Props.onSearch;
-  var onCancel = Props.onCancel;
-  var cl = clOpt !== undefined ? clOpt : "";
-  var records = recordsOpt !== undefined ? recordsOpt : [];
+function RecordAction(props) {
+  var onCancel = props.onCancel;
+  var onSearch = props.onSearch;
+  var onClear = props.onClear;
+  var onDelete = props.onDelete;
+  var records = props.records;
+  var records$1 = records !== undefined ? records : [];
   var match = React.useState(function () {
         return /* None */2;
       });
   var setBtnState = match[1];
   var btnState = match[0];
-  var checkedLen = records.length;
+  var checkedLen = records$1.length;
   var onClick = function (param) {
     switch (btnState) {
       case /* DELETE */0 :
-          return onDelete(records);
+          return onDelete(records$1);
       case /* CLEAR */1 :
           return onClear();
       case /* None */2 :
@@ -52,7 +50,7 @@ function RecordAction(Props) {
                                   className: "btn",
                                   htmlFor: "my-modal"
                                 }, "Cancel"))))), React.createElement("div", {
-                  className: "" + cl + " flex gap-5 items-center"
+                  className: "flex gap-5 items-center"
                 }, React.createElement("input", {
                       className: "input input-primary w-full max-w-xs",
                       placeholder: "Search...",

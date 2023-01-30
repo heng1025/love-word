@@ -5,7 +5,7 @@ import * as RecordHook from "../hooks/RecordHook.js";
 import * as RecordAction from "./RecordAction.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
-function Favorite(Props) {
+function Favorite(props) {
   var match = RecordHook.useRecord(/* FAVORITE */1);
   var onCheck = match.onCheck;
   var records = match.records;

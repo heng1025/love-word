@@ -3,9 +3,9 @@
 import * as React from "react";
 import * as Widget from "./Widget.js";
 
-function FavButton(Props) {
-  var text = Props.text;
-  var trans = Props.trans;
+function FavButton(props) {
+  var trans = props.trans;
+  var text = props.text;
   var match = React.useState(function () {
         return false;
       });

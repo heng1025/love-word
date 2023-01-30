@@ -6,8 +6,8 @@ import * as Widget from "./Widget.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
-function MachineTPanel(Props) {
-  var data = Props.data;
+function MachineTPanel(props) {
+  var data = props.data;
   var audioEl = React.useRef(null);
   var match = React.useState(function () {
         return [];
@@ -98,7 +98,7 @@ function MachineTPanel(Props) {
                       }));
       });
   return React.createElement(React.Fragment, undefined, React.createElement("audio", {
-                  ref: audioEl,
+                  ref: Caml_option.some(audioEl),
                   className: "w-full h-8 mb-1",
                   onEnded: onEnded
                 }), resultEl);

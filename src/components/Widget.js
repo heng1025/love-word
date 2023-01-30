@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-function Widget$Loading(Props) {
+function Widget$Loading(props) {
   return React.createElement("div", undefined, "loading...");
 }
 
@@ -10,20 +10,19 @@ var Loading = {
   make: Widget$Loading
 };
 
-function Widget$Tag(Props) {
-  var classNameOpt = Props.className;
-  var children = Props.children;
-  var className = classNameOpt !== undefined ? classNameOpt : "";
+function Widget$Tag(props) {
+  var className = props.className;
+  var className$1 = className !== undefined ? className : "";
   return React.createElement("span", {
-              className: "rounded-sm inline-block text-white px-1 " + className + ""
-            }, children);
+              className: "rounded-sm inline-block text-white px-1 " + className$1 + ""
+            }, props.children);
 }
 
 var Tag = {
   make: Widget$Tag
 };
 
-function Widget$Alert(Props) {
+function Widget$Alert(props) {
   return React.createElement("svg", {
               className: "stroke-current flex-shrink-0 h-6 w-6",
               fill: "none",
@@ -41,14 +40,13 @@ var Alert = {
   make: Widget$Alert
 };
 
-function Widget$Speaker(Props) {
-  var isPlay = Props.isPlay;
-  var onClick = Props.onClick;
+function Widget$Speaker(props) {
+  var isPlay = props.isPlay;
   var animate200ms = isPlay ? "animate-fadeInOut-200ms" : "";
   var animate400ms = isPlay ? "animate-fadeInOut-400ms" : "";
   return React.createElement("button", {
               className: "btn btn-xs w-5 h-5 min-h-0 btn-circle btn-ghost ml-[2px] align-middle inline-flex",
-              onClick: onClick
+              onClick: props.onClick
             }, React.createElement("svg", {
                   className: "fill-warning",
                   version: "1.1",
@@ -69,7 +67,7 @@ var Speaker = {
   make: Widget$Speaker
 };
 
-function Widget$Jump(Props) {
+function Widget$Jump(props) {
   return React.createElement("svg", {
               version: "1.1",
               viewBox: "0 0 1024 1024",
@@ -83,7 +81,7 @@ var Jump = {
   make: Widget$Jump
 };
 
-function Widget$Star(Props) {
+function Widget$Star(props) {
   return React.createElement("svg", {
               version: "1.1",
               viewBox: "0 0 1024 1024",
@@ -97,7 +95,7 @@ var Star = {
   make: Widget$Star
 };
 
-function Widget$StarFill(Props) {
+function Widget$StarFill(props) {
   return React.createElement("svg", {
               version: "1.1",
               viewBox: "0 0 1024 1024",
@@ -111,7 +109,7 @@ var StarFill = {
   make: Widget$StarFill
 };
 
-function Widget$En2zh(Props) {
+function Widget$En2zh(props) {
   return React.createElement("svg", {
               className: "w-6 fill-white",
               version: "1.1",
@@ -128,7 +126,7 @@ var En2zh = {
   make: Widget$En2zh
 };
 
-function Widget$Zh2en(Props) {
+function Widget$Zh2en(props) {
   return React.createElement("svg", {
               className: "w-6 fill-white",
               version: "1.1",

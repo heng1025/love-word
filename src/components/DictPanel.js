@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import * as Widget from "./Widget.js";
+import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
 
-function DictPanel(Props) {
-  var data = Props.data;
+function DictPanel(props) {
+  var data = props.data;
   var match = React.useState(function () {
         return null;
       });
@@ -55,10 +56,9 @@ function DictPanel(Props) {
                       })) : null, React.createElement("div", {
                   className: "my-2"
                 }, trans), React.createElement("div", undefined, match$3 ? data.tag.split(" ").map(function (v) {
-                        return React.createElement(Widget.Tag.make, {
+                        return JsxPPXReactSupport.createElementWithKey(v, Widget.Tag.make, {
                                     className: "bg-secondary mr-1 mb-1",
-                                    children: v,
-                                    key: v
+                                    children: v
                                   });
                       }) : null));
 }

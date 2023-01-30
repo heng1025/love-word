@@ -8,7 +8,8 @@ setAttribute(host, "id", id)
 // reset `host` style
 setAttribute(host, "style", "all: initial;")
 
-let shadow = attachShadow(host, {"mode": "open"})
+let shadowEl = attachShadow(host, {"mode": "open"})
 appendChild(document->documentElement, host)
 
-ReactDOM.render(<ContentApp host />, shadow)
+let shadow = ReactDOM.Client.createRoot(shadowEl)
+ReactDOM.Client.Root.render(shadow, <ContentApp host />)

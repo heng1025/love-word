@@ -9,8 +9,8 @@ import * as TranslateResult from "../components/TranslateResult.js";
 
 var common = chrome.runtime.getURL("assets/common.css");
 
-function ContentApp(Props) {
-  var host = Props.host;
+function ContentApp(props) {
+  var host = props.host;
   var match = React.useState(function () {
         return "";
       });

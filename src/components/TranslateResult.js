@@ -5,24 +5,24 @@ import * as Widget from "./Widget.js";
 import * as DictPanel from "./DictPanel.js";
 import * as MachineTPanel from "./MachineTPanel.js";
 
-function TranslateResult(Props) {
-  var loadingOpt = Props.loading;
-  var data = Props.data;
-  var errTextOpt = Props.errText;
-  var classNameOpt = Props.className;
-  var loading = loadingOpt !== undefined ? loadingOpt : /* No */1;
-  var errText = errTextOpt !== undefined ? errTextOpt : "";
-  var className = classNameOpt !== undefined ? classNameOpt : "";
+function TranslateResult(props) {
+  var className = props.className;
+  var errText = props.errText;
+  var data = props.data;
+  var loading = props.loading;
+  var className$1 = className !== undefined ? className : "";
+  var errText$1 = errText !== undefined ? errText : "";
+  var loading$1 = loading !== undefined ? loading : /* No */1;
   var tmp;
-  switch (loading) {
+  switch (loading$1) {
     case /* Yes */0 :
         tmp = React.createElement(Widget.Loading.make, {});
         break;
     case /* No */1 :
-        if (errText !== "") {
+        if (errText$1 !== "") {
           tmp = React.createElement("div", {
                 className: "text-error"
-              }, errText);
+              }, errText$1);
         } else {
           switch (data.TAG | 0) {
             case /* Dict */0 :
@@ -48,7 +48,7 @@ function TranslateResult(Props) {
     
   }
   return React.createElement("div", {
-              className: "" + className + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
+              className: "" + className$1 + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
             }, tmp);
 }
 

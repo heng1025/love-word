@@ -2,15 +2,16 @@
 
 import * as React from "react";
 import * as PopupApp from "./PopupApp.js";
-import * as ReactDom from "react-dom";
+import * as Client from "react-dom/client";
 
 import '../common.css'
 ;
 
-var root = document.querySelector("#root");
+var rootElement = document.querySelector("#root");
 
-if (!(root == null)) {
-  ReactDom.render(React.createElement(PopupApp.make, {}), root);
+if (!(rootElement == null)) {
+  var root = Client.createRoot(rootElement);
+  root.render(React.createElement(PopupApp.make, {}));
 }
 
 export {

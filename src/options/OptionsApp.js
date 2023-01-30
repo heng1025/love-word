@@ -7,7 +7,7 @@ import * as Shortcut from "./Shortcut.js";
 import * as TranslateService from "./TranslateService.js";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
 
-function OptionsApp(Props) {
+function OptionsApp(props) {
   var url = RescriptReactRouter.useUrl(undefined, undefined);
   React.useEffect((function () {
           if (url.hash === "") {
