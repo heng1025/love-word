@@ -1,6 +1,6 @@
 {
   "name": "love-word",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a translation extension for chrome browser",
   "scripts": {
     "dev": "vite",
