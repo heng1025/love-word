@@ -6,142 +6,110 @@ import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var dbInstance = Database.getDB(undefined);
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-      var mType = message._type;
-      var v = message.text;
-      var mText = v !== undefined ? v : "";
-      var v$1 = sender.tab;
-      var tab = v$1 !== undefined ? Caml_option.valFromOption(v$1) : ({
-            url: sender.url,
-            title: "Love Word",
-            favIconUrl: "" + sender.origin + "/icons/lw32x32.png"
-          });
-      if (mType) {
-        if (mType._0) {
-          switch (mType._1) {
-            case /* ADD */0 :
-                dbInstance.then(function (db) {
-                      db.add("favorite", {
-                            date: Date.now(),
-                            text: mText,
-                            trans: message.trans,
-                            url: tab.url,
-                            title: tab.title,
-                            favIconUrl: tab.favIconUrl
-                          }, undefined);
-                      sendResponse(true);
-                    });
-                break;
-            case /* GET */1 :
-                dbInstance.then(function (db) {
-                      return db.getFromIndex("favorite", "text", mText).then(function (ret) {
-                                  if (ret) {
-                                    return sendResponse(true);
-                                  } else {
-                                    return sendResponse(false);
-                                  }
-                                });
-                    });
-                break;
-            case /* GETALL */2 :
-                dbInstance.then(function (db) {
-                      return db.getAllFromIndex("favorite", "text").then(function (ret) {
-                                  sendResponse(ret);
-                                });
-                    });
-                break;
-            case /* DELETE */3 :
-                dbInstance.then(function (db) {
-                      var v = message.date;
-                      if (v !== undefined) {
-                        var tx = db.transaction("favorite", "readwrite");
-                        var pstores = v.map(function (item) {
-                              return tx.store.delete(item);
-                            });
-                        Promise.all(pstores).then(function (param) {
-                              sendResponse(false);
-                            });
-                        return ;
-                      }
-                      db.getKeyFromIndex("favorite", "text", mText).then(function (key) {
-                            db.delete("favorite", key);
-                            sendResponse(false);
-                          });
-                    });
-                break;
-            case /* CLEAR */4 :
-                dbInstance.then(function (db) {
-                      db.clear("favorite").then(function (param) {
-                            sendResponse(undefined);
-                          });
-                    });
-                break;
-            
-          }
-        } else {
-          switch (mType._1) {
-            case /* ADD */0 :
-                dbInstance.then(function (db) {
-                      return db.getFromIndex("history", "text", mText).then(function (ret) {
-                                  if (!ret) {
-                                    db.add("history", {
-                                          date: Date.now(),
-                                          text: mText,
-                                          url: tab.url,
-                                          title: tab.title,
-                                          favIconUrl: tab.favIconUrl
-                                        }, undefined);
-                                    return ;
-                                  }
-                                  
-                                });
-                    });
-                break;
-            case /* GET */1 :
-                Promise.resolve(undefined);
-                break;
-            case /* GETALL */2 :
-                dbInstance.then(function (db) {
-                      return db.getAllFromIndex("history", "date").then(function (ret) {
-                                  sendResponse(ret);
-                                });
-                    });
-                break;
-            case /* DELETE */3 :
-                dbInstance.then(function (db) {
-                      var v = message.date;
-                      if (v === undefined) {
-                        return ;
-                      }
-                      var tx = db.transaction("history", "readwrite");
-                      var pstores = v.map(function (item) {
-                            return tx.store.delete(item);
-                          });
-                      Promise.all(pstores).then(function (param) {
-                            sendResponse(undefined);
-                          });
-                    });
-                break;
-            case /* CLEAR */4 :
-                dbInstance.then(function (db) {
-                      db.clear("history").then(function (param) {
-                            sendResponse(undefined);
-                          });
-                    });
-                break;
-            
-          }
-        }
-      } else {
-        Utils.adapterTrans(mText).then(function (ret) {
-              sendResponse(ret);
-              return Promise.resolve(undefined);
-            });
+async function messageHandler(message, sender, sendResponse) {
+  var mType = message._type;
+  var v = message.text;
+  var mText = v !== undefined ? v : "";
+  var v$1 = sender.tab;
+  var tab = v$1 !== undefined ? Caml_option.valFromOption(v$1) : ({
+        url: sender.url,
+        title: "Love Word",
+        favIconUrl: "" + sender.origin + "/icons/lw32x32.png"
+      });
+  if (mType) {
+    if (mType._0) {
+      switch (mType._1) {
+        case /* ADD */0 :
+            var db = await dbInstance;
+            await db.add("favorite", {
+                  date: Date.now(),
+                  text: mText,
+                  trans: message.trans,
+                  url: tab.url,
+                  title: tab.title,
+                  favIconUrl: tab.favIconUrl
+                }, undefined);
+            return sendResponse(true);
+        case /* GET */1 :
+            var db$1 = await dbInstance;
+            var ret = await db$1.getFromIndex("favorite", "text", mText);
+            return sendResponse(ret);
+        case /* GETALL */2 :
+            var db$2 = await dbInstance;
+            var ret$1 = await db$2.getAllFromIndex("favorite", "text");
+            return sendResponse(ret$1);
+        case /* DELETE */3 :
+            var db$3 = await dbInstance;
+            var v$2 = message.date;
+            if (v$2 !== undefined) {
+              var tx = db$3.transaction("favorite", "readwrite");
+              var pstores = v$2.map(function (item) {
+                    return tx.store.delete(item);
+                  });
+              await Promise.all(pstores);
+              return sendResponse(false);
+            }
+            var key = await db$3.getKeyFromIndex("favorite", "text", mText);
+            await db$3.delete("favorite", key);
+            return sendResponse(false);
+        case /* CLEAR */4 :
+            var db$4 = await dbInstance;
+            await db$4.clear("favorite");
+            return sendResponse(undefined);
+        
       }
+    } else {
+      switch (mType._1) {
+        case /* ADD */0 :
+            var db$5 = await dbInstance;
+            var ret$2 = await db$5.getFromIndex("history", "text", mText);
+            var match = !ret$2;
+            if (match) {
+              await db$5.add("history", {
+                    date: Date.now(),
+                    text: mText,
+                    url: tab.url,
+                    title: tab.title,
+                    favIconUrl: tab.favIconUrl
+                  }, undefined);
+            }
+            return ;
+        case /* GET */1 :
+            return ;
+        case /* GETALL */2 :
+            var db$6 = await dbInstance;
+            var ret$3 = await db$6.getAllFromIndex("history", "date");
+            return sendResponse(ret$3);
+        case /* DELETE */3 :
+            var db$7 = await dbInstance;
+            var v$3 = message.date;
+            if (v$3 !== undefined) {
+              var tx$1 = db$7.transaction("history", "readwrite");
+              var pstores$1 = v$3.map(function (item) {
+                    return tx$1.store.delete(item);
+                  });
+              await Promise.all(pstores$1);
+            }
+            return sendResponse(undefined);
+        case /* CLEAR */4 :
+            var db$8 = await dbInstance;
+            return await db$8.clear("history");
+        
+      }
+    }
+  } else {
+    var ret$4 = await Utils.adapterTrans(mText);
+    return sendResponse(ret$4);
+  }
+}
+
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+      messageHandler(message, sender, sendResponse);
       return true;
     });
 
 export {
   dbInstance ,
+  messageHandler ,
 }
 /* dbInstance Not a pure module */

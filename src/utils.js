@@ -4,8 +4,8 @@ import * as Qs from "qs";
 import Md5 from "md5";
 import * as Js_exn from "rescript/lib/es6/js_exn.js";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
-import * as $$Promise from "@ryyppy/rescript-promise/src/Promise.js";
 import * as FrancMin from "franc-min";
+import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
 function getSourceLang(text) {
   return FrancMin.franc(text, {
@@ -21,30 +21,43 @@ var apiHost = import.meta.env.VITE_API_HOST;
 
 var endpoint = "" + apiHost + "/dict";
 
-function translate(q) {
-  return $$Promise.$$catch(fetch("" + endpoint + "?q=" + q + "", undefined).then(function (res) {
-                    return res.json();
-                  }).then(function (data) {
-                  return Promise.resolve((data == null) ? ({
-                                  TAG: /* Error */1,
-                                  _0: "Word can not find"
-                                }) : ({
-                                  TAG: /* Ok */0,
-                                  _0: data
-                                }));
-                }), (function (e) {
-                var msg;
-                if (e.RE_EXN_ID === $$Promise.JsError) {
-                  var msg$1 = e._1.message;
-                  msg = msg$1 !== undefined ? msg$1 : "";
-                } else {
-                  msg = "Unexpected error occurred";
-                }
-                return Promise.resolve({
-                            TAG: /* Error */1,
-                            _0: msg
-                          });
-              }));
+async function translate(q) {
+  try {
+    var res = await fetch("" + endpoint + "?q=" + q + "", undefined);
+    var data = await res.json();
+    if (data == null) {
+      return {
+              TAG: /* Error */1,
+              _0: "Word can not find"
+            };
+    } else {
+      return {
+              TAG: /* Ok */0,
+              _0: data
+            };
+    }
+  }
+  catch (raw_err){
+    var err = Caml_js_exceptions.internalToOCamlException(raw_err);
+    if (err.RE_EXN_ID !== Js_exn.$$Error) {
+      return {
+              TAG: /* Error */1,
+              _0: "Unexpected error occurred"
+            };
+    }
+    var msg = err._1.message;
+    if (msg !== undefined) {
+      return {
+              TAG: /* Error */1,
+              _0: msg
+            };
+    } else {
+      return {
+              TAG: /* Error */1,
+              _0: ""
+            };
+    }
+  }
 }
 
 var OfflineDict = {
@@ -63,70 +76,80 @@ function textToSpeech(text) {
   return "https://tts.youdao.com/fanyivoice?" + query + "";
 }
 
-function translate$1(q) {
-  return $$Promise.$$catch(chrome.storage.local.get(["baiduKey"]).then(function (result) {
-                        var baiduKey = result.baiduKey;
-                        if (baiduKey == null) {
-                          return Js_exn.raiseError("No translation key");
-                        }
-                        var appid = baiduKey.appid;
-                        var key = baiduKey.secret;
-                        var salt = Date.now().toString();
-                        var sign = Md5(appid + q + salt + key);
-                        var sl = getSourceLang(q);
-                        var tlDict = Js_dict.fromList({
-                              hd: [
-                                "cmn",
-                                "en"
-                              ],
-                              tl: /* [] */0
-                            });
-                        var val = Js_dict.get(tlDict, sl);
-                        var query = Qs.stringify({
-                              q: q,
-                              from: "auto",
-                              to: val !== undefined ? val : "zh",
-                              appid: appid,
-                              salt: salt,
-                              sign: sign
-                            });
-                        return "" + endpoint$1 + "?" + query + "";
-                      }).then(function (ret) {
-                      return fetch(ret, undefined);
-                    }).then(function (res) {
-                    return res.json();
-                  }).then(function (data) {
-                  var msg = data.error_msg;
-                  var tmp;
-                  if (msg !== undefined) {
-                    tmp = {
-                      TAG: /* Error */1,
-                      _0: msg
-                    };
-                  } else {
-                    var val = data.trans_result;
-                    tmp = val !== undefined ? ({
-                          TAG: /* Ok */0,
-                          _0: val
-                        }) : ({
-                          TAG: /* Error */1,
-                          _0: "No Translation"
-                        });
-                  }
-                  return Promise.resolve(tmp);
-                }), (function (e) {
-                var msg;
-                if (e.RE_EXN_ID === $$Promise.JsError) {
-                  var msg$1 = e._1.message;
-                  msg = msg$1 !== undefined ? msg$1 : "";
-                } else {
-                  msg = "Unexpected error occurred";
-                }
-                return Promise.resolve({
-                            TAG: /* Error */1,
-                            _0: msg
-                          });
-              }));
+async function translate$1(q) {
+  try {
+    var result = await chrome.storage.local.get(["baiduKey"]);
+    var baiduKey = result.baiduKey;
+    var queryUrl;
+    if (baiduKey == null) {
+      queryUrl = Js_exn.raiseError("No translation key");
+    } else {
+      var appid = baiduKey.appid;
+      var key = baiduKey.secret;
+      var salt = Date.now().toString();
+      var sign = Md5(appid + q + salt + key);
+      var sl = getSourceLang(q);
+      var tlDict = Js_dict.fromList({
+            hd: [
+              "cmn",
+              "en"
+            ],
+            tl: /* [] */0
+          });
+      var val = Js_dict.get(tlDict, sl);
+      var query = Qs.stringify({
+            q: q,
+            from: "auto",
+            to: val !== undefined ? val : "zh",
+            appid: appid,
+            salt: salt,
+            sign: sign
+          });
+      queryUrl = "" + endpoint$1 + "?" + query + "";
+    }
+    var res = await fetch(queryUrl, undefined);
+    var data = await res.json();
+    var msg = data.error_msg;
+    if (msg !== undefined) {
+      return {
+              TAG: /* Error */1,
+              _0: msg
+            };
+    }
+    var val$1 = data.trans_result;
+    if (val$1 !== undefined) {
+      return {
+              TAG: /* Ok */0,
+              _0: val$1
+            };
+    } else {
+      return {
+              TAG: /* Error */1,
+              _0: "No Translation"
+            };
+    }
+  }
+  catch (raw_err){
+    var err = Caml_js_exceptions.internalToOCamlException(raw_err);
+    if (err.RE_EXN_ID !== Js_exn.$$Error) {
+      return {
+              TAG: /* Error */1,
+              _0: "Unexpected error occurred"
+            };
+    }
+    var msg$1 = err._1.message;
+    if (msg$1 !== undefined) {
+      return {
+              TAG: /* Error */1,
+              _0: msg$1
+            };
+    } else {
+      return {
+              TAG: /* Error */1,
+              _0: ""
+            };
+    }
+  }
 }
 
 var Baidu = {
@@ -135,35 +158,34 @@ var Baidu = {
   translate: translate$1
 };
 
-function adapterTrans(text) {
+async function adapterTrans(text) {
   var sl = getSourceLang(text);
   var wordCount = text.split(" ");
-  var baiduResult = function (param) {
-    return translate$1(text).then(function (br) {
-                var tmp;
-                tmp = br.TAG === /* Ok */0 ? ({
-                      TAG: /* Baidu */1,
-                      _0: br._0
-                    }) : ({
-                      TAG: /* Message */2,
-                      _0: br._0
-                    });
-                return Promise.resolve(tmp);
-              });
+  var baiduResult = async function (param) {
+    var res = await translate$1(text);
+    if (res.TAG === /* Ok */0) {
+      return {
+              TAG: /* Baidu */1,
+              _0: res._0
+            };
+    } else {
+      return {
+              TAG: /* Message */2,
+              _0: res._0
+            };
+    }
   };
   if (sl !== "eng" || wordCount.length > 4) {
-    return baiduResult(undefined);
+    return await baiduResult(undefined);
+  }
+  var val = await translate(text);
+  if (val.TAG === /* Ok */0) {
+    return {
+            TAG: /* Dict */0,
+            _0: val._0
+          };
   } else {
-    return translate(text).then(function (ret) {
-                if (ret.TAG === /* Ok */0) {
-                  return Promise.resolve({
-                              TAG: /* Dict */0,
-                              _0: ret._0
-                            });
-                } else {
-                  return baiduResult(undefined);
-                }
-              });
+    return await baiduResult(undefined);
   }
 }
 

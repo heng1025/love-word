@@ -11,24 +11,21 @@ function FavButton(props) {
       });
   var setFaved = match[1];
   var isFaved = match[0];
-  var favAction = function (action) {
-    if (text !== "") {
-      chrome.runtime.sendMessage({
-              _type: /* Message */{
-                _0: /* FAVORITE */1,
-                _1: action
-              },
-              text: text,
-              trans: trans
-            }).then(function (faved) {
-            setFaved(function (param) {
-                  return faved;
-                });
-            return Promise.resolve(undefined);
-          });
+  var favAction = async function (action) {
+    if (text === "") {
       return ;
     }
-    
+    var faved = await chrome.runtime.sendMessage({
+          _type: /* Message */{
+            _0: /* FAVORITE */1,
+            _1: action
+          },
+          text: text,
+          trans: trans
+        });
+    return setFaved(function (param) {
+                return faved;
+              });
   };
   React.useEffect((function () {
           favAction(/* GET */1);

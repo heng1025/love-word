@@ -1,4 +1,3 @@
-open Promise
 open Common
 open Common.Chrome
 open Common.Webapi.Window
@@ -23,27 +22,22 @@ module OfflineDict = {
     exchange: string,
   }
 
-  let translate = q => {
-    fetch(~input=`${endpoint}?q=${q}`, ())
-    ->then(res => Response.json(res))
-    ->then(data => {
+  let translate = async q => {
+    try {
+      let res = await fetch(~input=`${endpoint}?q=${q}`, ())
+      let data = await Response.json(res)
       switch Js.toOption(data) {
       | Some(val) => Ok(val)
       | _ => Error("Word can not find")
-      }->resolve
-    })
-    ->catch(e => {
-      let msg = switch e {
-      | JsError(err) =>
-        switch Js.Exn.message(err) {
-        | Some(msg) => msg
-        | None => ""
-        }
-      | _ => "Unexpected error occurred"
       }
-
-      Error(msg)->resolve
-    })
+    } catch {
+    | Js.Exn.Error(err) =>
+      switch Js.Exn.message(err) {
+      | Some(msg) => Error(msg)
+      | None => Error("")
+      }
+    | _ => Error("Unexpected error occurred")
+    }
   }
 }
 
@@ -73,11 +67,12 @@ module Baidu = {
     `https://tts.youdao.com/fanyivoice?${query}`
   }
 
-  let translate = q => {
-    getExtStorage(~keys=["baiduKey"])
-    ->thenResolve(result => {
+  let translate = async q => {
+    try {
+      let result = await getExtStorage(~keys=["baiduKey"])
+
       let baiduKey = result["baiduKey"]
-      switch Js.toOption(baiduKey) {
+      let queryUrl = switch Js.toOption(baiduKey) {
       | Some(key) => {
           let appid = key["appid"]
           let key = key["secret"]
@@ -103,10 +98,10 @@ module Baidu = {
 
       | None => Js.Exn.raiseError("No translation key")
       }
-    })
-    ->then(ret => fetch(~input=ret, ()))
-    ->then(res => Response.json(res))
-    ->then(data => {
+      let res = await fetch(~input=queryUrl, ())
+
+      let data = await Response.json(res)
+
       switch data.error_msg {
       | Some(msg) => Error(msg)
       | None =>
@@ -114,20 +109,15 @@ module Baidu = {
         | Some(val) => Ok(val)
         | None => Error("No Translation")
         }
-      }->resolve
-    })
-    ->catch(e => {
-      let msg = switch e {
-      | JsError(err) =>
-        switch Js.Exn.message(err) {
-        | Some(msg) => msg
-        | None => ""
-        }
-      | _ => "Unexpected error occurred"
       }
-
-      Error(msg)->resolve
-    })
+    } catch {
+    | Js.Exn.Error(err) =>
+      switch Js.Exn.message(err) {
+      | Some(msg) => Error(msg)
+      | None => Error("")
+      }
+    | _ => Error("Unexpected error occurred")
+    }
   }
 }
 
@@ -140,26 +130,23 @@ type msgContent = {
   trans?: resultT,
 }
 
-let adapterTrans = text => {
+let adapterTrans = async text => {
   let sl = getSourceLang(text)
   let wordCount = Js.String2.split(text, " ")
 
-  let baiduResult = () =>
-    Baidu.translate(text)->then(br => {
-      switch br {
-      | Ok(res) => Baidu(res)
-      | Error(msg) => Message(msg)
-      }->resolve
-    })
+  let baiduResult = async () => {
+    switch await Baidu.translate(text) {
+    | Ok(res) => Baidu(res)
+    | Error(msg) => Message(msg)
+    }
+  }
 
   if sl !== "eng" || Js.Array2.length(wordCount) > 4 {
-    baiduResult()
+    await baiduResult()
   } else {
-    OfflineDict.translate(text)->then(ret => {
-      switch ret {
-      | Ok(val) => Dict(val)->resolve
-      | _ => baiduResult()
-      }
-    })
+    switch await OfflineDict.translate(text) {
+    | Ok(val) => Dict(val)
+    | _ => await baiduResult()
+    }
   }
 }

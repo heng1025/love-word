@@ -12,38 +12,37 @@ function useRecord(recordType) {
       });
   var setRecords = match[1];
   var records = match[0];
-  var getAll = function (param) {
-    chrome.runtime.sendMessage({
-            _type: /* Message */{
-              _0: recordType,
-              _1: /* GETALL */2
-            }
-          }).then(function (ret) {
-          var rs = ret.sort(function (v1, v2) {
-                  return v2.date - v1.date | 0;
-                }).map(function (v) {
-                v.checked = false;
-                return v;
-              });
-          setRecords(function (param) {
+  var getAll = async function (param) {
+    var ret = await chrome.runtime.sendMessage({
+          _type: /* Message */{
+            _0: recordType,
+            _1: /* GETALL */2
+          }
+        });
+    var rs = ret.sort(function (v1, v2) {
+            return v2.date - v1.date | 0;
+          }).map(function (v) {
+          v.checked = false;
+          return v;
+        });
+    return setRecords(function (param) {
                 return rs;
               });
-        });
   };
   React.useEffect((function () {
           getAll(undefined);
         }), [recordType]);
   var onSearch = function (val) {
-    if (val === "") {
-      return getAll(undefined);
+    if (val !== "") {
+      var rs = records.filter(function (item) {
+            var target = item.text;
+            return new RegExp(val).test(target);
+          });
+      return setRecords(function (param) {
+                  return rs;
+                });
     }
-    var rs = records.filter(function (item) {
-          var target = item.text;
-          return new RegExp(val).test(target);
-        });
-    setRecords(function (param) {
-          return rs;
-        });
+    getAll(undefined);
   };
   var onCheck = function (record) {
     var rs = records.map(function (v) {
@@ -67,35 +66,37 @@ function useRecord(recordType) {
                 return rs;
               });
   };
-  var onDelete = function (checkedRecords) {
-    chrome.runtime.sendMessage({
-            _type: /* Message */{
-              _0: recordType,
-              _1: /* DELETE */3
-            },
-            date: checkedRecords.map(function (v) {
-                  return v.date;
-                })
-          }).then(function (param) {
-          getAll(undefined);
+  var onDelete = async function (checkedRecords) {
+    await chrome.runtime.sendMessage({
+          _type: /* Message */{
+            _0: recordType,
+            _1: /* DELETE */3
+          },
+          date: checkedRecords.map(function (v) {
+                return v.date;
+              })
         });
+    return await getAll(undefined);
   };
-  var onClear = function () {
-    chrome.runtime.sendMessage({
-            _type: /* Message */{
-              _0: recordType,
-              _1: /* CLEAR */4
-            }
-          }).then(function (param) {
-          getAll(undefined);
+  var onClear = async function () {
+    await chrome.runtime.sendMessage({
+          _type: /* Message */{
+            _0: recordType,
+            _1: /* CLEAR */4
+          }
         });
+    return await getAll(undefined);
   };
   return {
           records: records,
           onCheck: onCheck,
           onSearch: onSearch,
-          onDelete: onDelete,
-          onClear: onClear,
+          onDelete: (function (args) {
+              onDelete(args);
+            }),
+          onClear: (function () {
+              onClear();
+            }),
           onCancel: onCancel
         };
 }

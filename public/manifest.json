@@ -1,6 +1,6 @@
 {
   "name": "love word",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "manifest_version": 3,
   "description": "Love because of words",
   "icons": {
@@ -25,7 +25,7 @@
       "resources": ["images/*.jpeg", "assets/*.css", "assets/*.js"]
     }
   ],
-  "permissions": ["tabs", "storage"],
+  "permissions": ["storage"],
   "options_page": "options.html",
   "background": {
     "service_worker": "assets/background.js",

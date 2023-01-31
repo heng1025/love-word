@@ -21,20 +21,22 @@ function TranslateService(props) {
   var setWarnMessage = match$2[1];
   var warnMessage = match$2[0];
   React.useEffect((function () {
-          chrome.storage.local.get(["baiduKey"]).then(function (result) {
-                var config = result.baiduKey;
-                if (!(config == null)) {
-                  setAppid(function (param) {
-                        return config.appid;
-                      });
-                  setSecret(function (param) {
-                        return config.secret;
-                      });
-                }
-                return Promise.resolve(undefined);
-              });
+          var fetchBaiduKey = async function (param) {
+            var result = await chrome.storage.local.get(["baiduKey"]);
+            var config = result.baiduKey;
+            if (!(config == null)) {
+              setAppid(function (param) {
+                    return config.appid;
+                  });
+              return setSecret(function (param) {
+                          return config.secret;
+                        });
+            }
+            
+          };
+          fetchBaiduKey(undefined);
         }), []);
-  var handleSubmit = function (param) {
+  var handleSubmit = async function (param) {
     var config = {
       appid: appid,
       secret: secret
@@ -42,25 +44,20 @@ function TranslateService(props) {
     chrome.storage.local.set({
           baiduKey: config
         });
-    Utils.Baidu.translate("hello world").then(function (br) {
-          var tmp;
-          if (br.TAG === /* Ok */0) {
-            setWarnMessage(function (param) {
+    var br = await Utils.Baidu.translate("hello world");
+    if (br.TAG === /* Ok */0) {
+      await chrome.storage.local.set({
+            baiduKey: config
+          });
+      return setWarnMessage(function (param) {
                   return "";
                 });
-            chrome.storage.local.set({
-                  baiduKey: config
-                });
-            tmp = undefined;
-          } else {
-            var msg = br._0;
-            chrome.storage.local.remove(["baiduKey"]);
-            tmp = setWarnMessage(function (param) {
-                  return msg;
-                });
-          }
-          return Promise.resolve(tmp);
-        });
+    }
+    var msg = br._0;
+    await chrome.storage.local.remove(["baiduKey"]);
+    return setWarnMessage(function (param) {
+                return msg;
+              });
   };
   return React.createElement("div", {
               className: "card w-1/3 bg-base-100 shadow-xl"
@@ -102,7 +99,9 @@ function TranslateService(props) {
                         className: "alert alert-warning shadow-lg mt-5"
                       }, React.createElement("div", undefined, React.createElement(Widget.Alert.make, {}), React.createElement("span", undefined, "Warning: " + warnMessage + "!"))) : null, React.createElement("button", {
                       className: "btn btn-primary w-5/6 mt-8 mx-auto",
-                      onClick: handleSubmit
+                      onClick: (function (param) {
+                          handleSubmit(undefined);
+                        })
                     }, "Submit")));
 }
 

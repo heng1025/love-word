@@ -1,4 +1,3 @@
-open Promise
 open Utils
 open Common.Chrome
 
@@ -16,21 +15,24 @@ let useTranslate = (text: string) => {
   let (data, setData) = React.Uncurried.useState(_ => Message(""))
 
   React.useEffect1(() => {
-    if text !== "" {
-      setLoading(._p => Yes)
-      seErrText(._ => "")
-      sendMessage(. {_type: Message(HISTORY, ADD), text})->ignore
-      sendMessage(. {_type: TRASTALTE, text})
-      ->thenResolve(ret => {
-        switch ret {
-        | Message(msg) => seErrText(. _p => msg)
-        | val => setData(. _p => val)
+    let fetchTranslateResult = async txt => {
+      if txt !== "" {
+        setLoading(._p => Yes)
+        seErrText(._ => "")
+        let ret = await sendMessage({_type: TRASTALTE, text: txt})
+        let _ = switch ret {
+        | Message(msg) => seErrText(._p => msg)
+        | val => {
+            setData(._p => val)
+            // add history record
+            sendMessage({_type: Message(HISTORY, ADD), text: txt})->ignore
+          }
         }
-        setLoading(. _p => No)
-      })
-      ->ignore
+        setLoading(._p => No)
+      }
     }
 
+    fetchTranslateResult(text)->ignore
     None
   }, [text])
 

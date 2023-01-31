@@ -1,4 +1,3 @@
-open Promise
 open Common.Chrome
 open Widget
 open Utils
@@ -10,41 +9,38 @@ let make = () => {
   let (warnMessage, setWarnMessage) = React.Uncurried.useState(_ => "")
 
   React.useEffect0(() => {
-    getExtStorage(~keys=["baiduKey"])
-    ->then(result => {
+    let fetchBaiduKey = async () => {
+      let result = await getExtStorage(~keys=["baiduKey"])
       switch Js.toOption(result["baiduKey"]) {
       | Some(config) => {
-          setAppid(. _ => config["appid"])
-          setSecret(. _ => config["secret"])
+          setAppid(._ => config["appid"])
+          setSecret(._ => config["secret"])
         }
 
       | _ => ()
       }
-      resolve()
-    })
-    ->ignore
+    }
+    fetchBaiduKey()->ignore
+
     None
   })
 
-  let handleSubmit = _ => {
+  let handleSubmit = async () => {
     let config = {"appid": appid, "secret": secret}
     setExtStorage(~items={"baiduKey": config})->ignore
     // test baidu key
-    Baidu.translate("hello world")
-    ->then(br => {
-      switch br {
-      | Ok(_) => {
-          setWarnMessage(._ => "")
-          setExtStorage(~items={"baiduKey": config})->ignore
-        }
+    let br = await Baidu.translate("hello world")
+    switch br {
+    | Ok(_) => {
+        await setExtStorage(~items={"baiduKey": config})
+        setWarnMessage(._ => "")
+      }
 
-      | Error(msg) => {
-          removeExtStorage(~keys=["baiduKey"])->ignore
-          setWarnMessage(._ => msg)
-        }
-      }->resolve
-    })
-    ->ignore
+    | Error(msg) => {
+        await removeExtStorage(~keys=["baiduKey"])
+        setWarnMessage(._ => msg)
+      }
+    }
   }
 
   <div className="card w-1/3 bg-base-100 shadow-xl">
@@ -83,7 +79,7 @@ let make = () => {
         </div>
       | false => React.null
       }}
-      <button className="btn btn-primary w-5/6 mt-8 mx-auto" onClick={handleSubmit}>
+      <button className="btn btn-primary w-5/6 mt-8 mx-auto" onClick={_ => handleSubmit()->ignore}>
         {React.string("Submit")}
       </button>
     </div>

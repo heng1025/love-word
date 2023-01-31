@@ -1,4 +1,3 @@
-open Promise
 open Utils
 open Common.Chrome
 open Belt.Float
@@ -28,23 +27,21 @@ type return = {
 let useRecord = recordType => {
   let (records, setRecords) = React.Uncurried.useState(_ => [])
 
-  let getAll = () => {
-    sendMessage(. {_type: Message(recordType, GETALL)})
-    ->thenResolve(ret => {
-      let rs =
-        ret
-        ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2["date"] - v1["date"]))
-        ->Js.Array2.map(v => {
-          v["checked"] = false
-          v
-        })
-      setRecords(._ => rs)
-    })
-    ->ignore
+  let getAll = async () => {
+    let ret = await sendMessage({_type: Message(recordType, GETALL)})
+    let rs =
+      ret
+      ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2["date"] - v1["date"]))
+      ->Js.Array2.map(v => {
+        v["checked"] = false
+        v
+      })
+
+    setRecords(._ => rs)
   }
 
   React.useEffect1(() => {
-    getAll()
+    getAll()->ignore
     None
   }, [recordType])
 
@@ -55,7 +52,7 @@ let useRecord = recordType => {
       })
       setRecords(._ => rs)
     } else {
-      getAll()
+      getAll()->ignore
     }
   }
 
@@ -80,24 +77,25 @@ let useRecord = recordType => {
     setRecords(._ => rs)
   }
 
-  let onDelete = (. checkedRecords) => {
-    sendMessage(. {
+  let onDelete = async (. checkedRecords) => {
+    let _ = await sendMessage({
       _type: Message(recordType, DELETE),
       date: Js.Array2.map(checkedRecords, v => v["date"]),
     })
-    ->thenResolve(_ => {
-      getAll()
-    })
-    ->ignore
+    await getAll()
   }
 
-  let onClear = (. ()) => {
-    sendMessage(. {_type: Message(recordType, CLEAR)})
-    ->thenResolve(_ => {
-      getAll()
-    })
-    ->ignore
+  let onClear = async (. ()) => {
+    let _ = await sendMessage({_type: Message(recordType, CLEAR)})
+    await getAll()
   }
 
-  {records, onCheck, onCancel, onClear, onDelete, onSearch}
+  {
+    records,
+    onCheck,
+    onCancel,
+    onClear: (. ()) => onClear(.)->ignore,
+    onDelete: (. args) => onDelete(. args)->ignore,
+    onSearch,
+  }
 }

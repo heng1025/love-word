@@ -6,7 +6,7 @@ open Database
 
 let dbInstance = getDB()
 
-Chrome.addMessageListener((message, sender, sendResponse) => {
+let messageHandler = async (message, sender, sendResponse) => {
   let mType = message._type
   let mText = switch message.text {
   | Some(v) => v
@@ -22,36 +22,28 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
     }
   }
 
+  // https://forum.rescript-lang.org/t/modeling-polymorphic-callback/3129 (Obj.magic)
   switch mType {
-  | TRASTALTE =>
-    adapterTrans(mText)->then(ret => {
-      // https://forum.rescript-lang.org/t/modeling-polymorphic-callback/3129
+  | TRASTALTE => {
+      let ret = await adapterTrans(mText)
       sendResponse(. ret)
-      resolve()
-    })
-  | Message(FAVORITE, GET) =>
-    dbInstance->then(db => {
-      getDBValueFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)->thenResolve(
-        ret => {
-          if !ret {
-            sendResponse(. Obj.magic(false))
-          } else {
-            sendResponse(. Obj.magic(true))
-          }
-        },
-      )
-    })
-  | Message(FAVORITE, GETALL) =>
-    dbInstance->then(db => {
-      getDBAllValueFromIndex(~db, ~storeName="favorite", ~indexName="text")->thenResolve(
-        ret => {
-          sendResponse(. ret)
-        },
-      )
-    })
-  | Message(FAVORITE, ADD) =>
-    dbInstance->thenResolve(db => {
-      addDBValue(
+    }
+
+  | Message(FAVORITE, GET) => {
+      let db = await dbInstance
+      let ret = await getDBValueFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)
+      sendResponse(. Obj.magic(!(!ret)))
+    }
+
+  | Message(FAVORITE, GETALL) => {
+      let db = await dbInstance
+      let ret = await getDBAllValueFromIndex(~db, ~storeName="favorite", ~indexName="text")
+      sendResponse(. ret)
+    }
+
+  | Message(FAVORITE, ADD) => {
+      let db = await dbInstance
+      await addDBValue(
         ~db,
         ~storeName="favorite",
         ~data={
@@ -63,116 +55,92 @@ Chrome.addMessageListener((message, sender, sendResponse) => {
           "favIconUrl": tab["favIconUrl"],
         },
         (),
-      )->ignore
+      )
       sendResponse(. Obj.magic(true))
-    })
-  | Message(FAVORITE, DELETE) =>
-    dbInstance->thenResolve(db => {
+    }
+
+  | Message(FAVORITE, DELETE) => {
+      let db = await dbInstance
       // delete record according by date
       switch message.date {
       | Some(v) => {
           let tx = createTransaction(~db, ~storeName="favorite", ~mode="readwrite", ())
-          let pstores = Js.Array2.map(
-            v,
-            item => {
-              tx.store.delete(. Obj.magic(item))
-            },
-          )
-          all(pstores)
-          ->thenResolve(
-            _ => {
-              sendResponse(. Obj.magic(false))
-            },
-          )
-          ->ignore
+          let pstores = Js.Array2.map(v, item => {
+            tx.store.delete(. Obj.magic(item))
+          })
+          let _ = await all(pstores)
+          sendResponse(. Obj.magic(false))
         }
 
       | _ =>
         // delete one text
-        getDBKeyFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)
-        ->thenResolve(
-          key => {
-            deleteDBValue(~db, ~storeName="favorite", ~key)->ignore
-            sendResponse(. Obj.magic(false))
-          },
-        )
-        ->ignore
+        let key = await getDBKeyFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=mText)
+        let _ = await deleteDBValue(~db, ~storeName="favorite", ~key)
+        sendResponse(. Obj.magic(false))
       }
-    })
-  | Message(FAVORITE, CLEAR) =>
-    dbInstance->thenResolve(db => {
-      clearDBValue(~db, ~storeName="favorite")
-      ->thenResolve(
-        _ => {
-          sendResponse(. Obj.magic(None))
-        },
-      )
-      ->ignore
-    })
-  | Message(HISTORY, ADD) =>
-    dbInstance->then(db => {
-      getDBValueFromIndex(~db, ~storeName="history", ~indexName="text", ~key=mText)->thenResolve(
-        ret => {
-          if !ret {
-            addDBValue(
-              ~db,
-              ~storeName="history",
-              ~data={
-                "date": Js.Date.now(),
-                "text": mText,
-                "url": tab["url"],
-                "title": tab["title"],
-                "favIconUrl": tab["favIconUrl"],
-              },
-              (),
-            )->ignore
-          }
-        },
-      )
-    })
-  | Message(HISTORY, DELETE) =>
-    dbInstance->thenResolve(db => {
+    }
+
+  | Message(FAVORITE, CLEAR) => {
+      let db = await dbInstance
+      let _ = await clearDBValue(~db, ~storeName="favorite")
+      sendResponse(. Obj.magic(None))
+    }
+
+  | Message(HISTORY, ADD) => {
+      let db = await dbInstance
+      let ret = await getDBValueFromIndex(~db, ~storeName="history", ~indexName="text", ~key=mText)
+      let _ = switch !ret {
+      | true =>
+        await addDBValue(
+          ~db,
+          ~storeName="history",
+          ~data={
+            "date": Js.Date.now(),
+            "text": mText,
+            "url": tab["url"],
+            "title": tab["title"],
+            "favIconUrl": tab["favIconUrl"],
+          },
+          (),
+        )
+
+      | _ => ()
+      }
+    }
+
+  | Message(HISTORY, DELETE) => {
+      let db = await dbInstance
       switch message.date {
       | Some(v) => {
           let tx = createTransaction(~db, ~storeName="history", ~mode="readwrite", ())
-          let pstores = Js.Array2.map(
-            v,
-            item => {
-              tx.store.delete(. Obj.magic(item))
-            },
-          )
-          all(pstores)
-          ->thenResolve(
-            _ => {
-              sendResponse(. Obj.magic(None))
-            },
-          )
-          ->ignore
+          let pstores = Js.Array2.map(v, item => {
+            tx.store.delete(. Obj.magic(item))
+          })
+          let _ = await all(pstores)
         }
 
       | _ => ()
       }
-    })
-  | Message(HISTORY, CLEAR) =>
-    dbInstance->thenResolve(db => {
-      clearDBValue(~db, ~storeName="history")
-      ->thenResolve(
-        _ => {
-          sendResponse(. Obj.magic(None))
-        },
-      )
-      ->ignore
-    })
-  | Message(HISTORY, GETALL) =>
-    dbInstance->then(db => {
-      getDBAllValueFromIndex(~db, ~storeName="history", ~indexName="date")->thenResolve(
-        ret => {
-          sendResponse(. ret)
-        },
-      )
-    })
-  | _ => Promise.resolve()
-  }->ignore
+      sendResponse(. Obj.magic(None))
+    }
+
+  | Message(HISTORY, CLEAR) => {
+      let db = await dbInstance
+      await clearDBValue(~db, ~storeName="history")
+    }
+
+  | Message(HISTORY, GETALL) => {
+      let db = await dbInstance
+      let ret = await getDBAllValueFromIndex(~db, ~storeName="history", ~indexName="date")
+      sendResponse(. ret)
+    }
+
+  | _ => ()
+  }
+}
+
+Chrome.addMessageListener((message, sender, sendResponse) => {
+  messageHandler(message, sender, sendResponse)->ignore
 
   // async operation must return `true`
   true

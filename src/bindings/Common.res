@@ -123,7 +123,7 @@ module Chrome = {
   @scope(("chrome", "runtime")) @val
   external getURL: string => string = "getURL"
   @scope(("chrome", "runtime")) @val
-  external sendMessage: 'a = "sendMessage"
+  external sendMessage: 'message => Promise.t<'ret> = "sendMessage"
   @scope(("chrome", "runtime", "onMessage")) @val
   external addMessageListener: (@uncurry ('message, 'sender, (. 'params) => unit) => bool) => unit =
     "addListener"

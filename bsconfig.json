@@ -1,7 +1,6 @@
 {
   "name": "love-word",
   "namespace": false,
-  "version": "0.0.4",
   "sources": {
     "dir": "src",
     "subdirs": true
