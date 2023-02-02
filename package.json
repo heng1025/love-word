@@ -1,6 +1,6 @@
 {
   "name": "love-word",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "a translation extension for chrome browser",
   "scripts": {
     "dev": "vite",
@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "@rescript/react": "^0.11.0",
-    "@ryyppy/rescript-promise": "^2.1.0",
     "franc-min": "^6.1.0",
     "idb": "^7.1.1",
     "md5": "^2.3.0",

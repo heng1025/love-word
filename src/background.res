@@ -1,4 +1,3 @@
-open Promise
 open Utils
 open Common
 open Common.Idb
@@ -68,7 +67,7 @@ let messageHandler = async (message, sender, sendResponse) => {
           let pstores = Js.Array2.map(v, item => {
             tx.store.delete(. Obj.magic(item))
           })
-          let _ = await all(pstores)
+          let _ = await Js.Promise2.all(pstores)
           sendResponse(. Obj.magic(false))
         }
 
@@ -116,7 +115,7 @@ let messageHandler = async (message, sender, sendResponse) => {
           let pstores = Js.Array2.map(v, item => {
             tx.store.delete(. Obj.magic(item))
           })
-          let _ = await all(pstores)
+          let _ = await Js.Promise2.all(pstores)
         }
 
       | _ => ()

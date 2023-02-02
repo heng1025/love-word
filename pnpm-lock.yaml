@@ -2,7 +2,6 @@ lockfileVersion: 5.4
 
 specifiers:
   '@rescript/react': ^0.11.0
-  '@ryyppy/rescript-promise': ^2.1.0
   '@tailwindcss/line-clamp': ^0.4.2
   autoprefixer: ^10.4.13
   daisyui: ^2.49.0
@@ -19,7 +18,6 @@ specifiers:
 
 dependencies:
   '@rescript/react': 0.11.0_biqbaboplfbrettd7655fr4n2y
-  '@ryyppy/rescript-promise': 2.1.0
   franc-min: 6.1.0
   idb: 7.1.1
   md5: 2.3.0
@@ -265,10 +263,6 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-    dev: false
-
-  /@ryyppy/rescript-promise/2.1.0:
-    resolution: {integrity: sha512-+dW6msBrj2Lr2hbEMX+HoWCvN89qVjl94RwbYWJgHQuj8jm/izdPC0YzxgpGoEFdeAEW2sOozoLcYHxT6o5WXQ==}
     dev: false
 
   /@tailwindcss/line-clamp/0.4.2_tailwindcss@3.2.4:

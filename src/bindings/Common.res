@@ -110,11 +110,11 @@ module Webapi = {
     }
     module Response = {
       type t<'data>
-      @send external json: t<'data> => Promise.t<'data> = "json"
+      @send external json: t<'data> => promise<'data> = "json"
     }
 
     @val
-    external fetch: (~input: string, ~init: init<int>=?, unit) => Promise.t<Response.t<'result>> =
+    external fetch: (~input: string, ~init: init<int>=?, unit) => promise<Response.t<'result>> =
       "fetch"
   }
 }
@@ -123,7 +123,7 @@ module Chrome = {
   @scope(("chrome", "runtime")) @val
   external getURL: string => string = "getURL"
   @scope(("chrome", "runtime")) @val
-  external sendMessage: 'message => Promise.t<'ret> = "sendMessage"
+  external sendMessage: 'message => promise<'ret> = "sendMessage"
   @scope(("chrome", "runtime", "onMessage")) @val
   external addMessageListener: (@uncurry ('message, 'sender, (. 'params) => unit) => bool) => unit =
     "addListener"
@@ -131,11 +131,11 @@ module Chrome = {
   @scope(("chrome", "storage", "onChanged")) @val
   external addStorageListener: (@uncurry ('changes, 'areaName) => unit) => unit = "addListener"
   @scope(("chrome", "storage", "local")) @val
-  external getExtStorage: (~keys: 'keys=?) => Promise.t<'obj> = "get"
+  external getExtStorage: (~keys: 'keys=?) => promise<'obj> = "get"
   @scope(("chrome", "storage", "local")) @val
-  external setExtStorage: (~items: 'items) => Promise.t<unit> = "set"
+  external setExtStorage: (~items: 'items) => promise<unit> = "set"
   @scope(("chrome", "storage", "local")) @val
-  external removeExtStorage: (~keys: 'keys=?) => Promise.t<unit> = "remove"
+  external removeExtStorage: (~keys: 'keys=?) => promise<unit> = "remove"
 }
 
 module Md5 = {
@@ -162,12 +162,12 @@ module Idb = {
   type data
   type cursor
   type rec objStore = {
-    add: (. data) => Promise.t<unit>,
-    delete: (. data) => Promise.t<unit>,
+    add: (. data) => promise<unit>,
+    delete: (. data) => promise<unit>,
     index: string => objStore,
-    openCursor: (. unit) => Promise.t<cursor>,
+    openCursor: (. unit) => promise<cursor>,
   }
-  type transaction = {objectStore: string => objStore, store: objStore, done: Promise.t<unit>}
+  type transaction = {objectStore: string => objStore, store: objStore, done: promise<unit>}
 
   type openDbOptions = {
     upgrade?: db => unit,
@@ -182,9 +182,9 @@ module Idb = {
     ~version: int=?,
     ~options: openDbOptions=?,
     unit,
-  ) => Promise.t<db> = "openDB"
+  ) => promise<db> = "openDB"
   @module("idb")
-  external deleteDB: (~name: string, ~options: deleteDbOptions=?, unit) => Promise.t<unit> =
+  external deleteDB: (~name: string, ~options: deleteDbOptions=?, unit) => promise<unit> =
     "deleteDB"
   @module("idb") external wrap: unWrappedDB => wrappedDB = "wrap"
   @module("idb") external unwrap: wrappedDB => unWrappedDB = "unwrap"
@@ -197,27 +197,27 @@ module Idb = {
   @send
   external createIndex: (~objStore: objStore, ~indexName: string, ~keyPath: string) => unit =
     "createIndex"
-  @send external getDBValue: (~db: db, ~storeName: string, ~key: 'key) => Promise.t<'val> = "get"
+  @send external getDBValue: (~db: db, ~storeName: string, ~key: 'key) => promise<'val> = "get"
   @send
   external getDBValueFromIndex: (
     ~db: db,
     ~storeName: string,
     ~indexName: string,
     ~key: 'key,
-  ) => Promise.t<'val> = "getFromIndex"
+  ) => promise<'val> = "getFromIndex"
   @send
   external getDBAllValueFromIndex: (
     ~db: db,
     ~storeName: string,
     ~indexName: string,
-  ) => Promise.t<'val> = "getAllFromIndex"
+  ) => promise<'val> = "getAllFromIndex"
   @send
   external getDBKeyFromIndex: (
     ~db: db,
     ~storeName: string,
     ~indexName: string,
     ~key: 'key,
-  ) => Promise.t<'val> = "getKeyFromIndex"
+  ) => promise<'val> = "getKeyFromIndex"
   @send
   external addDBValue: (
     ~db: db,
@@ -225,7 +225,7 @@ module Idb = {
     ~data: 'data,
     ~key: 'key=?,
     unit,
-  ) => Promise.t<unit> = "add"
+  ) => promise<unit> = "add"
   @send
   external putDBValue: (
     ~db: db,
@@ -233,9 +233,9 @@ module Idb = {
     ~data: 'data,
     ~key: 'key=?,
     unit,
-  ) => Promise.t<'val> = "put"
+  ) => promise<'val> = "put"
   @send
-  external deleteDBValue: (~db: db, ~storeName: string, ~key: 'key) => Promise.t<'val> = "delete"
+  external deleteDBValue: (~db: db, ~storeName: string, ~key: 'key) => promise<'val> = "delete"
   @send
-  external clearDBValue: (~db: db, ~storeName: string) => Promise.t<unit> = "clear"
+  external clearDBValue: (~db: db, ~storeName: string) => promise<unit> = "clear"
 }

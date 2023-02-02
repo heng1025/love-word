@@ -11,5 +11,5 @@
   },
   "suffix": ".js",
   "jsx": { "version": 4, "mode": "classic" },
-  "bs-dependencies": ["@rescript/react", "@ryyppy/rescript-promise"]
+  "bs-dependencies": ["@rescript/react"]
 }
