@@ -127,6 +127,26 @@ type favAddMsgContent = {
 }
 
 type extraAction = GetAll | Clear
+
+type recordData = {
+  url: string,
+  title: string,
+  favIconUrl: string,
+  date: float,
+  text: string,
+  trans?: resultT,
+}
+
+type recordDataWithExtra = {
+  url: string,
+  title: string,
+  favIconUrl: string,
+  date: float,
+  text: string,
+  trans?: resultT,
+  mutable checked: bool,
+}
+
 type msgContent =
   | TranslateMsgContent(textMsgContent)
   // favorite

@@ -8,14 +8,15 @@ function $$History(props) {
   var match = RecordHook.useRecord(/* History */0);
   var onCheck = match.onCheck;
   var records = match.records;
-  var recordEles = records.map(function (v) {
-        var date = v.date;
-        var boarderClass = v.checked ? "border-primary" : "";
+  var recordEles = records.map(function (record) {
+        var date = record.date;
+        var checked = record.checked;
+        var boarderClass = checked ? "border-primary" : "";
         return React.createElement("div", {
                     key: date.toString(),
                     className: "card card-compact card-bordered cursor-pointer bg-base-100 shadow-xl " + boarderClass + "",
                     onClick: (function (param) {
-                        onCheck(v);
+                        onCheck(record);
                       })
                   }, React.createElement("div", {
                         className: "card-body"
@@ -25,16 +26,16 @@ function $$History(props) {
                                 className: "w-40"
                               }, new Date(date).toLocaleString()), React.createElement("a", {
                                 className: "inline-flex gap-2",
-                                href: v.url,
+                                href: record.url,
                                 target: "_blank"
                               }, React.createElement("span", {
                                     className: "line-clamp-1"
-                                  }, v.title), React.createElement("img", {
+                                  }, record.title), React.createElement("img", {
                                     className: "w-5",
-                                    src: v.favIconUrl
+                                    src: record.favIconUrl
                                   }))), React.createElement("p", {
                             className: "font-bold text-xl"
-                          }, v.text)));
+                          }, record.text)));
       });
   return React.createElement(React.Fragment, undefined, React.createElement(RecordAction.make, {
                   records: records.filter(function (v) {

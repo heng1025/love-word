@@ -9,15 +9,16 @@ function Favorite(props) {
   var match = RecordHook.useRecord(/* Favorite */1);
   var onCheck = match.onCheck;
   var records = match.records;
-  var recordEles = records.map(function (v) {
-        var date = v.date;
-        var boarderClass = v.checked ? "border-primary" : "";
-        var val = v.trans;
+  var recordEles = records.map(function (record) {
+        var date = record.date;
+        var checked = record.checked;
+        var boarderClass = checked ? "border-primary" : "";
+        var val = record.trans;
         return React.createElement("div", {
                     key: date.toString(),
                     className: "card card-compact w-72 card-bordered cursor-pointer bg-base-100 shadow-xl " + boarderClass + "",
                     onClick: (function (param) {
-                        onCheck(v);
+                        onCheck(record);
                       })
                   }, React.createElement("div", {
                         className: "card-body"
@@ -26,15 +27,15 @@ function Favorite(props) {
                           }, React.createElement("div", {
                                 className: "flex justify-between"
                               }, React.createElement("span", undefined, new Date(date).toLocaleDateString()), React.createElement("a", {
-                                    title: v.title,
-                                    href: v.url,
+                                    title: record.title,
+                                    href: record.url,
                                     target: "_blank"
                                   }, React.createElement("img", {
                                         className: "w-5",
-                                        src: v.favIconUrl
+                                        src: record.favIconUrl
                                       }))), React.createElement("p", {
                                 className: "font-bold text-xl line-clamp-1"
-                              }, v.text)), val !== undefined ? React.createElement(TranslateResult.make, {
+                              }, record.text)), val !== undefined ? React.createElement(TranslateResult.make, {
                               data: val
                             }) : null));
       });

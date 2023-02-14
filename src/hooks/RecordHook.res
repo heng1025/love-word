@@ -1,26 +1,13 @@
 open Utils
 open Common.Chrome
-open Belt.Float
-
-@@warning("-44")
 
 let includeWith = (target, substring) => Js.Re.fromString(substring)->Js.Re.test_(target)
-type record = {
-  "date": float,
-  "text": string,
-  @set
-  "checked": bool,
-  "url": string,
-  "title": string,
-  "favIconUrl": string,
-  "trans": option<resultT>,
-}
 
 type return = {
-  records: array<record>,
-  onCheck: (. record) => unit,
+  records: array<recordDataWithExtra>,
+  onCheck: (. recordDataWithExtra) => unit,
   onSearch: (. string) => unit,
-  onDelete: (. array<record>) => unit,
+  onDelete: (. array<recordDataWithExtra>) => unit,
   onClear: (. unit) => unit,
   onCancel: (. unit) => unit,
 }
@@ -44,13 +31,13 @@ let useRecord = recordType => {
   }
 
   let getAll = async () => {
-    let ret = await sendMessage(getExtraMsgContent(GetAll))
+    let ret: array<recordDataWithExtra> = await sendMessage(getExtraMsgContent(GetAll))
     let rs =
       ret
-      ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2["date"] - v1["date"]))
+      ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2.date) - Belt.Float.toInt(v1.date))
       ->Js.Array2.map(v => {
-        v["checked"] = false
-        v
+        ...v,
+        checked: false,
       })
     setRecords(._ => rs)
   }
@@ -63,7 +50,7 @@ let useRecord = recordType => {
   let onSearch = (. val) => {
     if val !== "" {
       let rs = Js.Array2.filter(records, item => {
-        item["text"]->includeWith(val)
+        item.text->includeWith(val)
       })
       setRecords(._ => rs)
     } else {
@@ -71,13 +58,12 @@ let useRecord = recordType => {
     }
   }
 
-  let onCheck = (. record) => {
+  let onCheck = (. record: recordDataWithExtra) => {
     let rs = Js.Array2.map(records, v => {
-      let date = record["date"]
-      let checked = record["checked"]
+      let {date, checked} = record
 
-      if date === v["date"] {
-        v["checked"] = !checked
+      if date === v.date {
+        v.checked = !checked
       }
       v
     })
@@ -86,15 +72,15 @@ let useRecord = recordType => {
 
   let onCancel = (. ()) => {
     let rs = Js.Array2.map(records, v => {
-      v["checked"] = false
-      v
+      ...v,
+      checked: false,
     })
     setRecords(._ => rs)
   }
 
   let onDelete = async (. checkedRecords) => {
     let _ = await sendMessage(
-      getDeleteManyMsgContent({dates: Js.Array2.map(checkedRecords, v => v["date"])}),
+      getDeleteManyMsgContent({dates: Js.Array2.map(checkedRecords, v => v.date)}),
     )
     await getAll()
   }
@@ -108,8 +94,8 @@ let useRecord = recordType => {
     records,
     onCheck,
     onCancel,
+    onSearch,
     onClear: (. ()) => onClear(.)->ignore,
     onDelete: (. args) => onDelete(. args)->ignore,
-    onSearch,
   }
 }

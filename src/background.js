@@ -4,6 +4,19 @@ import * as Utils from "./utils.js";
 import * as Database from "./Database.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
+function getBrowserTab(sender) {
+  var v = sender.tab;
+  if (v !== undefined) {
+    return Caml_option.valFromOption(v);
+  } else {
+    return {
+            url: sender.url,
+            title: "Love Word",
+            favIconUrl: "" + sender.origin + "/icons/lw32x32.png"
+          };
+  }
+}
+
 var dbInstance = Database.getDB(undefined);
 
 async function translateMessageHandler(msg, sendResponse) {
@@ -11,23 +24,31 @@ async function translateMessageHandler(msg, sendResponse) {
   return sendResponse(ret);
 }
 
-async function favAddMessageHandler(msg, tab, sendResponse) {
-  var db = await dbInstance;
-  await db.add("favorite", {
-        url: tab.url,
-        title: tab.title,
-        favIconUrl: tab.favIconUrl,
-        date: Date.now(),
-        text: msg.text,
-        trans: msg.trans
-      }, undefined);
-  return sendResponse(true);
-}
-
 async function favGetOneMessageHandler(msg, sendResponse) {
   var db = await dbInstance;
   var ret = await db.getFromIndex("favorite", "text", msg.text);
   return sendResponse(ret);
+}
+
+async function favAddMessageHandler(msg, sender, sendResponse) {
+  var db = await dbInstance;
+  var tab = getBrowserTab(sender);
+  var data_url = tab.url;
+  var data_title = tab.title;
+  var data_favIconUrl = tab.favIconUrl;
+  var data_date = Date.now();
+  var data_text = msg.text;
+  var data_trans = msg.trans;
+  var data = {
+    url: data_url,
+    title: data_title,
+    favIconUrl: data_favIconUrl,
+    date: data_date,
+    text: data_text,
+    trans: data_trans
+  };
+  await db.add("favorite", data, undefined);
+  return sendResponse(true);
 }
 
 async function favDeleteOneMessageHandler(msg, sendResponse) {
@@ -58,35 +79,36 @@ async function recordMessageHandler(recordType, extraAction, sendResponse) {
   return sendResponse(ret);
 }
 
-async function historyAddMessageHandler(msg, tab, sendResponse) {
+async function historyAddMessageHandler(msg, sender, sendResponse) {
   var db = await dbInstance;
-  var ret = await db.getFromIndex("history", "text", msg.text);
+  var mText = msg.text;
+  var tab = getBrowserTab(sender);
+  var data_url = tab.url;
+  var data_title = tab.title;
+  var data_favIconUrl = tab.favIconUrl;
+  var data_date = Date.now();
+  var data = {
+    url: data_url,
+    title: data_title,
+    favIconUrl: data_favIconUrl,
+    date: data_date,
+    text: mText
+  };
+  var ret = await db.getFromIndex("history", "text", mText);
   var match = !ret;
   if (match) {
-    await db.add("history", {
-          date: Date.now(),
-          text: msg.text,
-          url: tab.url,
-          title: tab.title,
-          favIconUrl: tab.favIconUrl
-        }, undefined);
+    await db.add("history", data, undefined);
   }
   return sendResponse(undefined);
 }
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-      var v = sender.tab;
-      var tab = v !== undefined ? Caml_option.valFromOption(v) : ({
-            url: sender.url,
-            title: "Love Word",
-            favIconUrl: "" + sender.origin + "/icons/lw32x32.png"
-          });
       switch (message.TAG | 0) {
         case /* TranslateMsgContent */0 :
             translateMessageHandler(message._0, sendResponse);
             break;
         case /* FavAddMsgContent */1 :
-            favAddMessageHandler(message._0, tab, sendResponse);
+            favAddMessageHandler(message._0, sender, sendResponse);
             break;
         case /* FavGetOneMsgContent */2 :
             favGetOneMessageHandler(message._0, sendResponse);
@@ -101,7 +123,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             recordMessageHandler("favorite", message._0, sendResponse);
             break;
         case /* HistoryAddMsgContent */6 :
-            historyAddMessageHandler(message._0, tab, sendResponse);
+            historyAddMessageHandler(message._0, sender, sendResponse);
             break;
         case /* HistoryDeleteManyMsgContent */7 :
             recordDeleteManyMessageHandler("history", message._0, sendResponse);
@@ -115,10 +137,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     });
 
 export {
+  getBrowserTab ,
   dbInstance ,
   translateMessageHandler ,
-  favAddMessageHandler ,
   favGetOneMessageHandler ,
+  favAddMessageHandler ,
   favDeleteOneMessageHandler ,
   recordDeleteManyMessageHandler ,
   recordMessageHandler ,

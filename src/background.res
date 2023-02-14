@@ -3,29 +3,22 @@ open Common
 open Common.Idb
 open Database
 
+let getBrowserTab = sender => {
+  switch sender["tab"] {
+  | Some(v) => v
+  | _ => {
+      "url": sender["url"],
+      "title": "Love Word",
+      "favIconUrl": `${sender["origin"]}/icons/lw32x32.png`,
+    }
+  }
+}
+
 let dbInstance = getDB()
 
 let translateMessageHandler = async (msg: textMsgContent, sendResponse) => {
   let ret = await adapterTrans(msg.text)
   sendResponse(. ret)
-}
-
-let favAddMessageHandler = async (msg: favAddMsgContent, tab, sendResponse) => {
-  let db = await dbInstance
-  await addDBValue(
-    ~db,
-    ~storeName="favorite",
-    ~data={
-      "url": tab["url"],
-      "title": tab["title"],
-      "favIconUrl": tab["favIconUrl"],
-      "date": Js.Date.now(),
-      "text": msg.text,
-      "trans": msg.trans,
-    },
-    (),
-  )
-  sendResponse(. Obj.magic(true))
 }
 
 let favGetOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
@@ -34,6 +27,22 @@ let favGetOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
   sendResponse(. Obj.magic(!(!ret)))
 }
 
+// add fav
+let favAddMessageHandler = async (msg: favAddMsgContent, sender, sendResponse) => {
+  let db = await dbInstance
+  let tab = getBrowserTab(sender)
+  let data = {
+    url: tab["url"],
+    title: tab["title"],
+    favIconUrl: tab["favIconUrl"],
+    date: Js.Date.now(),
+    text: msg.text,
+    trans: msg.trans,
+  }
+  await addDBValue(~db, ~storeName="favorite", ~data, ())
+  sendResponse(. Obj.magic(true))
+}
+// fav cancel
 let favDeleteOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
   let db = await dbInstance
   // delete one text
@@ -52,6 +61,7 @@ let recordDeleteManyMessageHandler = async (recordType, msg: datesMsgContent, se
   sendResponse(. Obj.magic(false))
 }
 
+// GetAll / Clear
 let recordMessageHandler = async (recordType, extraAction, sendResponse) => {
   switch extraAction {
   | GetAll => {
@@ -70,48 +80,42 @@ let recordMessageHandler = async (recordType, extraAction, sendResponse) => {
   }
 }
 
-let historyAddMessageHandler = async (msg: textMsgContent, tab, sendResponse) => {
+let historyAddMessageHandler = async (msg: textMsgContent, sender, sendResponse) => {
   let db = await dbInstance
-  let ret = await getDBValueFromIndex(~db, ~storeName="history", ~indexName="text", ~key=msg.text)
+  let mText = msg.text
+  let tab = getBrowserTab(sender)
+  let data: recordData = {
+    url: tab["url"],
+    title: tab["title"],
+    favIconUrl: tab["favIconUrl"],
+    date: Js.Date.now(),
+    text: mText,
+  }
+  let ret: bool = await getDBValueFromIndex(
+    ~db,
+    ~storeName="history",
+    ~indexName="text",
+    ~key=mText,
+  )
   let _ = switch !ret {
-  | true =>
-    await addDBValue(
-      ~db,
-      ~storeName="history",
-      ~data={
-        "date": Js.Date.now(),
-        "text": msg.text,
-        "url": tab["url"],
-        "title": tab["title"],
-        "favIconUrl": tab["favIconUrl"],
-      },
-      (),
-    )
+  | true => await addDBValue(~db, ~storeName="history", ~data, ())
   | _ => ()
   }
   sendResponse(. Obj.magic(None))
 }
 
 Chrome.addMessageListener((message: msgContent, sender, sendResponse) => {
-  let tab = switch sender["tab"] {
-  | Some(v) => v
-  | _ => {
-      "url": sender["url"],
-      "title": "Love Word",
-      "favIconUrl": `${sender["origin"]}/icons/lw32x32.png`,
-    }
-  }
   // must invoke `sendRespone`, or message channel will close in advance
   switch message {
   | TranslateMsgContent(msg) => translateMessageHandler(msg, sendResponse)
   // favorite
-  | FavAddMsgContent(msg) => favAddMessageHandler(msg, tab, sendResponse)
   | FavGetOneMsgContent(msg) => favGetOneMessageHandler(msg, sendResponse)
+  | FavAddMsgContent(msg) => favAddMessageHandler(msg, sender, sendResponse)
   | FavDeleteOneMsgContent(msg) => favDeleteOneMessageHandler(msg, sendResponse)
   | FavDeleteManyMsgContent(msg) => recordDeleteManyMessageHandler("favorite", msg, sendResponse)
   | FavExtraMsgContent(msg) => recordMessageHandler("favorite", msg, sendResponse)
   // history
-  | HistoryAddMsgContent(msg) => historyAddMessageHandler(msg, tab, sendResponse)
+  | HistoryAddMsgContent(msg) => historyAddMessageHandler(msg, sender, sendResponse)
   | HistoryDeleteManyMsgContent(msg) => recordDeleteManyMessageHandler("history", msg, sendResponse)
   | HistoryExtraMsgContent(msg) => recordMessageHandler("history", msg, sendResponse)
   }->ignore
