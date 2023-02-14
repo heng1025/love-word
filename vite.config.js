@@ -10,7 +10,7 @@ export default {
       input: {
         popup: resolve(__dirname, "popup.html"),
         options: resolve(__dirname, "options.html"),
-        background: resolve(__dirname, "src/background.js"),
+        background: resolve(__dirname, "src/Background.js"),
         content: resolve(__dirname, "src/content_scripts/ContentEntry.js"),
       },
       output: {
@@ -18,7 +18,7 @@ export default {
           if (id.includes("node_modules")) {
             return "vendor";
           }
-          if (id.includes("src/common.css") || id.includes("src/utils")) {
+          if (id.includes("src/common.css") || id.includes("src/Utils")) {
             return "common";
           }
         },
