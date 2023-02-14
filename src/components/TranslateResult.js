@@ -25,12 +25,12 @@ function TranslateResult(props) {
               }, errText$1);
         } else {
           switch (data.TAG | 0) {
-            case /* Dict */0 :
+            case /* DictT */0 :
                 tmp = React.createElement(DictPanel.make, {
                       data: data._0
                     });
                 break;
-            case /* Baidu */1 :
+            case /* BaiduT */1 :
                 tmp = React.createElement(MachineTPanel.make, {
                       data: data._0
                     });

@@ -12,28 +12,50 @@ function FavButton(props) {
   var setFaved = match[1];
   var isFaved = match[0];
   var favAction = async function (action) {
+    var msgContent;
+    switch (action) {
+      case /* Get */0 :
+          msgContent = {
+            TAG: /* FavGetOneMsgContent */2,
+            _0: {
+              text: text
+            }
+          };
+          break;
+      case /* Add */1 :
+          msgContent = {
+            TAG: /* FavAddMsgContent */1,
+            _0: {
+              text: text,
+              trans: trans
+            }
+          };
+          break;
+      case /* Delete */2 :
+          msgContent = {
+            TAG: /* FavDeleteOneMsgContent */3,
+            _0: {
+              text: text
+            }
+          };
+          break;
+      
+    }
     if (text === "") {
       return ;
     }
-    var faved = await chrome.runtime.sendMessage({
-          _type: /* Message */{
-            _0: /* FAVORITE */1,
-            _1: action
-          },
-          text: text,
-          trans: trans
-        });
+    var faved = await chrome.runtime.sendMessage(msgContent);
     return setFaved(function (param) {
                 return faved;
               });
   };
   React.useEffect((function () {
-          favAction(/* GET */1);
+          favAction(/* Get */0);
         }), [text]);
   return React.createElement("button", {
               className: "btn btn-xs w-5 h-5 fill-white min-h-0 btn-circle btn-ghost",
               onClick: (function (param) {
-                  favAction(isFaved ? /* DELETE */3 : /* ADD */0);
+                  favAction(isFaved ? /* Delete */2 : /* Add */1);
                 })
             }, isFaved ? React.createElement(Widget.StarFill.make, {}) : React.createElement(Widget.Star.make, {}));
 }

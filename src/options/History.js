@@ -5,7 +5,7 @@ import * as RecordHook from "../hooks/RecordHook.js";
 import * as RecordAction from "./RecordAction.js";
 
 function $$History(props) {
-  var match = RecordHook.useRecord(/* HISTORY */0);
+  var match = RecordHook.useRecord(/* History */0);
   var onCheck = match.onCheck;
   var records = match.records;
   var recordEles = records.map(function (v) {

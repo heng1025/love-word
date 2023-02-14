@@ -12,13 +12,27 @@ function useRecord(recordType) {
       });
   var setRecords = match[1];
   var records = match[0];
+  var getDeleteManyMsgContent = function (dates) {
+    if (recordType) {
+      return {
+              TAG: /* FavDeleteManyMsgContent */4,
+              _0: dates
+            };
+    } else {
+      return {
+              TAG: /* HistoryDeleteManyMsgContent */7,
+              _0: dates
+            };
+    }
+  };
   var getAll = async function (param) {
-    var ret = await chrome.runtime.sendMessage({
-          _type: /* Message */{
-            _0: recordType,
-            _1: /* GETALL */2
-          }
-        });
+    var ret = await chrome.runtime.sendMessage(recordType ? ({
+              TAG: /* FavExtraMsgContent */5,
+              _0: /* GetAll */0
+            }) : ({
+              TAG: /* HistoryExtraMsgContent */8,
+              _0: /* GetAll */0
+            }));
     var rs = ret.sort(function (v1, v2) {
             return v2.date - v1.date | 0;
           }).map(function (v) {
@@ -67,24 +81,21 @@ function useRecord(recordType) {
               });
   };
   var onDelete = async function (checkedRecords) {
-    await chrome.runtime.sendMessage({
-          _type: /* Message */{
-            _0: recordType,
-            _1: /* DELETE */3
-          },
-          date: checkedRecords.map(function (v) {
-                return v.date;
-              })
-        });
+    await chrome.runtime.sendMessage(getDeleteManyMsgContent({
+              dates: checkedRecords.map(function (v) {
+                    return v.date;
+                  })
+            }));
     return await getAll(undefined);
   };
   var onClear = async function () {
-    await chrome.runtime.sendMessage({
-          _type: /* Message */{
-            _0: recordType,
-            _1: /* CLEAR */4
-          }
-        });
+    await chrome.runtime.sendMessage(recordType ? ({
+              TAG: /* FavExtraMsgContent */5,
+              _0: /* Clear */1
+            }) : ({
+              TAG: /* HistoryExtraMsgContent */8,
+              _0: /* Clear */1
+            }));
     return await getAll(undefined);
   };
   return {

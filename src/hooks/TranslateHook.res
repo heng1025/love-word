@@ -19,14 +19,13 @@ let useTranslate = (text: string) => {
       if txt !== "" {
         setLoading(._p => Yes)
         seErrText(._ => "")
-        let ret = await sendMessage({_type: TRASTALTE, text: txt})
+        let ret = await sendMessage(TranslateMsgContent({text: txt}))
         let _ = switch ret {
         | Message(msg) => seErrText(._p => msg)
-        | val => {
-            setData(._p => val)
-            // add history record
-            sendMessage({_type: Message(HISTORY, ADD), text: txt})->ignore
-          }
+        | val =>
+          setData(._p => val)
+          // add history record
+          sendMessage(HistoryAddMsgContent({text: txt}))->ignore
         }
         setLoading(._p => No)
       }

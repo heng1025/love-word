@@ -24,11 +24,27 @@ type return = {
   onClear: (. unit) => unit,
   onCancel: (. unit) => unit,
 }
+
+type recordType = History | Favorite
+
 let useRecord = recordType => {
   let (records, setRecords) = React.Uncurried.useState(_ => [])
 
+  let getExtraMsgContent = action => {
+    switch recordType {
+    | Favorite => FavExtraMsgContent(action)
+    | History => HistoryExtraMsgContent(action)
+    }
+  }
+  let getDeleteManyMsgContent = dates => {
+    switch recordType {
+    | Favorite => FavDeleteManyMsgContent({dates})
+    | History => HistoryDeleteManyMsgContent({dates})
+    }
+  }
+
   let getAll = async () => {
-    let ret = await sendMessage({_type: Message(recordType, GETALL)})
+    let ret = await sendMessage(getExtraMsgContent(GetAll))
     let rs =
       ret
       ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2["date"] - v1["date"]))
@@ -36,7 +52,6 @@ let useRecord = recordType => {
         v["checked"] = false
         v
       })
-
     setRecords(._ => rs)
   }
 
@@ -78,15 +93,14 @@ let useRecord = recordType => {
   }
 
   let onDelete = async (. checkedRecords) => {
-    let _ = await sendMessage({
-      _type: Message(recordType, DELETE),
-      date: Js.Array2.map(checkedRecords, v => v["date"]),
-    })
+    let _ = await sendMessage(
+      getDeleteManyMsgContent({dates: Js.Array2.map(checkedRecords, v => v["date"])}),
+    )
     await getAll()
   }
 
   let onClear = async (. ()) => {
-    let _ = await sendMessage({_type: Message(recordType, CLEAR)})
+    let _ = await sendMessage(getExtraMsgContent(Clear))
     await getAll()
   }
 

@@ -25,15 +25,15 @@ async function translate(q) {
   try {
     var res = await fetch("" + endpoint + "?q=" + q + "", undefined);
     var data = await res.json();
-    if (data == null) {
-      return {
-              TAG: /* Error */1,
-              _0: "Word can not find"
-            };
-    } else {
+    if (data !== undefined) {
       return {
               TAG: /* Ok */0,
               _0: data
+            };
+    } else {
+      return {
+              TAG: /* Error */1,
+              _0: "Word can not find"
             };
     }
   }
@@ -165,7 +165,7 @@ async function adapterTrans(text) {
     var res = await translate$1(text);
     if (res.TAG === /* Ok */0) {
       return {
-              TAG: /* Baidu */1,
+              TAG: /* BaiduT */1,
               _0: res._0
             };
     } else {
@@ -181,7 +181,7 @@ async function adapterTrans(text) {
   var val = await translate(text);
   if (val.TAG === /* Ok */0) {
     return {
-            TAG: /* Dict */0,
+            TAG: /* DictT */0,
             _0: val._0
           };
   } else {

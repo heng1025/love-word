@@ -6,110 +6,122 @@ import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var dbInstance = Database.getDB(undefined);
 
-async function messageHandler(message, sender, sendResponse) {
-  var mType = message._type;
-  var v = message.text;
-  var mText = v !== undefined ? v : "";
-  var v$1 = sender.tab;
-  var tab = v$1 !== undefined ? Caml_option.valFromOption(v$1) : ({
-        url: sender.url,
-        title: "Love Word",
-        favIconUrl: "" + sender.origin + "/icons/lw32x32.png"
+async function translateMessageHandler(msg, sendResponse) {
+  var ret = await Utils.adapterTrans(msg.text);
+  return sendResponse(ret);
+}
+
+async function favAddMessageHandler(msg, tab, sendResponse) {
+  var db = await dbInstance;
+  await db.add("favorite", {
+        url: tab.url,
+        title: tab.title,
+        favIconUrl: tab.favIconUrl,
+        date: Date.now(),
+        text: msg.text,
+        trans: msg.trans
+      }, undefined);
+  return sendResponse(true);
+}
+
+async function favGetOneMessageHandler(msg, sendResponse) {
+  var db = await dbInstance;
+  var ret = await db.getFromIndex("favorite", "text", msg.text);
+  return sendResponse(ret);
+}
+
+async function favDeleteOneMessageHandler(msg, sendResponse) {
+  var db = await dbInstance;
+  var key = await db.getKeyFromIndex("favorite", "text", msg.text);
+  await db.delete("favorite", key);
+  return sendResponse(false);
+}
+
+async function recordDeleteManyMessageHandler(recordType, msg, sendResponse) {
+  var db = await dbInstance;
+  var tx = db.transaction(recordType, "readwrite");
+  var pstores = msg.dates.map(function (item) {
+        return tx.store.delete(item);
       });
-  if (mType) {
-    if (mType._0) {
-      switch (mType._1) {
-        case /* ADD */0 :
-            var db = await dbInstance;
-            await db.add("favorite", {
-                  date: Date.now(),
-                  text: mText,
-                  trans: message.trans,
-                  url: tab.url,
-                  title: tab.title,
-                  favIconUrl: tab.favIconUrl
-                }, undefined);
-            return sendResponse(true);
-        case /* GET */1 :
-            var db$1 = await dbInstance;
-            var ret = await db$1.getFromIndex("favorite", "text", mText);
-            return sendResponse(ret);
-        case /* GETALL */2 :
-            var db$2 = await dbInstance;
-            var ret$1 = await db$2.getAllFromIndex("favorite", "text");
-            return sendResponse(ret$1);
-        case /* DELETE */3 :
-            var db$3 = await dbInstance;
-            var v$2 = message.date;
-            if (v$2 !== undefined) {
-              var tx = db$3.transaction("favorite", "readwrite");
-              var pstores = v$2.map(function (item) {
-                    return tx.store.delete(item);
-                  });
-              await Promise.all(pstores);
-              return sendResponse(false);
-            }
-            var key = await db$3.getKeyFromIndex("favorite", "text", mText);
-            await db$3.delete("favorite", key);
-            return sendResponse(false);
-        case /* CLEAR */4 :
-            var db$4 = await dbInstance;
-            await db$4.clear("favorite");
-            return sendResponse(undefined);
-        
-      }
-    } else {
-      switch (mType._1) {
-        case /* ADD */0 :
-            var db$5 = await dbInstance;
-            var ret$2 = await db$5.getFromIndex("history", "text", mText);
-            var match = !ret$2;
-            if (match) {
-              await db$5.add("history", {
-                    date: Date.now(),
-                    text: mText,
-                    url: tab.url,
-                    title: tab.title,
-                    favIconUrl: tab.favIconUrl
-                  }, undefined);
-            }
-            return ;
-        case /* GET */1 :
-            return ;
-        case /* GETALL */2 :
-            var db$6 = await dbInstance;
-            var ret$3 = await db$6.getAllFromIndex("history", "date");
-            return sendResponse(ret$3);
-        case /* DELETE */3 :
-            var db$7 = await dbInstance;
-            var v$3 = message.date;
-            if (v$3 !== undefined) {
-              var tx$1 = db$7.transaction("history", "readwrite");
-              var pstores$1 = v$3.map(function (item) {
-                    return tx$1.store.delete(item);
-                  });
-              await Promise.all(pstores$1);
-            }
-            return sendResponse(undefined);
-        case /* CLEAR */4 :
-            var db$8 = await dbInstance;
-            return await db$8.clear("history");
-        
-      }
-    }
-  } else {
-    var ret$4 = await Utils.adapterTrans(mText);
-    return sendResponse(ret$4);
+  await Promise.all(pstores);
+  return sendResponse(false);
+}
+
+async function recordMessageHandler(recordType, extraAction, sendResponse) {
+  if (extraAction) {
+    var db = await dbInstance;
+    await db.clear(recordType);
+    return sendResponse(undefined);
   }
+  var db$1 = await dbInstance;
+  var ret = await db$1.getAllFromIndex(recordType, "text");
+  return sendResponse(ret);
+}
+
+async function historyAddMessageHandler(msg, tab, sendResponse) {
+  var db = await dbInstance;
+  var ret = await db.getFromIndex("history", "text", msg.text);
+  var match = !ret;
+  if (match) {
+    await db.add("history", {
+          date: Date.now(),
+          text: msg.text,
+          url: tab.url,
+          title: tab.title,
+          favIconUrl: tab.favIconUrl
+        }, undefined);
+  }
+  return sendResponse(undefined);
 }
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-      messageHandler(message, sender, sendResponse);
+      var v = sender.tab;
+      var tab = v !== undefined ? Caml_option.valFromOption(v) : ({
+            url: sender.url,
+            title: "Love Word",
+            favIconUrl: "" + sender.origin + "/icons/lw32x32.png"
+          });
+      switch (message.TAG | 0) {
+        case /* TranslateMsgContent */0 :
+            translateMessageHandler(message._0, sendResponse);
+            break;
+        case /* FavAddMsgContent */1 :
+            favAddMessageHandler(message._0, tab, sendResponse);
+            break;
+        case /* FavGetOneMsgContent */2 :
+            favGetOneMessageHandler(message._0, sendResponse);
+            break;
+        case /* FavDeleteOneMsgContent */3 :
+            favDeleteOneMessageHandler(message._0, sendResponse);
+            break;
+        case /* FavDeleteManyMsgContent */4 :
+            recordDeleteManyMessageHandler("favorite", message._0, sendResponse);
+            break;
+        case /* FavExtraMsgContent */5 :
+            recordMessageHandler("favorite", message._0, sendResponse);
+            break;
+        case /* HistoryAddMsgContent */6 :
+            historyAddMessageHandler(message._0, tab, sendResponse);
+            break;
+        case /* HistoryDeleteManyMsgContent */7 :
+            recordDeleteManyMessageHandler("history", message._0, sendResponse);
+            break;
+        case /* HistoryExtraMsgContent */8 :
+            recordMessageHandler("history", message._0, sendResponse);
+            break;
+        
+      }
       return true;
     });
 
 export {
   dbInstance ,
-  messageHandler ,
+  translateMessageHandler ,
+  favAddMessageHandler ,
+  favGetOneMessageHandler ,
+  favDeleteOneMessageHandler ,
+  recordDeleteManyMessageHandler ,
+  recordMessageHandler ,
+  historyAddMessageHandler ,
 }
 /* dbInstance Not a pure module */

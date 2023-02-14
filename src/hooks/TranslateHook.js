@@ -30,13 +30,15 @@ function useTranslate(text) {
                   return "";
                 });
             var ret = await chrome.runtime.sendMessage({
-                  _type: /* TRASTALTE */0,
-                  text: txt
+                  TAG: /* TranslateMsgContent */0,
+                  _0: {
+                    text: txt
+                  }
                 });
             var exit = 0;
             switch (ret.TAG | 0) {
-              case /* Dict */0 :
-              case /* Baidu */1 :
+              case /* DictT */0 :
+              case /* BaiduT */1 :
                   exit = 1;
                   break;
               case /* Message */2 :
@@ -52,11 +54,10 @@ function useTranslate(text) {
                     return ret;
                   });
               chrome.runtime.sendMessage({
-                    _type: /* Message */{
-                      _0: /* HISTORY */0,
-                      _1: /* ADD */0
-                    },
-                    text: txt
+                    TAG: /* HistoryAddMsgContent */6,
+                    _0: {
+                      text: txt
+                    }
                   });
             }
             return setLoading(function (_p) {

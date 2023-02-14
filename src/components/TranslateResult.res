@@ -12,8 +12,8 @@ let make = (~loading=No, ~data, ~errText="", ~className="") => {
       | true => <div className="text-error"> {React.string(errText)} </div>
       | false =>
         switch data {
-        | Baidu(br) => <MachineTPanel data=br />
-        | Dict(dr) => <DictPanel data=dr />
+        | BaiduT(br) => <MachineTPanel data=br />
+        | DictT(dr) => <DictPanel data=dr />
         | _ => React.null
         }
       }

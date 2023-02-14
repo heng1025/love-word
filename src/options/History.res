@@ -1,9 +1,8 @@
-open Utils
 open RecordHook
 
 @react.component
 let make = () => {
-  let {records, onCheck, onCancel, onClear, onDelete, onSearch} = useRecord(HISTORY)
+  let {records, onCheck, onCancel, onClear, onDelete, onSearch} = useRecord(History)
 
   let recordEles = records->Js.Array2.map(v => {
     let date = v["date"]

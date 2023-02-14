@@ -2,10 +2,6 @@ open Common
 open Common.Chrome
 open Common.Webapi.Window
 
-type actionType = ADD | GET | GETALL | DELETE | CLEAR
-type recordType = HISTORY | FAVORITE
-type msgType = TRASTALTE | Message(recordType, actionType)
-
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
 
 module OfflineDict = {
@@ -25,8 +21,8 @@ module OfflineDict = {
   let translate = async q => {
     try {
       let res = await fetch(~input=`${endpoint}?q=${q}`, ())
-      let data = await Response.json(res)
-      switch Js.toOption(data) {
+      let data: option<dictOk> = await Response.json(res)
+      switch data {
       | Some(val) => Ok(val)
       | _ => Error("Word can not find")
       }
@@ -121,14 +117,28 @@ module Baidu = {
   }
 }
 
-type resultT = Dict(OfflineDict.dictOk) | Baidu(Baidu.baiduOk) | Message(string)
+type resultT = DictT(OfflineDict.dictOk) | BaiduT(Baidu.baiduOk) | Message(string)
 
-type msgContent = {
-  _type: msgType,
-  date?: array<float>,
-  text?: string,
-  trans?: resultT,
+type textMsgContent = {text: string}
+type datesMsgContent = {dates: array<float>}
+type favAddMsgContent = {
+  text: string,
+  trans: resultT,
 }
+
+type extraAction = GetAll | Clear
+type msgContent =
+  | TranslateMsgContent(textMsgContent)
+  // favorite
+  | FavAddMsgContent(favAddMsgContent)
+  | FavGetOneMsgContent(textMsgContent)
+  | FavDeleteOneMsgContent(textMsgContent)
+  | FavDeleteManyMsgContent(datesMsgContent)
+  | FavExtraMsgContent(extraAction)
+  // history
+  | HistoryAddMsgContent(textMsgContent)
+  | HistoryDeleteManyMsgContent(datesMsgContent)
+  | HistoryExtraMsgContent(extraAction)
 
 let adapterTrans = async text => {
   let sl = getSourceLang(text)
@@ -136,7 +146,7 @@ let adapterTrans = async text => {
 
   let baiduResult = async () => {
     switch await Baidu.translate(text) {
-    | Ok(res) => Baidu(res)
+    | Ok(res) => BaiduT(res)
     | Error(msg) => Message(msg)
     }
   }
@@ -145,7 +155,7 @@ let adapterTrans = async text => {
     await baiduResult()
   } else {
     switch await OfflineDict.translate(text) {
-    | Ok(val) => Dict(val)
+    | Ok(val) => DictT(val)
     | _ => await baiduResult()
     }
   }
