@@ -146,7 +146,7 @@ module Qs = {
 }
 
 module FrancMin = {
-  type options = {minLength: int, only: Js.Array2.t<string>}
+  type options = {minLength: int, only: array<string>}
   @module("franc-min") external createFranc: (string, options) => string = "franc"
 }
 

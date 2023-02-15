@@ -3,17 +3,19 @@ open Widget
 open Common.Webapi
 
 @react.component
-let make = (~data) => {
+let make = (~data: array<Baidu.baiduOk>) => {
   let audioEl = React.useRef(Js.Nullable.null)
   let (transList, setTransList) = React.Uncurried.useState(_ => [])
+
+  let isEqual = (text, v: Baidu.baiduOk) => v.src === text || v.dst === text
 
   React.useEffect1(() => {
     setTransList(._ =>
       Js.Array2.map(
         data,
         v => {
-          v["isPlay"] = false
-          v["sourceVisible"] = false
+          v.isPlay = false
+          v.sourceVisible = false
           v
         },
       )
@@ -24,11 +26,10 @@ let make = (~data) => {
   let onPlay = text => {
     setTransList(.p =>
       Js.Array2.map(p, v => {
-        // https://forum.rescript-lang.org/t/object-access-using-variable/593/2
-        if v["src"] === text || v["dst"] === text {
-          v["isPlay"] = !v["isPlay"]
+        if isEqual(text, v) {
+          v.isPlay = !v.isPlay
         } else {
-          v["isPlay"] = false
+          v.isPlay = false
         }
         v
       })
@@ -37,10 +38,10 @@ let make = (~data) => {
     audioEl.current
     ->Js.Nullable.toOption
     ->Belt.Option.forEach(audio => {
-      let current = Js.Array2.find(transList, v => v["src"] === text || v["dst"] === text)
+      let current = Js.Array2.find(transList, v => isEqual(text, v))
       switch current {
       | Some(v) =>
-        if v["isPlay"] {
+        if v.isPlay {
           audio->Element.createAudioSrc("")
         } else {
           audio->Element.createAudioSrc(Baidu.textToSpeech(text))
@@ -54,7 +55,7 @@ let make = (~data) => {
   let onEnded = _ => {
     setTransList(.p =>
       Js.Array2.map(p, v => {
-        v["isPlay"] = false
+        v.isPlay = false
         v
       })
     )
@@ -63,8 +64,8 @@ let make = (~data) => {
   let toggleSource = text => {
     setTransList(.p =>
       Js.Array2.map(p, v => {
-        if v["src"] === text || v["dst"] === text {
-          v["sourceVisible"] = !v["sourceVisible"]
+        if isEqual(text, v) {
+          v.sourceVisible = !v.sourceVisible
         }
         v
       })
@@ -72,14 +73,14 @@ let make = (~data) => {
   }
 
   let resultEl = Js.Array2.mapi(transList, (result, idx) => {
-    let text = result["sourceVisible"] ? result["src"] : result["dst"]
-    let isPlay = result["isPlay"]
+    let text = result.sourceVisible ? result.src : result.dst
+    let isPlay = result.isPlay
     <p key={Js.Int.toString(idx)}>
       <span className="align-middle"> {React.string(text)} </span>
       <button
         className="btn btn-xs w-5 h-5 min-h-0 btn-circle btn-ghost ml-[2px] align-middle"
         onClick={_ => toggleSource(text)}>
-        {switch result["sourceVisible"] {
+        {switch result.sourceVisible {
         | true =>
           <svg className="fill-warning" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
             <path

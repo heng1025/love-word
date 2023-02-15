@@ -40,18 +40,26 @@ module OfflineDict = {
 module Baidu = {
   let endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate"
 
-  type baiduOk = Js.Array2.t<{
-    "src": string,
-    "dst": string,
-    @set
-    "isPlay": bool,
-    @set
-    "sourceVisible": bool,
-  }>
+  type baiduOk = {
+    src: string,
+    dst: string,
+    mutable isPlay: bool,
+    mutable sourceVisible: bool,
+  }
+
+  // type baiduOk = array<{
+  //   "src": string,
+  //   "dst": string,
+  //   "ab11": string,
+  //   @set
+  //   "isPlay": bool,
+  //   @set
+  //   "sourceVisible": bool,
+  // }>
 
   type response = {
     error_msg?: string,
-    trans_result?: baiduOk,
+    trans_result?: array<baiduOk>,
   }
 
   let textToSpeech = text => {
@@ -117,7 +125,7 @@ module Baidu = {
   }
 }
 
-type resultT = DictT(OfflineDict.dictOk) | BaiduT(Baidu.baiduOk) | Message(string)
+type resultT = DictT(OfflineDict.dictOk) | BaiduT(array<Baidu.baiduOk>) | Message(string)
 
 type textMsgContent = {text: string}
 type datesMsgContent = {dates: array<float>}

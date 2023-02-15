@@ -14,6 +14,13 @@ function MachineTPanel(props) {
       });
   var setTransList = match[1];
   var transList = match[0];
+  var isEqual = function (text, v) {
+    if (v.src === text) {
+      return true;
+    } else {
+      return v.dst === text;
+    }
+  };
   React.useEffect((function () {
           setTransList(function (param) {
                 return data.map(function (v) {
@@ -43,7 +50,7 @@ function MachineTPanel(props) {
                         onClick: (function (param) {
                             setTransList(function (p) {
                                   return p.map(function (v) {
-                                              if (v.src === text || v.dst === text) {
+                                              if (isEqual(text, v)) {
                                                 v.sourceVisible = !v.sourceVisible;
                                               }
                                               return v;
@@ -67,7 +74,7 @@ function MachineTPanel(props) {
                         onClick: (function (param) {
                             setTransList(function (p) {
                                   return p.map(function (v) {
-                                              if (v.src === text || v.dst === text) {
+                                              if (isEqual(text, v)) {
                                                 v.isPlay = !v.isPlay;
                                               } else {
                                                 v.isPlay = false;
@@ -77,11 +84,7 @@ function MachineTPanel(props) {
                                 });
                             Belt_Option.forEach(Caml_option.nullable_to_opt(audioEl.current), (function (audio) {
                                     var current = transList.find(function (v) {
-                                          if (v.src === text) {
-                                            return true;
-                                          } else {
-                                            return v.dst === text;
-                                          }
+                                          return isEqual(text, v);
                                         });
                                     if (current !== undefined) {
                                       if (current.isPlay) {
