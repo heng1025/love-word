@@ -5,7 +5,7 @@ open Common.Webapi.Window
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
 
 module OfflineDict = {
-  let apiHost = %raw(`import.meta.env.VITE_API_HOST`)
+  let apiHost = %raw(`import.meta.env.LW_API_HOST`)
   let endpoint = `${apiHost}/dict`
 
   type dictOk = {

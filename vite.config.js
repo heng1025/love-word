@@ -1,11 +1,12 @@
+import { defineConfig } from "vite";
 import { resolve } from "path";
 
-/** @type {import('vite').UserConfig} */
-export default {
+export default defineConfig({
   appType: "mpa",
+  envPrefix: "LW_",
   build: {
-    watch: {},
-    minify: false,
+    minify: !process.env.__DEV__,
+    modulePreload: false,
     rollupOptions: {
       input: {
         popup: resolve(__dirname, "popup.html"),
@@ -34,4 +35,4 @@ export default {
       },
     },
   },
-};
+});

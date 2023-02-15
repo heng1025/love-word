@@ -17,7 +17,7 @@ function getSourceLang(text) {
             });
 }
 
-var apiHost = import.meta.env.VITE_API_HOST;
+var apiHost = import.meta.env.LW_API_HOST;
 
 var endpoint = "" + apiHost + "/dict";
 
