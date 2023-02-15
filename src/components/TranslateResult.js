@@ -13,6 +13,7 @@ function TranslateResult(props) {
   var className$1 = className !== undefined ? className : "";
   var errText$1 = errText !== undefined ? errText : "";
   var loading$1 = loading !== undefined ? loading : /* No */1;
+  var loadingCN = loading$1 === /* Yes */0 ? "flex min-h-16 justify-center items-center" : "";
   var tmp;
   switch (loading$1) {
     case /* Yes */0 :
@@ -48,7 +49,7 @@ function TranslateResult(props) {
     
   }
   return React.createElement("div", {
-              className: "" + className$1 + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
+              className: "" + className$1 + " " + loadingCN + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
             }, tmp);
 }
 
