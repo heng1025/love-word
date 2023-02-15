@@ -43,19 +43,9 @@ module Baidu = {
   type baiduOk = {
     src: string,
     dst: string,
-    mutable isPlay: bool,
-    mutable sourceVisible: bool,
+    mutable isPlay?: bool,
+    mutable sourceVisible?: bool,
   }
-
-  // type baiduOk = array<{
-  //   "src": string,
-  //   "dst": string,
-  //   "ab11": string,
-  //   @set
-  //   "isPlay": bool,
-  //   @set
-  //   "sourceVisible": bool,
-  // }>
 
   type response = {
     error_msg?: string,
@@ -125,7 +115,10 @@ module Baidu = {
   }
 }
 
-type resultT = DictT(OfflineDict.dictOk) | BaiduT(array<Baidu.baiduOk>) | Message(string)
+type resultT =
+  | DictT({dict: OfflineDict.dictOk})
+  | BaiduT({baidu: array<Baidu.baiduOk>})
+  | Message(string)
 
 type textMsgContent = {text: string}
 type datesMsgContent = {dates: array<float>}
@@ -174,7 +167,7 @@ let adapterTrans = async text => {
 
   let baiduResult = async () => {
     switch await Baidu.translate(text) {
-    | Ok(res) => BaiduT(res)
+    | Ok(res) => BaiduT({baidu: res})
     | Error(msg) => Message(msg)
     }
   }
@@ -183,7 +176,7 @@ let adapterTrans = async text => {
     await baiduResult()
   } else {
     switch await OfflineDict.translate(text) {
-    | Ok(val) => DictT(val)
+    | Ok(val) => DictT({dict: val})
     | _ => await baiduResult()
     }
   }

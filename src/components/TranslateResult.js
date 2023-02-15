@@ -28,12 +28,12 @@ function TranslateResult(props) {
           switch (data.TAG | 0) {
             case /* DictT */0 :
                 tmp = React.createElement(DictPanel.make, {
-                      data: data._0
+                      data: data.dict
                     });
                 break;
             case /* BaiduT */1 :
                 tmp = React.createElement(MachineTPanel.make, {
-                      data: data._0
+                      data: data.baidu
                     });
                 break;
             case /* Message */2 :

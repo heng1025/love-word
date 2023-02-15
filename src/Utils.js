@@ -166,7 +166,7 @@ async function adapterTrans(text) {
     if (res.TAG === /* Ok */0) {
       return {
               TAG: /* BaiduT */1,
-              _0: res._0
+              baidu: res._0
             };
     } else {
       return {
@@ -182,7 +182,7 @@ async function adapterTrans(text) {
   if (val.TAG === /* Ok */0) {
     return {
             TAG: /* DictT */0,
-            _0: val._0
+            dict: val._0
           };
   } else {
     return await baiduResult(undefined);
