@@ -1,8 +1,9 @@
 {
   "name": "love word",
   "version": "0.0.7",
+  "description": "Love because of words, a translation extension for chrome browser",
   "manifest_version": 3,
-  "description": "Love because of words",
+  "options_page": "src/options/index.html",
   "icons": {
     "16": "icons/lw16x16.png",
     "32": "icons/lw32x32.png",
@@ -11,24 +12,36 @@
   },
   "action": {
     "default_title": "Love Word",
-    "default_popup": "popup.html"
+    "default_popup": "src/popup/index.html"
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content-loader.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-loader.js"
+      ]
     }
   ],
   "web_accessible_resources": [
     {
-      "matches": ["<all_urls>"],
-      "resources": ["images/*.jpeg", "assets/*.css", "assets/*.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "images/*.jpeg",
+        "assets/*.css",
+        "assets/*.js",
+        "src/*.js"
+      ]
     }
   ],
-  "permissions": ["storage"],
-  "options_page": "options.html",
-  "background": {
-    "service_worker": "assets/background.js",
-    "type": "module"
-  }
+  "permissions": [
+    "storage"
+  ]
 }

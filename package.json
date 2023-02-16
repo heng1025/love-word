@@ -1,7 +1,7 @@
 {
   "name": "love-word",
   "version": "0.0.7",
-  "description": "a translation extension for chrome browser",
+  "description": "Love because of words, a translation extension for chrome browser",
   "scripts": {
     "dev": "conc 'rescript build -w' '__DEV__=true vite build -w'",
     "build": "rescript && vite build"
