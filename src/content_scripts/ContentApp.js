@@ -7,7 +7,7 @@ import * as FavButton from "../components/FavButton.js";
 import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
-var common = chrome.runtime.getURL("assets/common.css");
+var common = chrome.runtime.getURL(__CONTENT_CSS__);
 
 function ContentApp(props) {
   var host = props.host;
