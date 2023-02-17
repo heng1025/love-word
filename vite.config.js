@@ -12,10 +12,10 @@ export default defineConfig({
     modulePreload: false,
     rollupOptions: {
       input: {
-        popup: resolve(__dirname, "src/popup/index.html"),
-        options: resolve(__dirname, "src/options/index.html"),
+        popup: resolve(__dirname, "popup.html"),
+        options: resolve(__dirname, "options.html"),
         background: resolve(__dirname, "src/Background.js"),
-        content: resolve(__dirname, "src/content_scripts/ContentEntry.js"),
+        content: resolve(__dirname, "src/content_scripts/ContentLoader.js"),
       },
       output: {
         manualChunks(id) {
@@ -24,7 +24,7 @@ export default defineConfig({
           }
         },
         entryFileNames: (chunk) => {
-          return "src/[name].js";
+          return "pages/[name].js";
         },
         assetFileNames: (asset) => {
           return "assets/[name].[ext]";

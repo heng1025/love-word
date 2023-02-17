@@ -8,6 +8,8 @@ open Widget
 
 @@warning("-44")
 
+// if inject css in manifest, it may pollute host page,
+// so use shadow dom is a good idea.
 let common = getURL("assets/common.css")
 
 @react.component
