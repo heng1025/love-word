@@ -10,9 +10,9 @@ function TranslateResult(props) {
   var errText = props.errText;
   var data = props.data;
   var loading = props.loading;
-  var className$1 = className !== undefined ? className : "";
-  var errText$1 = errText !== undefined ? errText : "";
   var loading$1 = loading !== undefined ? loading : /* No */1;
+  var errText$1 = errText !== undefined ? errText : "";
+  var className$1 = className !== undefined ? className : "";
   var loadingCN = loading$1 === /* Yes */0 ? "flex min-h-16 justify-center items-center" : "";
   var tmp;
   switch (loading$1) {
