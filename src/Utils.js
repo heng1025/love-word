@@ -70,10 +70,10 @@ var endpoint$1 = "https://api.fanyi.baidu.com/api/trans/vip/translate";
 
 function textToSpeech(text) {
   var query = Qs.stringify({
-        word: text,
+        audio: text,
         le: "zh"
       });
-  return "https://tts.youdao.com/fanyivoice?" + query + "";
+  return "https://dict.youdao.com/dictvoice?" + query + "";
 }
 
 async function translate$1(q) {

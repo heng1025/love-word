@@ -54,11 +54,11 @@ module Baidu = {
 
   let textToSpeech = text => {
     let query = Qs.stringify({
-      "word": text,
+      "audio": text,
       "le": "zh",
     })
 
-    `https://tts.youdao.com/fanyivoice?${query}`
+    `https://dict.youdao.com/dictvoice?${query}`
   }
 
   let translate = async q => {
