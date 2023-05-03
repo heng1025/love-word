@@ -1,7 +1,64 @@
 module Loading = {
+  let shouldDelay = (spanning, delay) => {
+    spanning && delay > 0
+  }
+
+  let debounce = (. delay, callback) => {
+    let timeoutID = ref(Js.Nullable.null)
+    let cancelled = ref(false)
+
+    let clearExistingTimeout = () => {
+      if !Js.Nullable.isNullable(timeoutID.contents) {
+        Js.Nullable.iter(timeoutID.contents, (. timer) => Js.Global.clearTimeout(timer))
+      }
+    }
+
+    let cancel = (. ()) => {
+      clearExistingTimeout()
+      cancelled := true
+    }
+    let wrapper = (. ()) => {
+      clearExistingTimeout()
+
+      switch cancelled.contents {
+      | false => timeoutID := Js.Nullable.return(Js.Global.setTimeout(() => callback(.), delay))
+      | _ => ()
+      }
+    }
+
+    (wrapper, cancel)
+  }
+
   @react.component
-  let make = () => {
-    <div> {React.string("loading...")} </div>
+  let make = (~loading, ~delay=0, ~children) => {
+    let (spinning, setSpinning) = React.Uncurried.useState(_ =>
+      loading && !shouldDelay(loading, delay)
+    )
+
+    React.useEffect2(() => {
+      switch loading {
+      | true => {
+          let (showSpinning, cancel) = debounce(.delay, (. ()) => {
+            setSpinning(. _ => true)
+          })
+          showSpinning(.)
+          Some(() => cancel(.))
+        }
+      | _ => {
+          setSpinning(._ => false)
+          None
+        }
+      }
+    }, (delay, loading))
+    // linear-gradient(90deg,rgba(0,0,0,0.06) 25%,rgba(0,0,0,0.15) 37%,rgba(0,0,0,0.06) 63%)
+    switch spinning {
+    | true =>
+      <div className="animate-pulse">
+        <h3 className="h-4 mb-2 w-2/3 bg-indigo-200  rounded" />
+        <p className="h-3 w-full bg-indigo-300 rounded" />
+      </div>
+    | _ => children
+    }
   }
 }
 

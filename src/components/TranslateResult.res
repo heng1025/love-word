@@ -4,14 +4,13 @@ open TranslateHook
 
 @react.component
 let make = (~loading=No, ~data, ~errText="", ~className="") => {
-  let loadingCN = loading === Yes ? "flex min-h-16 justify-center items-center" : ""
-
-  <div
-    className={`${className} ${loadingCN} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
-    {switch loading {
-    | Yes => <Loading />
-    | No =>
-      switch errText !== "" {
+  let spanning = switch loading {
+  | Yes => true
+  | _ => false
+  }
+  <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
+    <Loading loading={spanning} delay=450>
+      {switch errText !== "" {
       | true => <div className="text-error"> {React.string(errText)} </div>
       | false =>
         switch data {
@@ -19,8 +18,7 @@ let make = (~loading=No, ~data, ~errText="", ~className="") => {
         | DictT({dict: dr}) => <DictPanel data=dr />
         | _ => React.null
         }
-      }
-    | Noop => React.null
-    }}
+      }}
+    </Loading>
   </div>
 }

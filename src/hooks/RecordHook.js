@@ -35,7 +35,7 @@ function useRecord(recordType) {
               _0: /* GetAll */0
             }));
     var rs = ret.sort(function (v1, v2) {
-            return (v2.date | 0) - (v1.date | 0) | 0;
+            return v2.date - v1.date | 0;
           }).map(function (v) {
           var newrecord = Caml_obj.obj_dup(v);
           newrecord.checked = false;
@@ -89,7 +89,7 @@ function useRecord(recordType) {
             }));
     return await getAll(undefined);
   };
-  var onClear = async function () {
+  var onClear = async function (param) {
     await chrome.runtime.sendMessage(recordType ? ({
               TAG: /* FavExtraMsgContent */5,
               _0: /* Clear */1

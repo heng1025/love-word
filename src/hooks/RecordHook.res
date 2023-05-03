@@ -34,7 +34,7 @@ let useRecord = recordType => {
     let ret: array<recordDataWithExtra> = await sendMessage(getExtraMsgContent(GetAll))
     let rs =
       ret
-      ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2.date) - Belt.Float.toInt(v1.date))
+      ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2.date -. v1.date))
       ->Js.Array2.map(v => {
         ...v,
         checked: false,

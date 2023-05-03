@@ -13,44 +13,37 @@ function TranslateResult(props) {
   var loading$1 = loading !== undefined ? loading : /* No */1;
   var errText$1 = errText !== undefined ? errText : "";
   var className$1 = className !== undefined ? className : "";
-  var loadingCN = loading$1 === /* Yes */0 ? "flex min-h-16 justify-center items-center" : "";
+  var spanning = loading$1 === 0;
   var tmp;
-  switch (loading$1) {
-    case /* Yes */0 :
-        tmp = React.createElement(Widget.Loading.make, {});
-        break;
-    case /* No */1 :
-        if (errText$1 !== "") {
-          tmp = React.createElement("div", {
-                className: "text-error"
-              }, errText$1);
-        } else {
-          switch (data.TAG | 0) {
-            case /* DictT */0 :
-                tmp = React.createElement(DictPanel.make, {
-                      data: data.dict
-                    });
-                break;
-            case /* BaiduT */1 :
-                tmp = React.createElement(MachineTPanel.make, {
-                      data: data.baidu
-                    });
-                break;
-            case /* Message */2 :
-                tmp = null;
-                break;
-            
-          }
-        }
-        break;
-    case /* Noop */2 :
-        tmp = null;
-        break;
-    
+  if (errText$1 !== "") {
+    tmp = React.createElement("div", {
+          className: "text-error"
+        }, errText$1);
+  } else {
+    switch (data.TAG | 0) {
+      case /* DictT */0 :
+          tmp = React.createElement(DictPanel.make, {
+                data: data.dict
+              });
+          break;
+      case /* BaiduT */1 :
+          tmp = React.createElement(MachineTPanel.make, {
+                data: data.baidu
+              });
+          break;
+      case /* Message */2 :
+          tmp = null;
+          break;
+      
+    }
   }
   return React.createElement("div", {
-              className: "" + className$1 + " " + loadingCN + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
-            }, tmp);
+              className: "" + className$1 + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
+            }, React.createElement(Widget.Loading.make, {
+                  loading: spanning,
+                  delay: 450,
+                  children: tmp
+                }));
 }
 
 var make = TranslateResult;
