@@ -30,7 +30,7 @@ module OfflineDict = {
     | Js.Exn.Error(err) =>
       switch Js.Exn.message(err) {
       | Some(msg) => Error(msg)
-      | None => Error("")
+      | _ => Error("")
       }
     | _ => Error("Unexpected error occurred")
     }
@@ -118,7 +118,7 @@ module Baidu = {
 type resultT =
   | DictT({dict: OfflineDict.dictOk})
   | BaiduT({baidu: array<Baidu.baiduOk>})
-  | Message(string)
+  | TError(string)
 
 type textMsgContent = {text: string}
 type datesMsgContent = {dates: array<float>}
@@ -168,7 +168,7 @@ let adapterTrans = async text => {
   let baiduResult = async () => {
     switch await Baidu.translate(text) {
     | Ok(res) => BaiduT({baidu: res})
-    | Error(msg) => Message(msg)
+    | Error(msg) => TError(msg)
     }
   }
 

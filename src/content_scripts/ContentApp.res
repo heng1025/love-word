@@ -1,10 +1,10 @@
 open Utils
-open TranslateHook
+open Widget
+
 open Common.Chrome
 open Common.Webapi
 open Common.Webapi.Window
-
-open Widget
+open TranslateHook
 
 @@warning("-44")
 
@@ -21,7 +21,7 @@ let make = (~host) => {
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
 
-  let {loading, data, errText} = useTranslate(sourceText)
+  let data = useTranslate(sourceText)
 
   let showTransPanel = range => {
     let rect = range->getBoundingClientRect
@@ -31,7 +31,6 @@ let make = (~host) => {
     let left = rect.left +. Js.Int.toFloat(Window.scrollX)
     setTop(._p => `${toString(top +. posOffset)}px`)
     setLeft(._p => `${toString(left)}px`)
-    setOpactity(._p => "1")
   }
 
   React.useEffect0(() => {
@@ -58,6 +57,14 @@ let make = (~host) => {
       },
     )
   })
+
+  React.useEffect1(() => {
+    switch data {
+    | TLoading(true) => setOpactity(._p => "1")
+    | _ => ()
+    }
+    None
+  }, [data])
 
   React.useEffect1(() => {
     let handleClick = (e: MouseEvent.t) => {
@@ -98,7 +105,10 @@ let make = (~host) => {
             }}
           </span>
           <div className="flex">
-            <FavButton text=sourceText trans=data />
+            {switch data {
+            | TResult(val) => <FavButton text=sourceText trans=val />
+            | _ => React.null
+            }}
             <a
               className="w-5 link fill-white link-primary"
               target="_blank"
@@ -108,7 +118,11 @@ let make = (~host) => {
             </a>
           </div>
         </h4>
-        <TranslateResult className="text-sm" loading data errText />
+        {switch data {
+        | TLoading(true) => <Loading delay=450 />
+        | TResult(val) => <TranslateResult className="text-sm" data=val />
+        | _ => React.null
+        }}
       </div>
     </div>
   </div>

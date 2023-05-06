@@ -1,3 +1,4 @@
+open Widget
 open Common.Webapi
 open TranslateHook
 
@@ -7,7 +8,7 @@ let make = () => {
   let (sourceText, setSourceText) = React.Uncurried.useState(_ => "")
 
   let textInput = React.useRef(Js.Nullable.null)
-  let {loading, data, errText} = useTranslate(sourceText)
+  let data = useTranslate(sourceText)
 
   let setTextInputRef = element => {
     textInput.current = element
@@ -46,8 +47,11 @@ let make = () => {
   })
 
   <div className="card card-compact w-56 bg-base-100 shadow-xl rounded-none">
-    <div className="bg-primary text-right">
-      <FavButton text=sourceText trans=data />
+    <div className="bg-primary h-5 text-right">
+      {switch data {
+      | TResult(val) => <FavButton text=sourceText trans=val />
+      | _ => React.null
+      }}
     </div>
     <div className="card-body">
       <textarea
@@ -62,7 +66,11 @@ let make = () => {
       <button className="btn btn-primary btn-sm m-2" onClick={handleTranslate}>
         {React.string("Translate")}
       </button>
-      <TranslateResult className="text-secondary p-2 min-h-8" loading data errText />
+      {switch data {
+      | TLoading(true) => <Loading delay=450 />
+      | TResult(val) => <TranslateResult className="text-sm" data=val />
+      | _ => React.null
+      }}
     </div>
   </div>
 }

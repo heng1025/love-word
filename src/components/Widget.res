@@ -30,7 +30,7 @@ module Loading = {
   }
 
   @react.component
-  let make = (~loading, ~delay=0, ~children) => {
+  let make = (~loading=true, ~delay=0, ~children=React.null) => {
     let (spinning, setSpinning) = React.Uncurried.useState(_ =>
       loading && !shouldDelay(loading, delay)
     )
@@ -50,14 +50,16 @@ module Loading = {
         }
       }
     }, (delay, loading))
-    // linear-gradient(90deg,rgba(0,0,0,0.06) 25%,rgba(0,0,0,0.15) 37%,rgba(0,0,0,0.06) 63%)
-    switch spinning {
-    | true =>
+
+    let loadingEl =
       <div className="animate-pulse">
         <h3 className="h-4 mb-2 w-2/3 bg-indigo-200  rounded" />
         <p className="h-3 w-full bg-indigo-300 rounded" />
       </div>
-    | _ => children
+
+    switch spinning {
+    | true => loadingEl
+    | false => children
     }
   }
 }

@@ -170,7 +170,7 @@ async function adapterTrans(text) {
             };
     } else {
       return {
-              TAG: /* Message */2,
+              TAG: /* TError */2,
               _0: res._0
             };
     }

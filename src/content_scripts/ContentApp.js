@@ -33,8 +33,7 @@ function ContentApp(props) {
       });
   var setOpactity = match$4[1];
   var opacity = match$4[0];
-  var match$5 = TranslateHook.useTranslate(sourceText);
-  var data = match$5.data;
+  var data = TranslateHook.useTranslate(sourceText);
   React.useEffect((function () {
           var handleKeyup = function (ev) {
             if (ev.keyCode !== 18) {
@@ -62,15 +61,23 @@ function ContentApp(props) {
             setLeft(function (_p) {
                   return "" + left.toString() + "px";
                 });
-            setOpactity(function (_p) {
-                  return "1";
-                });
           };
           window.addEventListener("keyup", handleKeyup);
           return (function (param) {
                     window.removeEventListener("keyup", handleKeyup);
                   });
         }), []);
+  React.useEffect((function () {
+          if (typeof data !== "number" && data.TAG !== /* TResult */0) {
+            if (data._0) {
+              setOpactity(function (_p) {
+                    return "1";
+                  });
+            }
+            
+          }
+          
+        }), [data]);
   React.useEffect((function () {
           var handleClick = function (e) {
             e.stopPropagation();
@@ -118,6 +125,22 @@ function ContentApp(props) {
     default:
       tmp = null;
   }
+  var tmp$1;
+  tmp$1 = typeof data === "number" || data.TAG !== /* TResult */0 ? null : React.createElement(FavButton.make, {
+          text: sourceText,
+          trans: data._0
+        });
+  var tmp$2;
+  tmp$2 = typeof data === "number" ? null : (
+      data.TAG === /* TResult */0 ? React.createElement(TranslateResult.make, {
+              data: data._0,
+              className: "text-sm"
+            }) : (
+          data._0 ? React.createElement(Widget.Loading.make, {
+                  delay: 450
+                }) : null
+        )
+    );
   return React.createElement("div", {
               className: "absolute z-[99999] " + mouseState + "",
               style: style
@@ -132,20 +155,12 @@ function ContentApp(props) {
                           className: "card-title text-sm border-b justify-between"
                         }, React.createElement("span", undefined, tmp), React.createElement("div", {
                               className: "flex"
-                            }, React.createElement(FavButton.make, {
-                                  text: sourceText,
-                                  trans: data
-                                }), React.createElement("a", {
+                            }, tmp$1, React.createElement("a", {
                                   className: "w-5 link fill-white link-primary",
                                   title: "show detail",
                                   href: "https://fanyi.baidu.com/#en/zh/" + sourceText + "",
                                   target: "_blank"
-                                }, React.createElement(Widget.Jump.make, {})))), React.createElement(TranslateResult.make, {
-                          loading: match$5.loading,
-                          data: data,
-                          errText: match$5.errText,
-                          className: "text-sm"
-                        }))));
+                                }, React.createElement(Widget.Jump.make, {})))), tmp$2)));
 }
 
 var make = ContentApp;
