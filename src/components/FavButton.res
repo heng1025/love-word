@@ -26,7 +26,7 @@ let make = (~text, ~trans) => {
   }, [text])
 
   <button
-    className="btn btn-xs w-5 h-5 fill-white min-h-0 btn-circle btn-ghost"
+    className="btn btn-xs w-5 h-5 min-h-0 btn-circle btn-ghost"
     onClick={_ => favAction(isFaved ? Delete : Add)->ignore}>
     {switch isFaved {
     | false => <Star />

@@ -138,13 +138,11 @@ function ContentApp(props) {
                     }, React.createElement("h4", {
                           className: "card-title text-sm border-b justify-between"
                         }, React.createElement("span", undefined, tmp), React.createElement("div", {
-                              className: "flex"
-                            }, tmp$1, React.createElement("a", {
-                                  className: "w-5 link fill-white link-primary",
-                                  title: "show detail",
-                                  href: "https://fanyi.baidu.com/#en/zh/" + sourceText + "",
-                                  target: "_blank"
-                                }, React.createElement(Widget.Jump.make, {})))), React.createElement(TranslateResult.TranslateResultWithState.make, {
+                              className: "flex items-center"
+                            }, tmp$1, React.createElement(Widget.Link.make, {
+                                  children: React.createElement(Widget.Jump.make, {}),
+                                  href: "https://fanyi.baidu.com/#en/zh/" + sourceText + ""
+                                }))), React.createElement(TranslateResult.TranslateResultWithState.make, {
                           data: data,
                           delay: 200,
                           className: "text-sm"

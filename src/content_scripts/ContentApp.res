@@ -103,18 +103,14 @@ let make = (~host) => {
             | _ => React.null
             }}
           </span>
-          <div className="flex">
+          <div className="flex items-center">
             {switch data {
             | TResult(val) => <FavButton text=sourceText trans=val />
             | _ => React.null
             }}
-            <a
-              className="w-5 link fill-white link-primary"
-              target="_blank"
-              title="show detail"
-              href={`https://fanyi.baidu.com/#en/zh/${sourceText}`}>
+            <Link href={`https://fanyi.baidu.com/#en/zh/${sourceText}`}>
               <Jump />
-            </a>
+            </Link>
           </div>
         </h4>
         <TranslateResultWithState className="text-sm" data delay=panelDelay />

@@ -53,7 +53,7 @@ function FavButton(props) {
           favAction(/* Get */0);
         }), [text]);
   return React.createElement("button", {
-              className: "btn btn-xs w-5 h-5 fill-white min-h-0 btn-circle btn-ghost",
+              className: "btn btn-xs w-5 h-5 min-h-0 btn-circle btn-ghost",
               onClick: (function (param) {
                   favAction(isFaved ? /* Delete */2 : /* Add */1);
                 })
