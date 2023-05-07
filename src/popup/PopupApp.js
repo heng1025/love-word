@@ -20,7 +20,8 @@ function PopupApp(props) {
   var setSourceText = match$1[1];
   var sourceText = match$1[0];
   var textInput = React.useRef(null);
-  var data = TranslateHook.useTranslate(sourceText);
+  var match$2 = TranslateHook.useTranslate(sourceText);
+  var data = match$2.data;
   var setTextInputRef = function (element) {
     textInput.current = element;
   };
@@ -58,10 +59,15 @@ function PopupApp(props) {
           focusTextInput(undefined);
         }), []);
   var tmp;
-  tmp = typeof data === "number" || data.TAG !== /* TResult */0 ? null : React.createElement(FavButton.make, {
-          text: sourceText,
-          trans: data._0
-        });
+  if (data) {
+    var val = data._0;
+    tmp = val.TAG === /* Ok */0 ? React.createElement(FavButton.make, {
+            text: sourceText,
+            trans: val._0
+          }) : null;
+  } else {
+    tmp = null;
+  }
   return React.createElement("div", {
               className: "card card-compact w-56 bg-base-100 shadow-xl rounded-none"
             }, React.createElement("div", {
@@ -89,6 +95,7 @@ function PopupApp(props) {
                           className: "btn btn-circle btn-xs btn-primary p-1 absolute bottom-2 right-1",
                           onClick: handleTranslate
                         }, React.createElement(Widget.Search.make, {}))), React.createElement(TranslateResult.TranslateResultWithState.make, {
+                      loading: match$2.loading,
                       data: data,
                       delay: 200,
                       className: "text-sm"

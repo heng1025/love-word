@@ -33,7 +33,8 @@ function ContentApp(props) {
       });
   var setOpactity = match$4[1];
   var opacity = match$4[0];
-  var data = TranslateHook.useTranslate(sourceText);
+  var match$5 = TranslateHook.useTranslate(sourceText);
+  var data = match$5.data;
   React.useEffect((function () {
           var handleKeyup = function (ev) {
             if (ev.keyCode !== 18) {
@@ -121,10 +122,15 @@ function ContentApp(props) {
       tmp = null;
   }
   var tmp$1;
-  tmp$1 = typeof data === "number" || data.TAG !== /* TResult */0 ? null : React.createElement(FavButton.make, {
-          text: sourceText,
-          trans: data._0
-        });
+  if (data) {
+    var val = data._0;
+    tmp$1 = val.TAG === /* Ok */0 ? React.createElement(FavButton.make, {
+            text: sourceText,
+            trans: val._0
+          }) : null;
+  } else {
+    tmp$1 = null;
+  }
   return React.createElement("div", {
               className: "absolute z-[99999] " + mouseState + "",
               style: style
@@ -143,6 +149,7 @@ function ContentApp(props) {
                                   children: React.createElement(Widget.Jump.make, {}),
                                   href: "https://fanyi.baidu.com/#en/zh/" + sourceText + ""
                                 }))), React.createElement(TranslateResult.TranslateResultWithState.make, {
+                          loading: match$5.loading,
                           data: data,
                           delay: 200,
                           className: "text-sm"

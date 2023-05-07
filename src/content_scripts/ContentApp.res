@@ -24,7 +24,7 @@ let make = (~host) => {
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
 
-  let data = useTranslate(sourceText)
+  let {loading, data} = useTranslate(sourceText)
 
   let showTransPanel = range => {
     let rect = range->getBoundingClientRect
@@ -105,7 +105,7 @@ let make = (~host) => {
           </span>
           <div className="flex items-center">
             {switch data {
-            | TResult(val) => <FavButton text=sourceText trans=val />
+            | TResult(Ok(val)) => <FavButton text=sourceText trans=val />
             | _ => React.null
             }}
             <Link href={`https://fanyi.baidu.com/#en/zh/${sourceText}`}>
@@ -113,7 +113,7 @@ let make = (~host) => {
             </Link>
           </div>
         </h4>
-        <TranslateResultWithState className="text-sm" data delay=panelDelay />
+        <TranslateResultWithState className="text-sm" data loading delay=panelDelay />
       </div>
     </div>
   </div>

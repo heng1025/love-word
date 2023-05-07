@@ -4,19 +4,20 @@ import * as React from "react";
 
 function useTranslate(text) {
   var match = React.useState(function () {
+        return false;
+      });
+  var setLoading = match[1];
+  var match$1 = React.useState(function () {
         return /* TNone */0;
       });
-  var setData = match[1];
+  var setData = match$1[1];
   React.useEffect((function () {
           var fetchTranslateResult = async function (txt) {
             if (txt === "") {
               return ;
             }
-            setData(function (_p) {
-                  return {
-                          TAG: /* TLoading */1,
-                          _0: true
-                        };
+            setLoading(function (_p) {
+                  return true;
                 });
             var ret = await chrome.runtime.sendMessage({
                   TAG: /* TranslateMsgContent */0,
@@ -27,9 +28,11 @@ function useTranslate(text) {
             if (ret.TAG === /* Ok */0) {
               var val = ret._0;
               setData(function (_p) {
-                    return {
-                            TAG: /* TResult */0,
-                            _0: val
+                    return /* TResult */{
+                            _0: {
+                              TAG: /* Ok */0,
+                              _0: val
+                            }
                           };
                   });
               chrome.runtime.sendMessage({
@@ -41,16 +44,24 @@ function useTranslate(text) {
             } else {
               var msg = ret._0;
               setData(function (_p) {
-                    return {
-                            TAG: /* TError */2,
-                            _0: msg
+                    return /* TResult */{
+                            _0: {
+                              TAG: /* Error */1,
+                              _0: msg
+                            }
                           };
                   });
             }
+            return setLoading(function (_p) {
+                        return false;
+                      });
           };
           fetchTranslateResult(text);
         }), [text]);
-  return match[0];
+  return {
+          loading: match[0],
+          data: match$1[0]
+        };
 }
 
 export {

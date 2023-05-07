@@ -142,15 +142,16 @@ module Baidu = {
   }
 }
 
-type resultT =
+type transR =
   | DictT({dict: OfflineDict.dictOk})
   | BaiduT({baidu: array<Baidu.baiduOk>})
+type transRWithError = result<transR, string>
 
 type textMsgContent = {text: string}
 type datesMsgContent = {dates: array<float>}
 type favAddMsgContent = {
   text: string,
-  trans: resultT,
+  trans: transR,
 }
 
 type extraAction = GetAll | Clear
@@ -161,7 +162,7 @@ type recordData = {
   favIconUrl: string,
   date: float,
   text: string,
-  trans?: resultT,
+  trans?: transR,
 }
 
 type recordDataWithExtra = {
@@ -170,7 +171,7 @@ type recordDataWithExtra = {
   favIconUrl: string,
   date: float,
   text: string,
-  trans?: resultT,
+  trans?: transR,
   mutable checked: bool,
 }
 

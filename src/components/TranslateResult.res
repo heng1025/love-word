@@ -16,12 +16,13 @@ module TranslateResult = {
 
 module TranslateResultWithState = {
   @react.component
-  let make = (~data, ~delay=0, ~className="") => {
-    switch data {
-    | TLoading(true) => <Loading delay />
-    | TError(err) => <div className="text-error"> {React.string(err)} </div>
-    | TResult(val) => <TranslateResult className data=val />
-    | _ => React.null
-    }
+  let make = (~loading=false, ~data, ~delay=0, ~className="") => {
+    <Loading loading delay>
+      {switch data {
+      | TResult(Error(msg)) => <div className="text-error"> {React.string(msg)} </div>
+      | TResult(Ok(val)) => <TranslateResult className data=val />
+      | _ => React.null
+      }}
+    </Loading>
   }
 }

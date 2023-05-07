@@ -9,7 +9,7 @@ let make = () => {
   let (sourceText, setSourceText) = React.Uncurried.useState(_ => "")
 
   let textInput = React.useRef(Js.Nullable.null)
-  let data = useTranslate(sourceText)
+  let {loading, data} = useTranslate(sourceText)
 
   let setTextInputRef = element => {
     textInput.current = element
@@ -50,7 +50,7 @@ let make = () => {
   <div className="card card-compact w-56 bg-base-100 shadow-xl rounded-none">
     <div className="bg-primary h-5 px-1 text-white flex items-center justify-end">
       {switch data {
-      | TResult(val) => <FavButton text=sourceText trans=val />
+      | TResult(Ok(val)) => <FavButton text=sourceText trans=val />
       | _ => React.null
       }}
       <Link href={`https://fanyi.baidu.com/#en/zh/${sourceText}`} className="mx-1 tooltip-bottom">
@@ -77,7 +77,7 @@ let make = () => {
           <Search />
         </button>
       </div>
-      <TranslateResultWithState className="text-sm" data delay=200 />
+      <TranslateResultWithState className="text-sm" loading data delay=200 />
     </div>
   </div>
 }

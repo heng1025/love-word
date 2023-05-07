@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as Widget from "./Widget.js";
 import * as DictPanel from "./DictPanel.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as MachineTPanel from "./MachineTPanel.js";
 
 function TranslateResult$TranslateResult(props) {
@@ -28,31 +29,27 @@ function TranslateResult$TranslateResultWithState(props) {
   var className = props.className;
   var delay = props.delay;
   var data = props.data;
+  var loading = props.loading;
+  var loading$1 = loading !== undefined ? loading : false;
   var delay$1 = delay !== undefined ? delay : 0;
   var className$1 = className !== undefined ? className : "";
-  if (typeof data === "number") {
-    return null;
+  var tmp;
+  if (data) {
+    var msg = data._0;
+    tmp = msg.TAG === /* Ok */0 ? React.createElement(TranslateResult$TranslateResult, {
+            data: msg._0,
+            className: className$1
+          }) : React.createElement("div", {
+            className: "text-error"
+          }, msg._0);
+  } else {
+    tmp = null;
   }
-  switch (data.TAG | 0) {
-    case /* TResult */0 :
-        return React.createElement(TranslateResult$TranslateResult, {
-                    data: data._0,
-                    className: className$1
-                  });
-    case /* TLoading */1 :
-        if (data._0) {
-          return React.createElement(Widget.Loading.make, {
-                      delay: delay$1
-                    });
-        } else {
-          return null;
-        }
-    case /* TError */2 :
-        return React.createElement("div", {
-                    className: "text-error"
-                  }, data._0);
-    
-  }
+  return React.createElement(Widget.Loading.make, {
+              loading: loading$1,
+              delay: delay$1,
+              children: Caml_option.some(tmp)
+            });
 }
 
 var TranslateResultWithState = {
