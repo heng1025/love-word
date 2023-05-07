@@ -165,12 +165,15 @@ async function adapterTrans(text) {
     var res = await translate$1(text);
     if (res.TAG === /* Ok */0) {
       return {
-              TAG: /* BaiduT */1,
-              baidu: res._0
+              TAG: /* Ok */0,
+              _0: {
+                TAG: /* BaiduT */1,
+                baidu: res._0
+              }
             };
     } else {
       return {
-              TAG: /* TError */2,
+              TAG: /* Error */1,
               _0: res._0
             };
     }
@@ -181,8 +184,11 @@ async function adapterTrans(text) {
   var val = await translate(text);
   if (val.TAG === /* Ok */0) {
     return {
-            TAG: /* DictT */0,
-            dict: val._0
+            TAG: /* Ok */0,
+            _0: {
+              TAG: /* DictT */0,
+              dict: val._0
+            }
           };
   } else {
     return await baiduResult(undefined);

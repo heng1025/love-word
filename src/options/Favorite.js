@@ -35,7 +35,7 @@ function Favorite(props) {
                                         src: record.favIconUrl
                                       }))), React.createElement("p", {
                                 className: "font-bold text-xl line-clamp-1"
-                              }, record.text)), val !== undefined ? React.createElement(TranslateResult.make, {
+                              }, record.text)), val !== undefined ? React.createElement(TranslateResult.TranslateResult.make, {
                               data: val
                             }) : null));
       });

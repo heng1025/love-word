@@ -1,5 +1,5 @@
-open Widget
 open Common.Webapi
+open TranslateResult
 open TranslateHook
 
 @react.component
@@ -66,11 +66,7 @@ let make = () => {
       <button className="btn btn-primary btn-sm m-2" onClick={handleTranslate}>
         {React.string("Translate")}
       </button>
-      {switch data {
-      | TLoading(true) => <Loading delay=450 />
-      | TResult(val) => <TranslateResult className="text-sm" data=val />
-      | _ => React.null
-      }}
+      <TranslateResultWithState className="text-sm" data />
     </div>
   </div>
 }

@@ -61,23 +61,15 @@ function ContentApp(props) {
             setLeft(function (_p) {
                   return "" + left.toString() + "px";
                 });
+            setOpactity(function (_p) {
+                  return "1";
+                });
           };
           window.addEventListener("keyup", handleKeyup);
           return (function (param) {
                     window.removeEventListener("keyup", handleKeyup);
                   });
         }), []);
-  React.useEffect((function () {
-          if (typeof data !== "number" && data.TAG !== /* TResult */0) {
-            if (data._0) {
-              setOpactity(function (_p) {
-                    return "1";
-                  });
-            }
-            
-          }
-          
-        }), [data]);
   React.useEffect((function () {
           var handleClick = function (e) {
             e.stopPropagation();
@@ -130,17 +122,6 @@ function ContentApp(props) {
           text: sourceText,
           trans: data._0
         });
-  var tmp$2;
-  tmp$2 = typeof data === "number" ? null : (
-      data.TAG === /* TResult */0 ? React.createElement(TranslateResult.make, {
-              data: data._0,
-              className: "text-sm"
-            }) : (
-          data._0 ? React.createElement(Widget.Loading.make, {
-                  delay: 450
-                }) : null
-        )
-    );
   return React.createElement("div", {
               className: "absolute z-[99999] " + mouseState + "",
               style: style
@@ -160,7 +141,10 @@ function ContentApp(props) {
                                   title: "show detail",
                                   href: "https://fanyi.baidu.com/#en/zh/" + sourceText + "",
                                   target: "_blank"
-                                }, React.createElement(Widget.Jump.make, {})))), tmp$2)));
+                                }, React.createElement(Widget.Jump.make, {})))), React.createElement(TranslateResult.TranslateResultWithState.make, {
+                          data: data,
+                          className: "text-sm"
+                        }))));
 }
 
 var make = ContentApp;

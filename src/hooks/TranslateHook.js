@@ -24,31 +24,12 @@ function useTranslate(text) {
                     text: txt
                   }
                 });
-            var exit = 0;
-            switch (ret.TAG | 0) {
-              case /* DictT */0 :
-              case /* BaiduT */1 :
-                  exit = 1;
-                  break;
-              case /* TError */2 :
-                  var msg = ret._0;
-                  setData(function (_p) {
-                        return {
-                                TAG: /* TResult */0,
-                                _0: {
-                                  TAG: /* TError */2,
-                                  _0: msg
-                                }
-                              };
-                      });
-                  break;
-              
-            }
-            if (exit === 1) {
+            if (ret.TAG === /* Ok */0) {
+              var val = ret._0;
               setData(function (_p) {
                     return {
                             TAG: /* TResult */0,
-                            _0: ret
+                            _0: val
                           };
                   });
               chrome.runtime.sendMessage({
@@ -57,8 +38,15 @@ function useTranslate(text) {
                       text: txt
                     }
                   });
+            } else {
+              var msg = ret._0;
+              setData(function (_p) {
+                    return {
+                            TAG: /* TError */2,
+                            _0: msg
+                          };
+                  });
             }
-            
           };
           fetchTranslateResult(text);
         }), [text]);

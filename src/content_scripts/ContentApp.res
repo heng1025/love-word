@@ -1,5 +1,6 @@
 open Utils
 open Widget
+open TranslateResult
 
 open Common.Chrome
 open Common.Webapi
@@ -31,6 +32,7 @@ let make = (~host) => {
     let left = rect.left +. Js.Int.toFloat(Window.scrollX)
     setTop(._p => `${toString(top +. posOffset)}px`)
     setLeft(._p => `${toString(left)}px`)
+    setOpactity(._p => "1")
   }
 
   React.useEffect0(() => {
@@ -57,14 +59,6 @@ let make = (~host) => {
       },
     )
   })
-
-  React.useEffect1(() => {
-    switch data {
-    | TLoading(true) => setOpactity(._p => "1")
-    | _ => ()
-    }
-    None
-  }, [data])
 
   React.useEffect1(() => {
     let handleClick = (e: MouseEvent.t) => {
@@ -118,11 +112,7 @@ let make = (~host) => {
             </a>
           </div>
         </h4>
-        {switch data {
-        | TLoading(true) => <Loading delay=450 />
-        | TResult(val) => <TranslateResult className="text-sm" data=val />
-        | _ => React.null
-        }}
+        <TranslateResultWithState className="text-sm" data />
       </div>
     </div>
   </div>

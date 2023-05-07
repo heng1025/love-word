@@ -118,7 +118,6 @@ module Baidu = {
 type resultT =
   | DictT({dict: OfflineDict.dictOk})
   | BaiduT({baidu: array<Baidu.baiduOk>})
-  | TError(string)
 
 type textMsgContent = {text: string}
 type datesMsgContent = {dates: array<float>}
@@ -167,8 +166,8 @@ let adapterTrans = async text => {
 
   let baiduResult = async () => {
     switch await Baidu.translate(text) {
-    | Ok(res) => BaiduT({baidu: res})
-    | Error(msg) => TError(msg)
+    | Ok(res) => Ok(BaiduT({baidu: res}))
+    | Error(msg) => Error(msg)
     }
   }
 
@@ -176,7 +175,7 @@ let adapterTrans = async text => {
     await baiduResult()
   } else {
     switch await OfflineDict.translate(text) {
-    | Ok(val) => DictT({dict: val})
+    | Ok(val) => Ok(DictT({dict: val}))
     | _ => await baiduResult()
     }
   }

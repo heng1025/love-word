@@ -1,12 +1,29 @@
+open Widget
 open Utils
+open TranslateHook
 
-@react.component
-let make = (~data, ~className="") => {
-  <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
-    {switch data {
-    | BaiduT({baidu: br}) => <MachineTPanel data=br />
-    | DictT({dict: dr}) => <DictPanel data=dr />
-    | TError(errText) => <div className="text-error"> {React.string(errText)} </div>
-    }}
-  </div>
+module TranslateResult = {
+  @react.component
+  let make = (~data, ~className="") => {
+    <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
+      {switch data {
+      | BaiduT({baidu: br}) => <MachineTPanel data=br />
+      | DictT({dict: dr}) => <DictPanel data=dr />
+      }}
+    </div>
+  }
+}
+
+module TranslateResultWithState = {
+  @react.component
+  let make = (~data, ~className="") => {
+    <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
+      {switch data {
+      | TLoading(true) => <Loading delay=450 />
+      | TError(err) => <div className="text-error"> {React.string(err)} </div>
+      | TResult(val) => <TranslateResult className data=val />
+      | _ => React.null
+      }}
+    </div>
+  }
 }

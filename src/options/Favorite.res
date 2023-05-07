@@ -1,3 +1,4 @@
+open TranslateResult
 open RecordHook
 
 @react.component
