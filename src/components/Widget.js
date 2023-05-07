@@ -82,7 +82,7 @@ function Widget$Link(props) {
   var className = props.className;
   var className$1 = className !== undefined ? className : "";
   return React.createElement("a", {
-              className: "link text-white  tooltip tooltip-bottom " + className$1 + "",
+              className: "link text-white " + className$1 + "",
               href: props.href,
               target: "_blank"
             }, props.children);
@@ -125,25 +125,22 @@ var Zh2en = {
 };
 
 function Widget$Speaker(props) {
-  var isPlay = props.isPlay;
-  var animate200ms = isPlay ? "animate-fadeInOut-200ms" : "";
-  var animate400ms = isPlay ? "animate-fadeInOut-400ms" : "";
+  var className = props.className;
+  var className$1 = className !== undefined ? className : "";
+  var animate200ms = props.isPlay ? "animate-fadeInOut-200ms" : "";
   return React.createElement("button", {
-              className: "btn btn-xs w-5 h-5 min-h-0 btn-circle btn-ghost ml-[2px] align-middle inline-flex",
+              className: "btn btn-xs btn-circle btn-ghost min-h-0 " + className$1 + "",
               onClick: props.onClick
             }, React.createElement("svg", {
-                  className: "fill-warning",
-                  version: "1.1",
-                  viewBox: "0 0 1024 1024",
+                  className: "w-4 h-4",
+                  fill: "currentColor",
+                  viewBox: "0 0 24 24",
                   xmlns: "http://www.w3.org/2000/svg"
                 }, React.createElement("path", {
-                      d: "M610.87695313 256.56787084c0-35.56274388-41.98974585-54.38232422-68.55468776-30.7836909L394.23754883 357.38940455a24.71923828 24.71923828 0 0 1-16.41357422 6.26220652H256.56787084A74.15771484 74.15771484 0 0 0 182.410156 437.80932592v148.21655273a74.15771484 74.15771484 0 0 0 74.15771484 74.15771484h121.28906301a24.71923828 24.71923828 0 0 1 16.41357422 6.26220729l148.01879882 131.63818385c26.56494115 23.59863255 68.58764623 4.74609375 68.58764624-30.78369167V256.56787084zM427.13061498 394.33642578L561.43847655 274.92602563v474.01611329l-134.30786157-119.44335937a74.15771484 74.15771484 0 0 0-49.27368113-18.75366263H256.56787084a24.71923828 24.71923828 0 0 1-24.71923827-24.71923827V437.84228516a24.71923828 24.71923828 0 0 1 24.71923827-24.71923829h121.28906301a74.15771484 74.15771484 0 0 0 49.27368113-18.75366185z"
+                      d: "M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z"
                     }), React.createElement("path", {
                       className: animate200ms,
-                      d: "M681.50805689 392.35888672a24.71923828 24.71923828 0 0 1 33.51928711 9.95361303c17.66601537 32.62939453 27.68554688 70.03784205 27.68554688 109.68750025a229.8229983 229.8229983 0 0 1-27.68554688 109.68750025 24.71923828 24.71923828 0 0 1-43.50585937-23.53271484c13.84277344-25.60913086 21.75292969-54.90966822 21.7529297-86.15478541s-7.91015625-60.54565455-21.7529297-86.15478541a24.71923828 24.71923828 0 0 1 9.98657226-33.51928711z"
-                    }), React.createElement("path", {
-                      className: animate400ms,
-                      d: "M742.4492185 310.85131811a24.71923828 24.71923828 0 0 1 34.57397511 5.1745608A328.23852514 328.23852514 0 0 1 841.589844 512a328.27148438 328.27148438 0 0 1-64.59960962 195.97412109 24.71923828 24.71923828 0 0 1-39.71557592-29.39941431A278.80004858 278.80004858 0 0 0 792.15136743 512a278.80004858 278.80004858 0 0 0-54.87670897-166.57470678 24.71923828 24.71923828 0 0 1 5.17456004-34.57397511z"
+                      d: "M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z"
                     })));
 }
 
@@ -248,6 +245,44 @@ var StarFill = {
   make: Widget$StarFill
 };
 
+function Widget$Eye(props) {
+  return React.createElement("svg", {
+              className: "w-4 h-4",
+              fill: "currentColor",
+              viewBox: "0 0 24 24",
+              xmlns: "http://www.w3.org/2000/svg"
+            }, React.createElement("path", {
+                  d: "M12 15a3 3 0 100-6 3 3 0 000 6z"
+                }), React.createElement("path", {
+                  clipRule: "evenodd",
+                  d: "M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z",
+                  fillRule: "evenodd"
+                }));
+}
+
+var Eye = {
+  make: Widget$Eye
+};
+
+function Widget$EyeSlash(props) {
+  return React.createElement("svg", {
+              className: "w-4 h-4",
+              fill: "currentColor",
+              viewBox: "0 0 24 24",
+              xmlns: "http://www.w3.org/2000/svg"
+            }, React.createElement("path", {
+                  d: "M3.53 2.47a.75.75 0 00-1.06 1.06l18 18a.75.75 0 101.06-1.06l-18-18zM22.676 12.553a11.249 11.249 0 01-2.631 4.31l-3.099-3.099a5.25 5.25 0 00-6.71-6.71L7.759 4.577a11.217 11.217 0 014.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113z"
+                }), React.createElement("path", {
+                  d: "M15.75 12c0 .18-.013.357-.037.53l-4.244-4.243A3.75 3.75 0 0115.75 12zM12.53 15.713l-4.243-4.244a3.75 3.75 0 004.243 4.243z"
+                }), React.createElement("path", {
+                  d: "M6.75 12c0-.619.107-1.213.304-1.764l-3.1-3.1a11.25 11.25 0 00-2.63 4.31c-.12.362-.12.752 0 1.114 1.489 4.467 5.704 7.69 10.675 7.69 1.5 0 2.933-.294 4.242-.827l-2.477-2.477A5.25 5.25 0 016.75 12z"
+                }));
+}
+
+var EyeSlash = {
+  make: Widget$EyeSlash
+};
+
 function Widget$Search(props) {
   return React.createElement("svg", {
               fill: "none",
@@ -278,6 +313,8 @@ export {
   Settting ,
   Star ,
   StarFill ,
+  Eye ,
+  EyeSlash ,
   Search ,
 }
 /* Utils Not a pure module */

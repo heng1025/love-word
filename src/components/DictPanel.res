@@ -39,9 +39,9 @@ let make = (~data) => {
   <div>
     {switch data.phonetic !== "" {
     | true =>
-      <div>
+      <div className="inline-flex items-center">
         <span className="mr-2"> {React.string(`[ ${data.phonetic} ]`)} </span>
-        <Speaker isPlay=playState onClick=play />
+        <Speaker isPlay=playState onClick=play className="w-5 h-5" />
       </div>
     | _ => React.null
     }}

@@ -48,11 +48,14 @@ function DictPanel(props) {
   };
   var match$2 = data.phonetic !== "";
   var match$3 = data.tag !== "";
-  return React.createElement("div", undefined, match$2 ? React.createElement("div", undefined, React.createElement("span", {
+  return React.createElement("div", undefined, match$2 ? React.createElement("div", {
+                    className: "inline-flex items-center"
+                  }, React.createElement("span", {
                         className: "mr-2"
                       }, "[ " + data.phonetic + " ]"), React.createElement(Widget.Speaker.make, {
                         isPlay: match$1[0],
-                        onClick: play
+                        onClick: play,
+                        className: "w-5 h-5"
                       })) : null, React.createElement("div", {
                   className: "my-2"
                 }, trans), React.createElement("div", undefined, match$3 ? data.tag.split(" ").map(function (v) {
