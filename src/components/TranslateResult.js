@@ -26,35 +26,33 @@ var TranslateResult = {
 
 function TranslateResult$TranslateResultWithState(props) {
   var className = props.className;
+  var delay = props.delay;
   var data = props.data;
+  var delay$1 = delay !== undefined ? delay : 0;
   var className$1 = className !== undefined ? className : "";
-  var tmp;
   if (typeof data === "number") {
-    tmp = null;
-  } else {
-    switch (data.TAG | 0) {
-      case /* TResult */0 :
-          tmp = React.createElement(TranslateResult$TranslateResult, {
-                data: data._0,
-                className: className$1
-              });
-          break;
-      case /* TLoading */1 :
-          tmp = data._0 ? React.createElement(Widget.Loading.make, {
-                  delay: 450
-                }) : null;
-          break;
-      case /* TError */2 :
-          tmp = React.createElement("div", {
-                className: "text-error"
-              }, data._0);
-          break;
-      
-    }
+    return null;
   }
-  return React.createElement("div", {
-              className: "" + className$1 + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
-            }, tmp);
+  switch (data.TAG | 0) {
+    case /* TResult */0 :
+        return React.createElement(TranslateResult$TranslateResult, {
+                    data: data._0,
+                    className: className$1
+                  });
+    case /* TLoading */1 :
+        if (data._0) {
+          return React.createElement(Widget.Loading.make, {
+                      delay: delay$1
+                    });
+        } else {
+          return null;
+        }
+    case /* TError */2 :
+        return React.createElement("div", {
+                    className: "text-error"
+                  }, data._0);
+    
+  }
 }
 
 var TranslateResultWithState = {

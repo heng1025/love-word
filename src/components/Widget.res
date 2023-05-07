@@ -1,32 +1,8 @@
+open Utils.Lib
+
 module Loading = {
   let shouldDelay = (spanning, delay) => {
     spanning && delay > 0
-  }
-
-  let debounce = (. delay, callback) => {
-    let timeoutID = ref(Js.Nullable.null)
-    let cancelled = ref(false)
-
-    let clearExistingTimeout = () => {
-      if !Js.Nullable.isNullable(timeoutID.contents) {
-        Js.Nullable.iter(timeoutID.contents, (. timer) => Js.Global.clearTimeout(timer))
-      }
-    }
-
-    let cancel = (. ()) => {
-      clearExistingTimeout()
-      cancelled := true
-    }
-    let wrapper = (. ()) => {
-      clearExistingTimeout()
-
-      switch cancelled.contents {
-      | false => timeoutID := Js.Nullable.return(Js.Global.setTimeout(() => callback(.), delay))
-      | _ => ()
-      }
-    }
-
-    (wrapper, cancel)
   }
 
   @react.component

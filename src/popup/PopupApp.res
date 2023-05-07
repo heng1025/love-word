@@ -66,7 +66,7 @@ let make = () => {
       <button className="btn btn-primary btn-sm m-2" onClick={handleTranslate}>
         {React.string("Translate")}
       </button>
-      <TranslateResultWithState className="text-sm" data />
+      <TranslateResultWithState className="text-sm" data delay=200 />
     </div>
   </div>
 }

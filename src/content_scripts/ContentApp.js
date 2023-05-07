@@ -61,9 +61,12 @@ function ContentApp(props) {
             setLeft(function (_p) {
                   return "" + left.toString() + "px";
                 });
-            setOpactity(function (_p) {
-                  return "1";
-                });
+            var match = Utils.Lib.debounce(200, (function () {
+                    return setOpactity(function (_p) {
+                                return "1";
+                              });
+                  }));
+            match[0]();
           };
           window.addEventListener("keyup", handleKeyup);
           return (function (param) {
@@ -143,14 +146,18 @@ function ContentApp(props) {
                                   target: "_blank"
                                 }, React.createElement(Widget.Jump.make, {})))), React.createElement(TranslateResult.TranslateResultWithState.make, {
                           data: data,
+                          delay: 200,
                           className: "text-sm"
                         }))));
 }
+
+var panelDelay = 200;
 
 var make = ContentApp;
 
 export {
   common ,
+  panelDelay ,
   make ,
 }
 /* common Not a pure module */

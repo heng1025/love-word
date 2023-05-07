@@ -1,5 +1,6 @@
-open Utils
 open Widget
+open Utils
+open Utils.Lib
 open TranslateResult
 
 open Common.Chrome
@@ -13,6 +14,7 @@ open TranslateHook
 // so use shadow dom is a good idea.
 // `__CONTENT_CSS__` will be replaced by vite
 let common = getURL(%raw(`__CONTENT_CSS__`))
+let panelDelay = 200
 
 @react.component
 let make = (~host) => {
@@ -32,7 +34,10 @@ let make = (~host) => {
     let left = rect.left +. Js.Int.toFloat(Window.scrollX)
     setTop(._p => `${toString(top +. posOffset)}px`)
     setLeft(._p => `${toString(left)}px`)
-    setOpactity(._p => "1")
+    let (showPanel, _) = debounce(.panelDelay, (. ()) => {
+      setOpactity(._p => "1")
+    })
+    showPanel(.)
   }
 
   React.useEffect0(() => {
@@ -112,7 +117,7 @@ let make = (~host) => {
             </a>
           </div>
         </h4>
-        <TranslateResultWithState className="text-sm" data />
+        <TranslateResultWithState className="text-sm" data delay=panelDelay />
       </div>
     </div>
   </div>

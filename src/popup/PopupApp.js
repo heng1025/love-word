@@ -80,6 +80,7 @@ function PopupApp(props) {
                       onClick: handleTranslate
                     }, "Translate"), React.createElement(TranslateResult.TranslateResultWithState.make, {
                       data: data,
+                      delay: 200,
                       className: "text-sm"
                     })));
 }

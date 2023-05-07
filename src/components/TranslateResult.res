@@ -16,14 +16,12 @@ module TranslateResult = {
 
 module TranslateResultWithState = {
   @react.component
-  let make = (~data, ~className="") => {
-    <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
-      {switch data {
-      | TLoading(true) => <Loading delay=450 />
-      | TError(err) => <div className="text-error"> {React.string(err)} </div>
-      | TResult(val) => <TranslateResult className data=val />
-      | _ => React.null
-      }}
-    </div>
+  let make = (~data, ~delay=0, ~className="") => {
+    switch data {
+    | TLoading(true) => <Loading delay />
+    | TError(err) => <div className="text-error"> {React.string(err)} </div>
+    | TResult(val) => <TranslateResult className data=val />
+    | _ => React.null
+    }
   }
 }

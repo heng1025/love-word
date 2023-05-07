@@ -5,6 +5,7 @@ import Md5 from "md5";
 import * as Js_exn from "rescript/lib/es6/js_exn.js";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as FrancMin from "franc-min";
+import * as Js_null_undefined from "rescript/lib/es6/js_null_undefined.js";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
 function getSourceLang(text) {
@@ -16,6 +17,47 @@ function getSourceLang(text) {
               ]
             });
 }
+
+function debounce(delay, callback) {
+  var timeoutID = {
+    contents: null
+  };
+  var cancelled = {
+    contents: false
+  };
+  var clearExistingTimeout = function (param) {
+    if (!(timeoutID.contents == null)) {
+      return Js_null_undefined.iter(timeoutID.contents, (function (timer) {
+                    clearTimeout(timer);
+                  }));
+    }
+    
+  };
+  var cancel = function () {
+    clearExistingTimeout(undefined);
+    cancelled.contents = true;
+  };
+  var wrapper = function () {
+    clearExistingTimeout(undefined);
+    var match = cancelled.contents;
+    if (match) {
+      return ;
+    } else {
+      timeoutID.contents = setTimeout((function (param) {
+              callback();
+            }), delay);
+      return ;
+    }
+  };
+  return [
+          wrapper,
+          cancel
+        ];
+}
+
+var Lib = {
+  debounce: debounce
+};
 
 var apiHost = import.meta.env.LW_API_HOST;
 
@@ -197,6 +239,7 @@ async function adapterTrans(text) {
 
 export {
   getSourceLang ,
+  Lib ,
   OfflineDict ,
   Baidu ,
   adapterTrans ,
