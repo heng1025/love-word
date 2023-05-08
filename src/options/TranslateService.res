@@ -7,6 +7,7 @@ let make = () => {
   let (appid, setAppid) = React.Uncurried.useState(_ => "")
   let (secret, setSecret) = React.Uncurried.useState(_ => "")
   let (disabled, setDisabled) = React.Uncurried.useState(_ => true)
+  let (passwordVisible, setPasswordVisible) = React.Uncurried.useState(_ => true)
   let (warnMessage, setWarnMessage) = React.Uncurried.useState(_ => "")
 
   React.useEffect0(() => {
@@ -67,16 +68,23 @@ let make = () => {
         <label className="label">
           <span className="label-text"> {React.string("baidu secret")} </span>
         </label>
-        <input
-          type_="text"
-          placeholder="Secret"
-          value={secret}
-          onChange={e => {
-            setSecret(._ => ReactEvent.Form.target(e)["value"])
-            setDisabled(._ => false)
-          }}
-          className="input input-bordered input-primary w-full"
-        />
+        <div className="relative">
+          <input
+            type_={passwordVisible ? "password" : "text"}
+            placeholder="Secret"
+            value={secret}
+            onChange={e => {
+              setSecret(._ => ReactEvent.Form.target(e)["value"])
+              setDisabled(._ => false)
+            }}
+            className="input input-bordered input-primary w-full pr-8"
+          />
+          <span
+            className="cursor-pointer absolute w-6 h-6 top-1/2 right-1.5 -translate-y-1/2"
+            onClick={_ => setPasswordVisible(._p => !passwordVisible)}>
+            {passwordVisible ? <EyeSlash /> : <Eye />}
+          </span>
+        </div>
       </div>
       {switch warnMessage !== "" {
       | true =>

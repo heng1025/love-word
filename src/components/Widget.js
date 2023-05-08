@@ -246,8 +246,10 @@ var StarFill = {
 };
 
 function Widget$Eye(props) {
+  var className = props.className;
+  var className$1 = className !== undefined ? className : "";
   return React.createElement("svg", {
-              className: "w-4 h-4",
+              className: className$1,
               fill: "currentColor",
               viewBox: "0 0 24 24",
               xmlns: "http://www.w3.org/2000/svg"
@@ -265,8 +267,10 @@ var Eye = {
 };
 
 function Widget$EyeSlash(props) {
+  var className = props.className;
+  var className$1 = className !== undefined ? className : "";
   return React.createElement("svg", {
-              className: "w-4 h-4",
+              className: className$1,
               fill: "currentColor",
               viewBox: "0 0 24 24",
               xmlns: "http://www.w3.org/2000/svg"

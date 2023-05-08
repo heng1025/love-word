@@ -20,10 +20,15 @@ function TranslateService(props) {
       });
   var setDisabled = match$2[1];
   var match$3 = React.useState(function () {
+        return true;
+      });
+  var setPasswordVisible = match$3[1];
+  var passwordVisible = match$3[0];
+  var match$4 = React.useState(function () {
         return "";
       });
-  var setWarnMessage = match$3[1];
-  var warnMessage = match$3[0];
+  var setWarnMessage = match$4[1];
+  var warnMessage = match$4[0];
   React.useEffect((function () {
           var fetchBaiduKey = async function (param) {
             var result = await chrome.storage.local.get(["baiduKey"]);
@@ -98,20 +103,29 @@ function TranslateService(props) {
                           className: "label"
                         }, React.createElement("span", {
                               className: "label-text"
-                            }, "baidu secret")), React.createElement("input", {
-                          className: "input input-bordered input-primary w-full",
-                          placeholder: "Secret",
-                          type: "text",
-                          value: secret,
-                          onChange: (function (e) {
-                              setSecret(function (param) {
-                                    return e.target.value;
-                                  });
-                              setDisabled(function (param) {
-                                    return false;
-                                  });
-                            })
-                        })), warnMessage !== "" ? React.createElement("div", {
+                            }, "baidu secret")), React.createElement("div", {
+                          className: "relative"
+                        }, React.createElement("input", {
+                              className: "input input-bordered input-primary w-full pr-8",
+                              placeholder: "Secret",
+                              type: passwordVisible ? "password" : "text",
+                              value: secret,
+                              onChange: (function (e) {
+                                  setSecret(function (param) {
+                                        return e.target.value;
+                                      });
+                                  setDisabled(function (param) {
+                                        return false;
+                                      });
+                                })
+                            }), React.createElement("span", {
+                              className: "cursor-pointer absolute w-6 h-6 top-1/2 right-1.5 -translate-y-1/2",
+                              onClick: (function (param) {
+                                  setPasswordVisible(function (_p) {
+                                        return !passwordVisible;
+                                      });
+                                })
+                            }, passwordVisible ? React.createElement(Widget.EyeSlash.make, {}) : React.createElement(Widget.Eye.make, {})))), warnMessage !== "" ? React.createElement("div", {
                         className: "alert alert-warning shadow-lg mt-5"
                       }, React.createElement("div", undefined, React.createElement(Widget.Alert.make, {}), React.createElement("span", undefined, "Warning: " + warnMessage + "!"))) : null, React.createElement("button", {
                       className: "btn btn-primary " + (
