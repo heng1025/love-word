@@ -57,6 +57,11 @@ function useTranslate(text) {
                       });
           };
           fetchTranslateResult(text);
+          return (function (param) {
+                    setData(function (_p) {
+                          return /* TNone */0;
+                        });
+                  });
         }), [text]);
   return {
           loading: match[0],

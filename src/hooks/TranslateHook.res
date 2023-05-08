@@ -30,7 +30,7 @@ let useTranslate = (text: string) => {
 
     fetchTranslateResult(text)->ignore
 
-    None
+    Some(() => setData(._p => TNone))
   }, [text])
 
   {loading, data}

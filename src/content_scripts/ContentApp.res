@@ -58,11 +58,7 @@ let make = (~host) => {
 
     addKeyboardEventListener("keyup", handleKeyup)
 
-    Some(
-      () => {
-        removeKeyboardEventListener("keyup", handleKeyup)
-      },
-    )
+    Some(() => removeKeyboardEventListener("keyup", handleKeyup))
   })
 
   React.useEffect1(() => {
