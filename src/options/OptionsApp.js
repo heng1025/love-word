@@ -58,9 +58,9 @@ function OptionsApp(props) {
                     }, "Love Word")), React.createElement("div", {
                   className: "flex flex-1 overflow-y-hidden"
                 }, React.createElement("div", {
-                      className: "overflow-y-auto"
+                      className: "overflow-y-auto border-r"
                     }, React.createElement("ul", {
-                          className: "menu bg-base-100 w-56 p-2 border-r"
+                          className: "menu bg-base-100 w-56 p-2"
                         }, React.createElement("li", {
                               className: "menu-title"
                             }, React.createElement("span", undefined, "Setting")), React.createElement("li", undefined, React.createElement("a", {

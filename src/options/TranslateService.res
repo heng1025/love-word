@@ -6,6 +6,7 @@ open Utils
 let make = () => {
   let (appid, setAppid) = React.Uncurried.useState(_ => "")
   let (secret, setSecret) = React.Uncurried.useState(_ => "")
+  let (disabled, setDisabled) = React.Uncurried.useState(_ => true)
   let (warnMessage, setWarnMessage) = React.Uncurried.useState(_ => "")
 
   React.useEffect0(() => {
@@ -34,11 +35,13 @@ let make = () => {
     | Ok(_) => {
         await setExtStorage(~items={"baiduKey": config})
         setWarnMessage(._ => "")
+        setDisabled(._ => true)
       }
 
     | Error(msg) => {
         await removeExtStorage(~keys=["baiduKey"])
         setWarnMessage(._ => msg)
+        setDisabled(._ => false)
       }
     }
   }
@@ -53,7 +56,10 @@ let make = () => {
           type_="text"
           placeholder="Appid"
           value={appid}
-          onChange={e => setAppid(._ => ReactEvent.Form.target(e)["value"])}
+          onChange={e => {
+            setAppid(._ => ReactEvent.Form.target(e)["value"])
+            setDisabled(._ => false)
+          }}
           className="input input-bordered input-primary w-full"
         />
       </div>
@@ -65,7 +71,10 @@ let make = () => {
           type_="text"
           placeholder="Secret"
           value={secret}
-          onChange={e => setSecret(._ => ReactEvent.Form.target(e)["value"])}
+          onChange={e => {
+            setSecret(._ => ReactEvent.Form.target(e)["value"])
+            setDisabled(._ => false)
+          }}
           className="input input-bordered input-primary w-full"
         />
       </div>
@@ -79,7 +88,9 @@ let make = () => {
         </div>
       | false => React.null
       }}
-      <button className="btn btn-primary w-5/6 mt-8 mx-auto" onClick={_ => handleSubmit()->ignore}>
+      <button
+        className={`btn btn-primary ${disabled ? "btn-disabled" : ""} w-5/6 mt-8 mx-auto`}
+        onClick={_ => handleSubmit()->ignore}>
         {React.string("Submit")}
       </button>
     </div>

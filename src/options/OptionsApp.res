@@ -31,8 +31,8 @@ let make = () => {
       </a>
     </div>
     <div className="flex flex-1 overflow-y-hidden">
-      <div className="overflow-y-auto">
-        <ul className="menu bg-base-100 w-56 p-2 border-r">
+      <div className="overflow-y-auto border-r">
+        <ul className="menu bg-base-100 w-56 p-2">
           <li className="menu-title">
             <span> {React.string("Setting")} </span>
           </li>

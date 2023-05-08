@@ -16,10 +16,14 @@ function TranslateService(props) {
   var setSecret = match$1[1];
   var secret = match$1[0];
   var match$2 = React.useState(function () {
+        return true;
+      });
+  var setDisabled = match$2[1];
+  var match$3 = React.useState(function () {
         return "";
       });
-  var setWarnMessage = match$2[1];
-  var warnMessage = match$2[0];
+  var setWarnMessage = match$3[1];
+  var warnMessage = match$3[0];
   React.useEffect((function () {
           var fetchBaiduKey = async function (param) {
             var result = await chrome.storage.local.get(["baiduKey"]);
@@ -49,14 +53,20 @@ function TranslateService(props) {
       await chrome.storage.local.set({
             baiduKey: config
           });
-      return setWarnMessage(function (param) {
-                  return "";
+      setWarnMessage(function (param) {
+            return "";
+          });
+      return setDisabled(function (param) {
+                  return true;
                 });
     }
     var msg = br._0;
     await chrome.storage.local.remove(["baiduKey"]);
-    return setWarnMessage(function (param) {
-                return msg;
+    setWarnMessage(function (param) {
+          return msg;
+        });
+    return setDisabled(function (param) {
+                return false;
               });
   };
   return React.createElement("div", {
@@ -78,6 +88,9 @@ function TranslateService(props) {
                               setAppid(function (param) {
                                     return e.target.value;
                                   });
+                              setDisabled(function (param) {
+                                    return false;
+                                  });
                             })
                         })), React.createElement("div", {
                       className: "form-control mt-5"
@@ -94,11 +107,16 @@ function TranslateService(props) {
                               setSecret(function (param) {
                                     return e.target.value;
                                   });
+                              setDisabled(function (param) {
+                                    return false;
+                                  });
                             })
                         })), warnMessage !== "" ? React.createElement("div", {
                         className: "alert alert-warning shadow-lg mt-5"
                       }, React.createElement("div", undefined, React.createElement(Widget.Alert.make, {}), React.createElement("span", undefined, "Warning: " + warnMessage + "!"))) : null, React.createElement("button", {
-                      className: "btn btn-primary w-5/6 mt-8 mx-auto",
+                      className: "btn btn-primary " + (
+                        match$2[0] ? "btn-disabled" : ""
+                      ) + " w-5/6 mt-8 mx-auto",
                       onClick: (function (param) {
                           handleSubmit(undefined);
                         })
