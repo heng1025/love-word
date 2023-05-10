@@ -122,15 +122,10 @@ function ContentApp(props) {
       tmp = null;
   }
   var tmp$1;
-  if (data) {
-    var val = data._0;
-    tmp$1 = val.TAG === /* Ok */0 ? React.createElement(FavButton.make, {
-            text: sourceText,
-            trans: val._0
-          }) : null;
-  } else {
-    tmp$1 = null;
-  }
+  tmp$1 = data !== undefined && data.TAG === /* Ok */0 ? React.createElement(FavButton.make, {
+          text: sourceText,
+          trans: data._0
+        }) : null;
   return React.createElement("div", {
               className: "absolute z-[99999] " + mouseState + "",
               style: style

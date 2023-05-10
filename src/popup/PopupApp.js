@@ -59,15 +59,10 @@ function PopupApp(props) {
           focusTextInput(undefined);
         }), []);
   var tmp;
-  if (data) {
-    var val = data._0;
-    tmp = val.TAG === /* Ok */0 ? React.createElement(FavButton.make, {
-            text: sourceText,
-            trans: val._0
-          }) : null;
-  } else {
-    tmp = null;
-  }
+  tmp = data !== undefined && data.TAG === /* Ok */0 ? React.createElement(FavButton.make, {
+          text: sourceText,
+          trans: data._0
+        }) : null;
   return React.createElement("div", {
               className: "card card-compact w-56 bg-base-100 shadow-xl rounded-none"
             }, React.createElement("div", {

@@ -50,7 +50,7 @@ let make = () => {
   <div className="card card-compact w-56 bg-base-100 shadow-xl rounded-none">
     <div className="bg-primary h-5 px-1 text-white flex items-center justify-end">
       {switch data {
-      | TResult(Ok(val)) => <FavButton text=sourceText trans=val />
+      | Some(Ok(val)) => <FavButton text=sourceText trans=val />
       | _ => React.null
       }}
       <Link href={`https://fanyi.baidu.com/#en/zh/${sourceText}`} className="mx-1 tooltip-bottom">

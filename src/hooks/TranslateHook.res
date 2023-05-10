@@ -1,16 +1,14 @@
 open Utils
 open Common.Chrome
 
-type dataT = TResult(transRWithError) | TNone
-
 type return = {
   loading: bool,
-  data: dataT,
+  data: option<transRWithError>,
 }
 
 let useTranslate = (text: string) => {
   let (loading, setLoading) = React.Uncurried.useState(_ => false)
-  let (data, setData) = React.Uncurried.useState(_ => TNone)
+  let (data, setData) = React.Uncurried.useState(_ => None)
 
   React.useEffect1(() => {
     let fetchTranslateResult = async txt => {
@@ -18,9 +16,9 @@ let useTranslate = (text: string) => {
         setLoading(._p => true)
         let ret: transRWithError = await sendMessage(TranslateMsgContent({text: txt}))
         let _ = switch ret {
-        | Error(msg) => setData(._p => TResult(Error(msg)))
+        | Error(msg) => setData(._p => Some(Error(msg)))
         | Ok(val) =>
-          setData(._p => TResult(Ok(val)))
+          setData(._p => Some(Ok(val)))
           // add history record
           sendMessage(HistoryAddMsgContent({text: txt}))->ignore
         }
@@ -30,7 +28,7 @@ let useTranslate = (text: string) => {
 
     fetchTranslateResult(text)->ignore
 
-    Some(() => setData(._p => TNone))
+    Some(() => setData(._p => None))
   }, [text])
 
   {loading, data}
