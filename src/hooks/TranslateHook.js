@@ -8,7 +8,7 @@ function useTranslate(text) {
       });
   var setLoading = match[1];
   var match$1 = React.useState(function () {
-        return /* TNone */0;
+        
       });
   var setData = match$1[1];
   React.useEffect((function () {
@@ -28,11 +28,9 @@ function useTranslate(text) {
             if (ret.TAG === /* Ok */0) {
               var val = ret._0;
               setData(function (_p) {
-                    return /* TResult */{
-                            _0: {
-                              TAG: /* Ok */0,
-                              _0: val
-                            }
+                    return {
+                            TAG: /* Ok */0,
+                            _0: val
                           };
                   });
               chrome.runtime.sendMessage({
@@ -44,11 +42,9 @@ function useTranslate(text) {
             } else {
               var msg = ret._0;
               setData(function (_p) {
-                    return /* TResult */{
-                            _0: {
-                              TAG: /* Error */1,
-                              _0: msg
-                            }
+                    return {
+                            TAG: /* Error */1,
+                            _0: msg
                           };
                   });
             }
@@ -59,7 +55,7 @@ function useTranslate(text) {
           fetchTranslateResult(text);
           return (function (param) {
                     setData(function (_p) {
-                          return /* TNone */0;
+                          
                         });
                   });
         }), [text]);

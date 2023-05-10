@@ -101,7 +101,7 @@ let make = (~host) => {
           </span>
           <div className="flex items-center">
             {switch data {
-            | TResult(Ok(val)) => <FavButton text=sourceText trans=val />
+            | Some(Ok(val)) => <FavButton text=sourceText trans=val />
             | _ => React.null
             }}
             <Link href={`https://fanyi.baidu.com/#en/zh/${sourceText}`}>

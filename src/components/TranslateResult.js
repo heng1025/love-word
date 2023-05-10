@@ -34,17 +34,14 @@ function TranslateResult$TranslateResultWithState(props) {
   var delay$1 = delay !== undefined ? delay : 0;
   var className$1 = className !== undefined ? className : "";
   var tmp;
-  if (data) {
-    var msg = data._0;
-    tmp = msg.TAG === /* Ok */0 ? React.createElement(TranslateResult$TranslateResult, {
-            data: msg._0,
-            className: className$1
-          }) : React.createElement("div", {
-            className: "text-error"
-          }, msg._0);
-  } else {
-    tmp = null;
-  }
+  tmp = data !== undefined ? (
+      data.TAG === /* Ok */0 ? React.createElement(TranslateResult$TranslateResult, {
+              data: data._0,
+              className: className$1
+            }) : React.createElement("div", {
+              className: "text-error"
+            }, data._0)
+    ) : null;
   return React.createElement(Widget.Loading.make, {
               loading: loading$1,
               delay: delay$1,

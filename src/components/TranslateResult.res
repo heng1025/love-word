@@ -1,6 +1,5 @@
 open Widget
 open Utils
-open TranslateHook
 
 module TranslateResult = {
   @react.component
@@ -19,8 +18,8 @@ module TranslateResultWithState = {
   let make = (~loading=false, ~data, ~delay=0, ~className="") => {
     <Loading loading delay>
       {switch data {
-      | TResult(Error(msg)) => <div className="text-error"> {React.string(msg)} </div>
-      | TResult(Ok(val)) => <TranslateResult className data=val />
+      | Some(Error(msg)) => <div className="text-error"> {React.string(msg)} </div>
+      | Some(Ok(val)) => <TranslateResult className data=val />
       | _ => React.null
       }}
     </Loading>
