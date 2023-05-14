@@ -1,4 +1,8 @@
-import pkg from "./package.json";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const pkg = require("./package.json");
+
 const { name, version, description } = pkg;
 
 export default {
@@ -24,7 +28,7 @@ export default {
   content_scripts: [
     {
       matches: ["<all_urls>"],
-      js: ["pages/content.js"],
+      js: ["pages/content_scripts.js"],
     },
   ],
   web_accessible_resources: [
