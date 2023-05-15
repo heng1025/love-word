@@ -1,10 +1,11 @@
 {
   "name": "love-word",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Love because of words, a translation extension for chrome browser",
   "scripts": {
-    "dev": "conc 'rescript build -w' '__DEV__=true vite build -w'",
-    "build": "rescript && vite build"
+    "build": "node ./scripts/build.mjs",
+    "dev": "conc 'rescript build -w' 'npm run build -- --dev'",
+    "prod": "rescript build && npm run build"
   },
   "keywords": [
     "chrome extension",

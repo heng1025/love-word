@@ -3,17 +3,10 @@ open Utils
 open Utils.Lib
 open TranslateResult
 
-open Common.Chrome
 open Common.Webapi
 open Common.Webapi.Window
 open TranslateHook
 
-@@warning("-44")
-
-// if inject css in manifest, it may pollute host page,
-// so use shadow dom is a good idea.
-// `__CONTENT_CSS__` will be replaced by vite
-let common = getURL(%raw(`__CONTENT_CSS__`))
 let panelDelay = 200
 
 @react.component
@@ -88,7 +81,6 @@ let make = (~host) => {
 
   let style = ReactDOM.Style.make(~top, ~left, ~opacity, ())
   <div style className={`absolute z-[99999] ${mouseState}`}>
-    <link rel="stylesheet" href={common} />
     <div className="card w-52 bg-primary text-primary-content">
       <div className="card-body p-3">
         <h4 className="card-title text-sm border-b justify-between">

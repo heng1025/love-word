@@ -16,9 +16,3 @@
 .lw-scroll-wrap::-webkit-scrollbar-thumb:vertical:active {
   background-color: #c9c9c9;
 }
-
-@layer components {
-  .btn-xxs {
-    @apply h-[20px] min-h-[20px] py-[2px] px-1 text-[12px];
-  }
-}
