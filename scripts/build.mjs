@@ -27,7 +27,7 @@ const baseConfig = {
 run();
 
 async function run() {
-  fs.rmSync(resolve(__dirname, outDir), { recursive: true, force: true });
+  fs.rmSync(_resolve(outDir), { recursive: true, force: true });
   await Promise.all([buildContentScript(), buildPages()]);
 }
 
@@ -35,7 +35,7 @@ async function buildContentScript() {
   const contentScriptConfig = mergeConfig(baseConfig, {
     build: {
       rollupOptions: {
-        input: resolve(__dirname, "src/content_scripts/ContentEntry.js"),
+        input: _resolve("src/content_scripts/ContentEntry.js"),
         output: {
           entryFileNames: "pages/content_scripts.js",
         },
@@ -47,9 +47,9 @@ async function buildContentScript() {
 
 async function buildPages() {
   const input = {
-    popup: resolve(__dirname, "popup.html"),
-    options: resolve(__dirname, "options.html"),
-    background: resolve(__dirname, "src/Background.js"),
+    popup: _resolve("popup.html"),
+    options: _resolve("options.html"),
+    background: _resolve("src/Background.js"),
   };
 
   const pageConfig = mergeConfig(baseConfig, {
@@ -59,10 +59,10 @@ async function buildPages() {
         output: {
           entryFileNames: (chunkInfo) => {
             const { name } = chunkInfo;
-            if (name !== "background" && !enableDev) {
-              return "pages/[name].[hash].js";
+            if (name === "background" || enableDev) {
+              return "pages/[name].js";
             }
-            return "pages/[name].js";
+            return "pages/[name].[hash].js";
           },
           manualChunks(id) {
             if (id.includes("node_modules")) {
@@ -85,6 +85,10 @@ async function buildPages() {
     },
   });
   return build(pageConfig);
+}
+
+function _resolve(target) {
+  return resolve(__dirname, target);
 }
 
 function upperCase2LowerCaseDot(str) {
