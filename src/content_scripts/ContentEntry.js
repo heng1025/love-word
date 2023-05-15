@@ -3,8 +3,11 @@
 import * as React from "react";
 import * as ContentApp from "./ContentApp.js";
 import * as Client from "react-dom/client";
+import CommonCssinline from "../common.css?inline";
 
-var id = "loveWord";
+var commonCss = CommonCssinline;
+
+var id = "__loveWord__";
 
 var host = document.createElement("div");
 
@@ -20,14 +23,15 @@ document.documentElement.appendChild(host);
 
 var shadow = Client.createRoot(shadowEl);
 
-shadow.render(React.createElement(ContentApp.make, {
-          host: host
-        }));
+shadow.render(React.createElement(React.Fragment, undefined, React.createElement("style", undefined, commonCss), React.createElement(ContentApp.make, {
+              host: host
+            })));
 
 export {
+  commonCss ,
   id ,
   host ,
   shadowEl ,
   shadow ,
 }
-/* host Not a pure module */
+/* commonCss Not a pure module */

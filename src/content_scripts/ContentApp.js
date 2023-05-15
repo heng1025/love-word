@@ -7,8 +7,6 @@ import * as FavButton from "../components/FavButton.js";
 import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
-var common = chrome.runtime.getURL(__CONTENT_CSS__);
-
 function ContentApp(props) {
   var host = props.host;
   var match = React.useState(function () {
@@ -129,10 +127,7 @@ function ContentApp(props) {
   return React.createElement("div", {
               className: "absolute z-[99999] " + mouseState + "",
               style: style
-            }, React.createElement("link", {
-                  href: common,
-                  rel: "stylesheet"
-                }), React.createElement("div", {
+            }, React.createElement("div", {
                   className: "card w-52 bg-primary text-primary-content"
                 }, React.createElement("div", {
                       className: "card-body p-3"
@@ -156,8 +151,7 @@ var panelDelay = 200;
 var make = ContentApp;
 
 export {
-  common ,
   panelDelay ,
   make ,
 }
-/* common Not a pure module */
+/* Utils Not a pure module */

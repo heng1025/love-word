@@ -11,10 +11,6 @@ const outDir = "dist";
 const baseConfig = {
   configFile: false,
   envPrefix: "LW_",
-  define: {
-    // inject content css
-    __CONTENT_CSS__: JSON.stringify("assets/lw.common.css"),
-  },
   plugins: [genManifest(outDir)],
   build: {
     outDir,
@@ -78,7 +74,10 @@ async function buildPages() {
             return `assets/${newChunkName}.[hash].js`;
           },
           assetFileNames: () => {
-            return "assets/lw.[name].[ext]";
+            if (enableDev) {
+              return "assets/[name].[ext]";
+            }
+            return "assets/[name].[hash].[ext]";
           },
         },
       },
