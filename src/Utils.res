@@ -45,13 +45,19 @@ module OfflineDict = {
     exchange: string,
   }
 
+  type response = {
+    code: int,
+    msg: string,
+    data: dictOk,
+  }
+
   let translate = async q => {
     try {
       let res = await fetch(~input=`${endpoint}?q=${q}`, ())
-      let data: option<dictOk> = await Response.json(res)
-      switch data {
-      | Some(val) => Ok(val)
-      | _ => Error("Word can not find")
+      let dictRet = await Response.json(res)
+      switch dictRet.code {
+      | 0 => Ok(dictRet.data)
+      | _ => Error(dictRet.msg)
       }
     } catch {
     | Js.Exn.Error(err) =>

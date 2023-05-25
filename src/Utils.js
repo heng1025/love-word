@@ -66,16 +66,17 @@ var endpoint = "" + apiHost + "/dict";
 async function translate(q) {
   try {
     var res = await fetch("" + endpoint + "?q=" + q + "", undefined);
-    var data = await res.json();
-    if (data !== undefined) {
+    var dictRet = await res.json();
+    var match = dictRet.code;
+    if (match !== 0) {
       return {
-              TAG: /* Ok */0,
-              _0: data
+              TAG: /* Error */1,
+              _0: dictRet.msg
             };
     } else {
       return {
-              TAG: /* Error */1,
-              _0: "Word can not find"
+              TAG: /* Ok */0,
+              _0: dictRet.data
             };
     }
   }
