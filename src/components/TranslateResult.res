@@ -6,8 +6,8 @@ module TranslateResult = {
   let make = (~data, ~className="") => {
     <div className={`${className} lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain`}>
       {switch data {
-      | BaiduT({baidu: br}) => <MachineTPanel data=br />
-      | DictT({dict: dr}) => <DictPanel data=dr />
+      | DictT(dr) => <DictPanel data=dr />
+      | BaiduT(br) => <MachineTPanel data=br />
       }}
     </div>
   }

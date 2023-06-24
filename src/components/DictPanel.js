@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as Widget from "./Widget.js";
-import * as JsxPPXReactSupport from "rescript/lib/es6/jsxPPXReactSupport.js";
+import * as JsxPPXReactSupportU from "rescript/lib/es6/jsxPPXReactSupportU.js";
 
 function DictPanel(props) {
   var data = props.data;
@@ -28,7 +28,7 @@ function DictPanel(props) {
                 return au;
               });
           if (au !== null) {
-            au.onended = (function (param) {
+            au.onended = (function () {
                 setAudioState(function (_p) {
                       return false;
                     });
@@ -59,7 +59,7 @@ function DictPanel(props) {
                       })) : null, React.createElement("div", {
                   className: "my-2"
                 }, trans), React.createElement("div", undefined, match$3 ? data.tag.split(" ").map(function (v) {
-                        return JsxPPXReactSupport.createElementWithKey(v, Widget.Tag.make, {
+                        return JsxPPXReactSupportU.createElementWithKey(v, Widget.Tag.make, {
                                     className: "bg-secondary mr-1 mb-1",
                                     children: v
                                   });

@@ -30,7 +30,7 @@ function TranslateService(props) {
   var setWarnMessage = match$4[1];
   var warnMessage = match$4[0];
   React.useEffect((function () {
-          var fetchBaiduKey = async function (param) {
+          var fetchBaiduKey = async function () {
             var result = await chrome.storage.local.get(["baiduKey"]);
             var config = result.baiduKey;
             if (!(config == null)) {
@@ -45,7 +45,7 @@ function TranslateService(props) {
           };
           fetchBaiduKey(undefined);
         }), []);
-  var handleSubmit = async function (param) {
+  var handleSubmit = async function () {
     var config = {
       appid: appid,
       secret: secret
@@ -54,7 +54,7 @@ function TranslateService(props) {
           baiduKey: config
         });
     var br = await Utils.Baidu.translate("hello world");
-    if (br.TAG === /* Ok */0) {
+    if (br.TAG === "Ok") {
       await chrome.storage.local.set({
             baiduKey: config
           });

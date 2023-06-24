@@ -7,14 +7,14 @@ let make = (~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
 
   let onClick = _ => {
     switch btnState {
-    | DELETE => onDelete(. records)
-    | CLEAR => onClear(.)
+    | DELETE => onDelete(records)
+    | CLEAR => onClear()
     | _ => ()
     }
   }
 
   let handleChange = val => {
-    onSearch(. val)
+    onSearch(val)
   }
   <div className="sticky top-0 z-50 bg-base-100 p-4 border-b-2">
     <input type_="checkbox" id="my-modal" className="modal-toggle" />
@@ -44,15 +44,15 @@ let make = (~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
           <label
             htmlFor="my-modal"
             className="btn btn-warning gap-2"
-            onClick={_ => setBtnState(._ => DELETE)}>
+            onClick={_ => setBtnState(_ => DELETE)}>
             <span> {React.string("Delete")} </span>
             <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>
           </label>
           <label
-            htmlFor="my-modal" className="btn btn-error" onClick={_ => setBtnState(._ => CLEAR)}>
+            htmlFor="my-modal" className="btn btn-error" onClick={_ => setBtnState(_ => CLEAR)}>
             {React.string("Clear")}
           </label>
-          <button className="btn" onClick={_ => onCancel(.)}> {React.string("Cancel")} </button>
+          <button className="btn" onClick={_ => onCancel()}> {React.string("Cancel")} </button>
         </div>
       | false => React.null
       }}

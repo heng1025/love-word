@@ -5,11 +5,11 @@ let includeWith = (target, substring) => Js.Re.fromString(substring)->Js.Re.test
 
 type return = {
   records: array<recordDataWithExtra>,
-  onCheck: (. recordDataWithExtra) => unit,
-  onSearch: (. string) => unit,
-  onDelete: (. array<recordDataWithExtra>) => unit,
-  onClear: (. unit) => unit,
-  onCancel: (. unit) => unit,
+  onCheck: recordDataWithExtra => unit,
+  onSearch: string => unit,
+  onDelete: array<recordDataWithExtra> => unit,
+  onClear: unit => unit,
+  onCancel: unit => unit,
 }
 
 type recordType = History | Favorite
@@ -39,7 +39,7 @@ let useRecord = recordType => {
         ...v,
         checked: false,
       })
-    setRecords(._ => rs)
+    setRecords(_ => rs)
   }
 
   React.useEffect1(() => {
@@ -47,18 +47,18 @@ let useRecord = recordType => {
     None
   }, [recordType])
 
-  let onSearch = (. val) => {
+  let onSearch = val => {
     if val !== "" {
       let rs = Js.Array2.filter(records, item => {
         item.text->includeWith(val)
       })
-      setRecords(._ => rs)
+      setRecords(_ => rs)
     } else {
       getAll()->ignore
     }
   }
 
-  let onCheck = (. record: recordDataWithExtra) => {
+  let onCheck = (record: recordDataWithExtra) => {
     let rs = Js.Array2.map(records, v => {
       let {date, checked} = record
 
@@ -67,25 +67,25 @@ let useRecord = recordType => {
       }
       v
     })
-    setRecords(._ => rs)
+    setRecords(_ => rs)
   }
 
-  let onCancel = (. ()) => {
+  let onCancel = () => {
     let rs = Js.Array2.map(records, v => {
       ...v,
       checked: false,
     })
-    setRecords(._ => rs)
+    setRecords(_ => rs)
   }
 
-  let onDelete = async (. checkedRecords) => {
+  let onDelete = async checkedRecords => {
     let _ = await sendMessage(
       getDeleteManyMsgContent({dates: Js.Array2.map(checkedRecords, v => v.date)}),
     )
     await getAll()
   }
 
-  let onClear = async (. ()) => {
+  let onClear = async () => {
     let _ = await sendMessage(getExtraMsgContent(Clear))
     await getAll()
   }
@@ -95,7 +95,7 @@ let useRecord = recordType => {
     onCheck,
     onCancel,
     onSearch,
-    onClear: (. ()) => onClear(.)->ignore,
-    onDelete: (. args) => onDelete(. args)->ignore,
+    onClear: () => onClear()->ignore,
+    onDelete: args => onDelete(args)->ignore,
   }
 }

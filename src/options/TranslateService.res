@@ -15,8 +15,8 @@ let make = () => {
       let result = await getExtStorage(~keys=["baiduKey"])
       switch Js.toOption(result["baiduKey"]) {
       | Some(config) => {
-          setAppid(._ => config["appid"])
-          setSecret(._ => config["secret"])
+          setAppid(_ => config["appid"])
+          setSecret(_ => config["secret"])
         }
 
       | _ => ()
@@ -35,14 +35,14 @@ let make = () => {
     switch br {
     | Ok(_) => {
         await setExtStorage(~items={"baiduKey": config})
-        setWarnMessage(._ => "")
-        setDisabled(._ => true)
+        setWarnMessage(_ => "")
+        setDisabled(_ => true)
       }
 
     | Error(msg) => {
         await removeExtStorage(~keys=["baiduKey"])
-        setWarnMessage(._ => msg)
-        setDisabled(._ => false)
+        setWarnMessage(_ => msg)
+        setDisabled(_ => false)
       }
     }
   }
@@ -58,8 +58,8 @@ let make = () => {
           placeholder="Appid"
           value={appid}
           onChange={e => {
-            setAppid(._ => ReactEvent.Form.target(e)["value"])
-            setDisabled(._ => false)
+            setAppid(_ => ReactEvent.Form.target(e)["value"])
+            setDisabled(_ => false)
           }}
           className="input input-bordered input-primary w-full"
         />
@@ -74,14 +74,14 @@ let make = () => {
             placeholder="Secret"
             value={secret}
             onChange={e => {
-              setSecret(._ => ReactEvent.Form.target(e)["value"])
-              setDisabled(._ => false)
+              setSecret(_ => ReactEvent.Form.target(e)["value"])
+              setDisabled(_ => false)
             }}
             className="input input-bordered input-primary w-full pr-8"
           />
           <span
             className="cursor-pointer absolute w-6 h-6 top-1/2 right-1.5 -translate-y-1/2"
-            onClick={_ => setPasswordVisible(._p => !passwordVisible)}>
+            onClick={_ => setPasswordVisible(_p => !passwordVisible)}>
             {passwordVisible ? <EyeSlash /> : <Eye />}
           </span>
         </div>

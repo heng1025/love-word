@@ -30,14 +30,14 @@ function Widget$Loading(props) {
   React.useEffect((function () {
           if (loading$1) {
             var match = Utils.Lib.debounce(delay$1, (function () {
-                    return setSpinning(function (param) {
-                                return true;
-                              });
+                    setSpinning(function (param) {
+                          return true;
+                        });
                   }));
             var cancel = match[1];
-            match[0]();
-            return (function (param) {
-                      cancel();
+            match[0](undefined);
+            return (function () {
+                      cancel(undefined);
                     });
           }
           setSpinning(function (param) {
@@ -70,7 +70,7 @@ function Widget$Tag(props) {
   var className = props.className;
   var className$1 = className !== undefined ? className : "";
   return React.createElement("span", {
-              className: "rounded-sm inline-block text-white px-1 " + className$1 + ""
+              className: "rounded-sm inline-block text-white px-1 " + className$1
             }, props.children);
 }
 
@@ -82,7 +82,7 @@ function Widget$Link(props) {
   var className = props.className;
   var className$1 = className !== undefined ? className : "";
   return React.createElement("a", {
-              className: "link text-white " + className$1 + "",
+              className: "link text-white " + className$1,
               href: props.href,
               target: "_blank"
             }, props.children);
@@ -129,7 +129,7 @@ function Widget$Speaker(props) {
   var className$1 = className !== undefined ? className : "";
   var animate200ms = props.isPlay ? "animate-fadeInOut-200ms" : "";
   return React.createElement("button", {
-              className: "btn btn-xs btn-circle btn-ghost min-h-0 " + className$1 + "",
+              className: "btn btn-xs btn-circle btn-ghost min-h-0 " + className$1,
               onClick: props.onClick
             }, React.createElement("svg", {
                   className: "w-4 h-4",

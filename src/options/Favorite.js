@@ -6,7 +6,7 @@ import * as RecordAction from "./RecordAction.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
 function Favorite(props) {
-  var match = RecordHook.useRecord(/* Favorite */1);
+  var match = RecordHook.useRecord("Favorite");
   var onCheck = match.onCheck;
   var records = match.records;
   var recordEles = records.map(function (record) {
@@ -16,7 +16,7 @@ function Favorite(props) {
         var val = record.trans;
         return React.createElement("div", {
                     key: date.toString(),
-                    className: "card card-compact w-72 card-bordered cursor-pointer bg-base-100 shadow-xl " + boarderClass + "",
+                    className: "card card-compact w-72 card-bordered cursor-pointer bg-base-100 shadow-xl " + boarderClass,
                     onClick: (function (param) {
                         onCheck(record);
                       })
@@ -39,7 +39,7 @@ function Favorite(props) {
                               data: val
                             }) : null));
       });
-  return React.createElement(React.Fragment, undefined, React.createElement(RecordAction.make, {
+  return React.createElement(React.Fragment, {}, React.createElement(RecordAction.make, {
                   records: records.filter(function (v) {
                         return v.checked;
                       }),

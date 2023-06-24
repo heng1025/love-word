@@ -55,26 +55,26 @@ function ContentApp(props) {
             var top = rect.top + rect.height + window.scrollY;
             var left = rect.left + window.scrollX;
             setTop(function (_p) {
-                  return "" + (top + 8.0).toString() + "px";
+                  return (top + 8.0).toString() + "px";
                 });
             setLeft(function (_p) {
-                  return "" + left.toString() + "px";
+                  return left.toString() + "px";
                 });
             var match = Utils.Lib.debounce(200, (function () {
-                    return setOpactity(function (_p) {
-                                return "1";
-                              });
+                    setOpactity(function (_p) {
+                          return "1";
+                        });
                   }));
-            match[0]();
+            match[0](undefined);
           };
           window.addEventListener("keyup", handleKeyup);
-          return (function (param) {
+          return (function () {
                     window.removeEventListener("keyup", handleKeyup);
                   });
         }), []);
   React.useEffect((function () {
           var handleClick = function (e) {
-            e.stopPropagation();
+            e.stopPropagation(undefined);
             if (opacity === "1" && !host.contains(e.target)) {
               setTop(function (param) {
                     return "0";
@@ -92,7 +92,7 @@ function ContentApp(props) {
             
           };
           window.addEventListener("click", handleClick);
-          return (function (param) {
+          return (function () {
                     window.removeEventListener("click", handleClick);
                   });
         }), [opacity]);
@@ -120,12 +120,12 @@ function ContentApp(props) {
       tmp = null;
   }
   var tmp$1;
-  tmp$1 = data !== undefined && data.TAG === /* Ok */0 ? React.createElement(FavButton.make, {
+  tmp$1 = data !== undefined && data.TAG === "Ok" ? React.createElement(FavButton.make, {
           text: sourceText,
           trans: data._0
         }) : null;
   return React.createElement("div", {
-              className: "absolute z-[99999] " + mouseState + "",
+              className: "absolute z-[99999] " + mouseState,
               style: style
             }, React.createElement("div", {
                   className: "card w-52 bg-primary text-primary-content"
@@ -137,7 +137,7 @@ function ContentApp(props) {
                               className: "flex items-center"
                             }, tmp$1, React.createElement(Widget.Link.make, {
                                   children: React.createElement(Widget.Jump.make, {}),
-                                  href: "https://fanyi.baidu.com/#en/zh/" + sourceText + ""
+                                  href: "https://fanyi.baidu.com/#en/zh/" + sourceText
                                 }))), React.createElement(TranslateResult.TranslateResultWithState.make, {
                           loading: match$5.loading,
                           data: data,

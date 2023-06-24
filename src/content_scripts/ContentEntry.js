@@ -23,7 +23,7 @@ document.documentElement.appendChild(host);
 
 var shadow = Client.createRoot(shadowEl);
 
-shadow.render(React.createElement(React.Fragment, undefined, React.createElement("style", undefined, commonCss), React.createElement(ContentApp.make, {
+shadow.render(React.createElement(React.Fragment, {}, React.createElement("style", undefined, commonCss), React.createElement(ContentApp.make, {
               host: host
             })));
 

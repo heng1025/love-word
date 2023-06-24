@@ -5,25 +5,25 @@ open Common.Webapi.Window
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
 
 module Lib = {
-  let debounce = (. delay, callback) => {
+  let debounce = (delay, callback) => {
     let timeoutID = ref(Js.Nullable.null)
     let cancelled = ref(false)
 
     let clearExistingTimeout = () => {
       if !Js.Nullable.isNullable(timeoutID.contents) {
-        Js.Nullable.iter(timeoutID.contents, (. timer) => Js.Global.clearTimeout(timer))
+        Js.Nullable.iter(timeoutID.contents, timer => Js.Global.clearTimeout(timer))
       }
     }
 
-    let cancel = (. ()) => {
+    let cancel = () => {
       clearExistingTimeout()
       cancelled := true
     }
-    let wrapper = (. ()) => {
+    let wrapper = () => {
       clearExistingTimeout()
 
       switch cancelled.contents {
-      | false => timeoutID := Js.Nullable.return(Js.Global.setTimeout(() => callback(.), delay))
+      | false => timeoutID := Js.Nullable.return(Js.Global.setTimeout(() => callback(), delay))
       | _ => ()
       }
     }
@@ -149,8 +149,9 @@ module Baidu = {
 }
 
 type transR =
-  | DictT({dict: OfflineDict.dictOk})
-  | BaiduT({baidu: array<Baidu.baiduOk>})
+  | @unboxed DictT(OfflineDict.dictOk)
+  | @unboxed BaiduT(array<Baidu.baiduOk>)
+
 type transRWithError = result<transR, string>
 
 type textMsgContent = {text: string}
@@ -200,7 +201,7 @@ let adapterTrans = async text => {
 
   let baiduResult = async () => {
     switch await Baidu.translate(text) {
-    | Ok(res) => Ok(BaiduT({baidu: res}))
+    | Ok(res) => Ok(BaiduT(res))
     | Error(msg) => Error(msg)
     }
   }
@@ -209,7 +210,7 @@ let adapterTrans = async text => {
     await baiduResult()
   } else {
     switch await OfflineDict.translate(text) {
-    | Ok(val) => Ok(DictT({dict: val}))
+    | Ok(val) => Ok(DictT(val))
     | _ => await baiduResult()
     }
   }

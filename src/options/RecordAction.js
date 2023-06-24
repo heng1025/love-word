@@ -10,18 +10,18 @@ function RecordAction(props) {
   var records = props.records;
   var records$1 = records !== undefined ? records : [];
   var match = React.useState(function () {
-        return /* None */2;
+        return "None";
       });
   var setBtnState = match[1];
   var btnState = match[0];
   var checkedLen = records$1.length;
   var onClick = function (param) {
     switch (btnState) {
-      case /* DELETE */0 :
+      case "DELETE" :
           return onDelete(records$1);
-      case /* CLEAR */1 :
-          return onClear();
-      case /* None */2 :
+      case "CLEAR" :
+          return onClear(undefined);
+      case "None" :
           return ;
       
     }
@@ -65,7 +65,7 @@ function RecordAction(props) {
                             htmlFor: "my-modal",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
-                                      return /* DELETE */0;
+                                      return "DELETE";
                                     });
                               })
                           }, React.createElement("span", undefined, "Delete"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("label", {
@@ -73,13 +73,13 @@ function RecordAction(props) {
                             htmlFor: "my-modal",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
-                                      return /* CLEAR */1;
+                                      return "CLEAR";
                                     });
                               })
                           }, "Clear"), React.createElement("button", {
                             className: "btn",
                             onClick: (function (param) {
-                                onCancel();
+                                onCancel(undefined);
                               })
                           }, "Cancel")) : null));
 }

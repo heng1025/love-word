@@ -25,7 +25,7 @@ function PopupApp(props) {
   var setTextInputRef = function (element) {
     textInput.current = element;
   };
-  var focusTextInput = function (param) {
+  var focusTextInput = function () {
     Belt_Option.forEach(Caml_option.nullable_to_opt(textInput.current), (function (input) {
             input.focus();
           }));
@@ -59,7 +59,7 @@ function PopupApp(props) {
           focusTextInput(undefined);
         }), []);
   var tmp;
-  tmp = data !== undefined && data.TAG === /* Ok */0 ? React.createElement(FavButton.make, {
+  tmp = data !== undefined && data.TAG === "Ok" ? React.createElement(FavButton.make, {
           text: sourceText,
           trans: data._0
         }) : null;
@@ -69,7 +69,7 @@ function PopupApp(props) {
                   className: "bg-primary h-5 px-1 text-white flex items-center justify-end"
                 }, tmp, React.createElement(Widget.Link.make, {
                       children: React.createElement(Widget.Jump.make, {}),
-                      href: "https://fanyi.baidu.com/#en/zh/" + sourceText + "",
+                      href: "https://fanyi.baidu.com/#en/zh/" + sourceText,
                       className: "mx-1 tooltip-bottom"
                     }), React.createElement(Widget.Link.make, {
                       children: React.createElement(Widget.Settting.make, {}),

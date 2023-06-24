@@ -14,26 +14,26 @@ function FavButton(props) {
   var favAction = async function (action) {
     var msgContent;
     switch (action) {
-      case /* Get */0 :
+      case "Get" :
           msgContent = {
-            TAG: /* FavGetOneMsgContent */2,
+            TAG: "FavGetOneMsgContent",
             _0: {
               text: text
             }
           };
           break;
-      case /* Add */1 :
+      case "Add" :
           msgContent = {
-            TAG: /* FavAddMsgContent */1,
+            TAG: "FavAddMsgContent",
             _0: {
               text: text,
               trans: trans
             }
           };
           break;
-      case /* Delete */2 :
+      case "Delete" :
           msgContent = {
-            TAG: /* FavDeleteOneMsgContent */3,
+            TAG: "FavDeleteOneMsgContent",
             _0: {
               text: text
             }
@@ -50,12 +50,12 @@ function FavButton(props) {
               });
   };
   React.useEffect((function () {
-          favAction(/* Get */0);
+          favAction("Get");
         }), [text]);
   return React.createElement("button", {
               className: "btn btn-xs w-5 h-5 min-h-0 btn-circle btn-ghost",
               onClick: (function (param) {
-                  favAction(isFaved ? /* Delete */2 : /* Add */1);
+                  favAction(isFaved ? "Delete" : "Add");
                 })
             }, isFaved ? React.createElement(Widget.StarFill.make, {}) : React.createElement(Widget.Star.make, {}));
 }

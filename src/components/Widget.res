@@ -14,14 +14,14 @@ module Loading = {
     React.useEffect2(() => {
       switch loading {
       | true => {
-          let (showSpinning, cancel) = debounce(.delay, (. ()) => {
-            setSpinning(. _ => true)
+          let (showSpinning, cancel) = debounce(delay, () => {
+            setSpinning(_ => true)
           })
-          showSpinning(.)
-          Some(() => cancel(.))
+          showSpinning()
+          Some(() => cancel())
         }
       | _ => {
-          setSpinning(._ => false)
+          setSpinning(_ => false)
           None
         }
       }

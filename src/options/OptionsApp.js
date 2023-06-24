@@ -80,7 +80,7 @@ function OptionsApp(props) {
                                   className: match$3 ? "active" : "",
                                   href: "#history"
                                 }, "History Query")))), React.createElement("div", {
-                      className: "flex-1 overflow-y-auto bg-base-200 " + contentClass + ""
+                      className: "flex-1 overflow-y-auto bg-base-200 " + contentClass
                     }, tmp)));
 }
 

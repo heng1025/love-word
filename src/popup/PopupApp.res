@@ -21,7 +21,7 @@ let make = () => {
 
   let handleTranslate = _ => {
     if text !== "" {
-      setSourceText(._ => text)
+      setSourceText(_ => text)
     } else {
       focusTextInput()
     }
@@ -29,7 +29,7 @@ let make = () => {
 
   let handleChange = event => {
     let value = ReactEvent.Form.target(event)["value"]
-    setText(._ => value)
+    setText(_ => value)
   }
 
   let handleKeyDown = evt => {
@@ -37,7 +37,7 @@ let make = () => {
     let key = ReactEvent.Keyboard.key(evt)
 
     if isCtrlKey && key === "Enter" {
-      setSourceText(._ => text)
+      setSourceText(_ => text)
     }
   }
 

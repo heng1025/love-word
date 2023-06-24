@@ -15,7 +15,7 @@ let make = (~text, ~trans) => {
     }
     if text !== "" {
       let faved = await sendMessage(msgContent)
-      setFaved(._ => faved)
+      setFaved(_ => faved)
     }
   }
 

@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@rescript/react':
-    specifier: ^0.11.0
-    version: 0.11.0(react-dom@18.2.0)(react@18.2.0)
+    specifier: 0.12.0-alpha.2
+    version: 0.12.0-alpha.2(react-dom@18.2.0)(react@18.2.0)
   franc-min:
     specifier: ^6.1.0
     version: 6.1.0
@@ -37,8 +37,8 @@ devDependencies:
     specifier: ^8.4.23
     version: 8.4.23
   rescript:
-    specifier: ^10.1.4
-    version: 10.1.4
+    specifier: 11.0.0-beta.2
+    version: 11.0.0-beta.2
   tailwindcss:
     specifier: ^3.3.2
     version: 3.3.2
@@ -306,8 +306,8 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@rescript/react@0.11.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-RzoAO+3cJwXE2D7yodMo4tBO2EkeDYCN/I/Sj/yRweI3S1CY1ZBOF/GMcVtjeIurJJt7KMveqQXTaRrqoGZBBg==}
+  /@rescript/react@0.12.0-alpha.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-FkVFU7LFT0c9tT01N08VsbhE7X3IuJvxrTBrbCehRyhw3qZy2qq9+HmMWm87kD4jaO23J7OhCGz5ejf66YOyoQ==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1007,8 +1007,9 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /rescript@10.1.4:
-    resolution: {integrity: sha512-FFKlS9AG/XrLepWsyw7B+A9DtQBPWEPDPDKghV831Y2KGbie+eeFBOS0xtRHp0xbt7S0N2Dm6hhX+kTZQ/3Ybg==}
+  /rescript@11.0.0-beta.2:
+    resolution: {integrity: sha512-Tcf72sR4EQ+eVMAwMWDSW5VPfg8YOS6bRJQ1Sf4u6jMy7Ui18mZyy0rusQmeq8vf2spgNulMcOw+HzQ9bEiz7g==}
+    engines: {node: '>=10'}
     hasBin: true
     requiresBuild: true
     dev: true

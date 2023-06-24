@@ -10,7 +10,7 @@ let make = (~data: array<Baidu.baiduOk>) => {
   let isEqual = (text, v: Baidu.baiduOk) => v.src === text || v.dst === text
 
   React.useEffect1(() => {
-    setTransList(._ =>
+    setTransList(_ =>
       Js.Array2.map(
         data,
         v => {
@@ -24,7 +24,7 @@ let make = (~data: array<Baidu.baiduOk>) => {
   }, [data])
 
   let onPlay = text => {
-    setTransList(.p =>
+    setTransList(p =>
       Js.Array2.map(p, v => {
         let isPlay = switch v.isPlay {
         | Some(s) => isEqual(text, v) && !s
@@ -54,7 +54,7 @@ let make = (~data: array<Baidu.baiduOk>) => {
   }
 
   let onEnded = _ => {
-    setTransList(.p =>
+    setTransList(p =>
       Js.Array2.map(p, v => {
         ...v,
         isPlay: false,

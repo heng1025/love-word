@@ -5,7 +5,7 @@ import * as RecordHook from "../hooks/RecordHook.js";
 import * as RecordAction from "./RecordAction.js";
 
 function $$History(props) {
-  var match = RecordHook.useRecord(/* History */0);
+  var match = RecordHook.useRecord("History");
   var onCheck = match.onCheck;
   var records = match.records;
   var recordEles = records.map(function (record) {
@@ -14,7 +14,7 @@ function $$History(props) {
         var boarderClass = checked ? "border-primary" : "";
         return React.createElement("div", {
                     key: date.toString(),
-                    className: "card card-compact card-bordered cursor-pointer bg-base-100 shadow-xl " + boarderClass + "",
+                    className: "card card-compact card-bordered cursor-pointer bg-base-100 shadow-xl " + boarderClass,
                     onClick: (function (param) {
                         onCheck(record);
                       })
@@ -37,7 +37,7 @@ function $$History(props) {
                             className: "font-bold text-xl"
                           }, record.text)));
       });
-  return React.createElement(React.Fragment, undefined, React.createElement(RecordAction.make, {
+  return React.createElement(React.Fragment, {}, React.createElement(RecordAction.make, {
                   records: records.filter(function (v) {
                         return v.checked;
                       }),

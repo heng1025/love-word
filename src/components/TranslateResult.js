@@ -11,13 +11,13 @@ function TranslateResult$TranslateResult(props) {
   var data = props.data;
   var className$1 = className !== undefined ? className : "";
   var tmp;
-  tmp = data.TAG === /* DictT */0 ? React.createElement(DictPanel.make, {
-          data: data.dict
+  tmp = typeof data === "object" && !Array.isArray(data) ? React.createElement(DictPanel.make, {
+          data: data
         }) : React.createElement(MachineTPanel.make, {
-          data: data.baidu
+          data: data
         });
   return React.createElement("div", {
-              className: "" + className$1 + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
+              className: className$1 + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
             }, tmp);
 }
 
@@ -35,7 +35,7 @@ function TranslateResult$TranslateResultWithState(props) {
   var className$1 = className !== undefined ? className : "";
   var tmp;
   tmp = data !== undefined ? (
-      data.TAG === /* Ok */0 ? React.createElement(TranslateResult$TranslateResult, {
+      data.TAG === "Ok" ? React.createElement(TranslateResult$TranslateResult, {
               data: data._0,
               className: className$1
             }) : React.createElement("div", {

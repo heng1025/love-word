@@ -10,7 +10,7 @@ let make = () => {
 
     <div
       key={Js.Float.toString(date)}
-      onClick={_ => onCheck(. record)}
+      onClick={_ => onCheck(record)}
       className={`card card-compact card-bordered cursor-pointer bg-base-100 shadow-xl ${boarderClass}`}>
       <div className="card-body">
         <div className="flex justify-between">

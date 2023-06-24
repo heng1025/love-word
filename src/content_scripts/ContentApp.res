@@ -25,12 +25,12 @@ let make = (~host) => {
     let posOffset = 8.0
     let top = rect.top +. rect.height +. Js.Int.toFloat(Window.scrollY)
     let left = rect.left +. Js.Int.toFloat(Window.scrollX)
-    setTop(._p => `${toString(top +. posOffset)}px`)
-    setLeft(._p => `${toString(left)}px`)
-    let (showPanel, _) = debounce(.panelDelay, (. ()) => {
-      setOpactity(._p => "1")
+    setTop(_p => `${toString(top +. posOffset)}px`)
+    setLeft(_p => `${toString(left)}px`)
+    let (showPanel, _) = debounce(panelDelay, () => {
+      setOpactity(_p => "1")
     })
-    showPanel(.)
+    showPanel()
   }
 
   React.useEffect0(() => {
@@ -42,8 +42,8 @@ let make = (~host) => {
         if rangeCount(selection) > 0 && text !== "" {
           let range = getRangeAt(selection, 0)
           let sl = getSourceLang(text)
-          setSrcLang(._ => sl)
-          setSourceText(._ => text)
+          setSrcLang(_ => sl)
+          setSourceText(_ => text)
           showTransPanel(range)
         }
       }
@@ -56,12 +56,12 @@ let make = (~host) => {
 
   React.useEffect1(() => {
     let handleClick = (e: MouseEvent.t) => {
-      e.stopPropagation(.)
+      e.stopPropagation()
       if opacity === "1" && !Element.contains(host, e.target) {
-        setTop(._ => "0")
-        setLeft(._ => "0")
-        setOpactity(._p => "0")
-        setSourceText(._ => "")
+        setTop(_ => "0")
+        setLeft(_ => "0")
+        setOpactity(_p => "0")
+        setSourceText(_ => "")
       }
     }
     addMouseEventListener("click", handleClick)

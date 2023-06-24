@@ -81,7 +81,7 @@ function MachineTPanel(props) {
                         className: "align-middle"
                       }, text));
       });
-  return React.createElement(React.Fragment, undefined, React.createElement("audio", {
+  return React.createElement(React.Fragment, {}, React.createElement("audio", {
                   ref: Caml_option.some(audioEl),
                   className: "w-full h-8 mb-1",
                   onEnded: onEnded

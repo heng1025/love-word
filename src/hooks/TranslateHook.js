@@ -20,21 +20,21 @@ function useTranslate(text) {
                   return true;
                 });
             var ret = await chrome.runtime.sendMessage({
-                  TAG: /* TranslateMsgContent */0,
+                  TAG: "TranslateMsgContent",
                   _0: {
                     text: txt
                   }
                 });
-            if (ret.TAG === /* Ok */0) {
+            if (ret.TAG === "Ok") {
               var val = ret._0;
               setData(function (_p) {
                     return {
-                            TAG: /* Ok */0,
+                            TAG: "Ok",
                             _0: val
                           };
                   });
               chrome.runtime.sendMessage({
-                    TAG: /* HistoryAddMsgContent */6,
+                    TAG: "HistoryAddMsgContent",
                     _0: {
                       text: txt
                     }
@@ -43,7 +43,7 @@ function useTranslate(text) {
               var msg = ret._0;
               setData(function (_p) {
                     return {
-                            TAG: /* Error */1,
+                            TAG: "Error",
                             _0: msg
                           };
                   });
@@ -53,7 +53,7 @@ function useTranslate(text) {
                       });
           };
           fetchTranslateResult(text);
-          return (function (param) {
+          return (function () {
                     setData(function (_p) {
                           
                         });

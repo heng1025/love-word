@@ -18,13 +18,13 @@ let dbInstance = getDB()
 
 let translateMessageHandler = async (msg: textMsgContent, sendResponse) => {
   let ret = await adapterTrans(msg.text)
-  sendResponse(. ret)
+  sendResponse(ret)
 }
 
 let favGetOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
   let db = await dbInstance
   let ret = await getDBValueFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=msg.text)
-  sendResponse(. Obj.magic(!(!ret)))
+  sendResponse(Obj.magic(!(!ret)))
 }
 
 // add fav
@@ -40,7 +40,7 @@ let favAddMessageHandler = async (msg: favAddMsgContent, sender, sendResponse) =
     trans: msg.trans,
   }
   await addDBValue(~db, ~storeName="favorite", ~data, ())
-  sendResponse(. Obj.magic(true))
+  sendResponse(Obj.magic(true))
 }
 // fav cancel
 let favDeleteOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
@@ -48,17 +48,17 @@ let favDeleteOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
   // delete one text
   let key = await getDBKeyFromIndex(~db, ~storeName="favorite", ~indexName="text", ~key=msg.text)
   let _ = await deleteDBValue(~db, ~storeName="favorite", ~key)
-  sendResponse(. Obj.magic(false))
+  sendResponse(Obj.magic(false))
 }
 
 let recordDeleteManyMessageHandler = async (recordType, msg: datesMsgContent, sendResponse) => {
   let db = await dbInstance
   let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
   let pstores = Js.Array2.map(msg.dates, item => {
-    tx.store.delete(. Obj.magic(item))
+    tx.store.delete(Obj.magic(item))
   })
   let _ = await Js.Promise2.all(pstores)
-  sendResponse(. Obj.magic(false))
+  sendResponse(Obj.magic(false))
 }
 
 // GetAll / Clear
@@ -67,7 +67,7 @@ let recordMessageHandler = async (recordType, extraAction, sendResponse) => {
   | GetAll => {
       let db = await dbInstance
       let ret = await getDBAllValueFromIndex(~db, ~storeName=recordType, ~indexName="text")
-      sendResponse(. ret)
+      sendResponse(ret)
     }
 
   | Clear =>
@@ -76,7 +76,7 @@ let recordMessageHandler = async (recordType, extraAction, sendResponse) => {
       let _ = await clearDBValue(~db, ~storeName=recordType)
     }
 
-    sendResponse(. Obj.magic(None))
+    sendResponse(Obj.magic(None))
   }
 }
 
@@ -101,7 +101,7 @@ let historyAddMessageHandler = async (msg: textMsgContent, sender, sendResponse)
   | true => await addDBValue(~db, ~storeName="history", ~data, ())
   | _ => ()
   }
-  sendResponse(. Obj.magic(None))
+  sendResponse(Obj.magic(None))
 }
 
 Chrome.addMessageListener((message: msgContent, sender, sendResponse) => {

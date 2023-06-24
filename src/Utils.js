@@ -25,7 +25,7 @@ function debounce(delay, callback) {
   var cancelled = {
     contents: false
   };
-  var clearExistingTimeout = function (param) {
+  var clearExistingTimeout = function () {
     if (!(timeoutID.contents == null)) {
       return Js_null_undefined.iter(timeoutID.contents, (function (timer) {
                     clearTimeout(timer);
@@ -43,8 +43,8 @@ function debounce(delay, callback) {
     if (match) {
       return ;
     } else {
-      timeoutID.contents = setTimeout((function (param) {
-              callback();
+      timeoutID.contents = setTimeout((function () {
+              callback(undefined);
             }), delay);
       return ;
     }
@@ -61,21 +61,21 @@ var Lib = {
 
 var apiHost = import.meta.env.LW_API_HOST;
 
-var endpoint = "" + apiHost + "/dict";
+var endpoint = apiHost + "/dict";
 
 async function translate(q) {
   try {
-    var res = await fetch("" + endpoint + "?q=" + q + "", undefined);
+    var res = await fetch(endpoint + "?q=" + q, undefined);
     var dictRet = await res.json();
     var match = dictRet.code;
     if (match !== 0) {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: dictRet.msg
             };
     } else {
       return {
-              TAG: /* Ok */0,
+              TAG: "Ok",
               _0: dictRet.data
             };
     }
@@ -84,19 +84,19 @@ async function translate(q) {
     var err = Caml_js_exceptions.internalToOCamlException(raw_err);
     if (err.RE_EXN_ID !== Js_exn.$$Error) {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: "Unexpected error occurred"
             };
     }
     var msg = err._1.message;
     if (msg !== undefined) {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: msg
             };
     } else {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: ""
             };
     }
@@ -116,7 +116,7 @@ function textToSpeech(text) {
         audio: text,
         le: "zh"
       });
-  return "https://dict.youdao.com/dictvoice?" + query + "";
+  return "https://dict.youdao.com/dictvoice?" + query;
 }
 
 async function translate$1(q) {
@@ -148,26 +148,26 @@ async function translate$1(q) {
             salt: salt,
             sign: sign
           });
-      queryUrl = "" + endpoint$1 + "?" + query + "";
+      queryUrl = endpoint$1 + "?" + query;
     }
     var res = await fetch(queryUrl, undefined);
     var data = await res.json();
     var msg = data.error_msg;
     if (msg !== undefined) {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: msg
             };
     }
     var val$1 = data.trans_result;
     if (val$1 !== undefined) {
       return {
-              TAG: /* Ok */0,
+              TAG: "Ok",
               _0: val$1
             };
     } else {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: "No Translation"
             };
     }
@@ -176,19 +176,19 @@ async function translate$1(q) {
     var err = Caml_js_exceptions.internalToOCamlException(raw_err);
     if (err.RE_EXN_ID !== Js_exn.$$Error) {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: "Unexpected error occurred"
             };
     }
     var msg$1 = err._1.message;
     if (msg$1 !== undefined) {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: msg$1
             };
     } else {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: ""
             };
     }
@@ -204,19 +204,16 @@ var Baidu = {
 async function adapterTrans(text) {
   var sl = getSourceLang(text);
   var wordCount = text.split(" ");
-  var baiduResult = async function (param) {
+  var baiduResult = async function () {
     var res = await translate$1(text);
-    if (res.TAG === /* Ok */0) {
+    if (res.TAG === "Ok") {
       return {
-              TAG: /* Ok */0,
-              _0: {
-                TAG: /* BaiduT */1,
-                baidu: res._0
-              }
+              TAG: "Ok",
+              _0: res._0
             };
     } else {
       return {
-              TAG: /* Error */1,
+              TAG: "Error",
               _0: res._0
             };
     }
@@ -225,13 +222,10 @@ async function adapterTrans(text) {
     return await baiduResult(undefined);
   }
   var val = await translate(text);
-  if (val.TAG === /* Ok */0) {
+  if (val.TAG === "Ok") {
     return {
-            TAG: /* Ok */0,
-            _0: {
-              TAG: /* DictT */0,
-              dict: val._0
-            }
+            TAG: "Ok",
+            _0: val._0
           };
   } else {
     return await baiduResult(undefined);

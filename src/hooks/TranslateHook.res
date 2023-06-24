@@ -13,22 +13,22 @@ let useTranslate = (text: string) => {
   React.useEffect1(() => {
     let fetchTranslateResult = async txt => {
       if txt !== "" {
-        setLoading(._p => true)
+        setLoading(_p => true)
         let ret: transRWithError = await sendMessage(TranslateMsgContent({text: txt}))
         let _ = switch ret {
-        | Error(msg) => setData(._p => Some(Error(msg)))
+        | Error(msg) => setData(_p => Some(Error(msg)))
         | Ok(val) =>
-          setData(._p => Some(Ok(val)))
+          setData(_p => Some(Ok(val)))
           // add history record
           sendMessage(HistoryAddMsgContent({text: txt}))->ignore
         }
-        setLoading(._p => false)
+        setLoading(_p => false)
       }
     }
 
     fetchTranslateResult(text)->ignore
 
-    Some(() => setData(._p => None))
+    Some(() => setData(_p => None))
   }, [text])
 
   {loading, data}

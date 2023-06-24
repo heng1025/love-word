@@ -12,7 +12,7 @@ function getBrowserTab(sender) {
     return {
             url: sender.url,
             title: "Love Word",
-            favIconUrl: "" + sender.origin + "/icons/lw32x32.png"
+            favIconUrl: sender.origin + "/icons/lw32x32.png"
           };
   }
 }
@@ -69,14 +69,14 @@ async function recordDeleteManyMessageHandler(recordType, msg, sendResponse) {
 }
 
 async function recordMessageHandler(recordType, extraAction, sendResponse) {
-  if (extraAction) {
+  if (extraAction === "GetAll") {
     var db = await dbInstance;
-    await db.clear(recordType);
-    return sendResponse(undefined);
+    var ret = await db.getAllFromIndex(recordType, "text");
+    return sendResponse(ret);
   }
   var db$1 = await dbInstance;
-  var ret = await db$1.getAllFromIndex(recordType, "text");
-  return sendResponse(ret);
+  await db$1.clear(recordType);
+  return sendResponse(undefined);
 }
 
 async function historyAddMessageHandler(msg, sender, sendResponse) {
@@ -103,32 +103,32 @@ async function historyAddMessageHandler(msg, sender, sendResponse) {
 }
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-      switch (message.TAG | 0) {
-        case /* TranslateMsgContent */0 :
+      switch (message.TAG) {
+        case "TranslateMsgContent" :
             translateMessageHandler(message._0, sendResponse);
             break;
-        case /* FavAddMsgContent */1 :
+        case "FavAddMsgContent" :
             favAddMessageHandler(message._0, sender, sendResponse);
             break;
-        case /* FavGetOneMsgContent */2 :
+        case "FavGetOneMsgContent" :
             favGetOneMessageHandler(message._0, sendResponse);
             break;
-        case /* FavDeleteOneMsgContent */3 :
+        case "FavDeleteOneMsgContent" :
             favDeleteOneMessageHandler(message._0, sendResponse);
             break;
-        case /* FavDeleteManyMsgContent */4 :
+        case "FavDeleteManyMsgContent" :
             recordDeleteManyMessageHandler("favorite", message._0, sendResponse);
             break;
-        case /* FavExtraMsgContent */5 :
+        case "FavExtraMsgContent" :
             recordMessageHandler("favorite", message._0, sendResponse);
             break;
-        case /* HistoryAddMsgContent */6 :
+        case "HistoryAddMsgContent" :
             historyAddMessageHandler(message._0, sender, sendResponse);
             break;
-        case /* HistoryDeleteManyMsgContent */7 :
+        case "HistoryDeleteManyMsgContent" :
             recordDeleteManyMessageHandler("history", message._0, sendResponse);
             break;
-        case /* HistoryExtraMsgContent */8 :
+        case "HistoryExtraMsgContent" :
             recordMessageHandler("history", message._0, sendResponse);
             break;
         

@@ -13,27 +13,34 @@ function useRecord(recordType) {
       });
   var setRecords = match[1];
   var records = match[0];
-  var getDeleteManyMsgContent = function (dates) {
-    if (recordType) {
+  var getExtraMsgContent = function (action) {
+    if (recordType === "History") {
       return {
-              TAG: /* FavDeleteManyMsgContent */4,
+              TAG: "HistoryExtraMsgContent",
+              _0: action
+            };
+    } else {
+      return {
+              TAG: "FavExtraMsgContent",
+              _0: action
+            };
+    }
+  };
+  var getDeleteManyMsgContent = function (dates) {
+    if (recordType === "History") {
+      return {
+              TAG: "HistoryDeleteManyMsgContent",
               _0: dates
             };
     } else {
       return {
-              TAG: /* HistoryDeleteManyMsgContent */7,
+              TAG: "FavDeleteManyMsgContent",
               _0: dates
             };
     }
   };
-  var getAll = async function (param) {
-    var ret = await chrome.runtime.sendMessage(recordType ? ({
-              TAG: /* FavExtraMsgContent */5,
-              _0: /* GetAll */0
-            }) : ({
-              TAG: /* HistoryExtraMsgContent */8,
-              _0: /* GetAll */0
-            }));
+  var getAll = async function () {
+    var ret = await chrome.runtime.sendMessage(getExtraMsgContent("GetAll"));
     var rs = ret.sort(function (v1, v2) {
             return v2.date - v1.date | 0;
           }).map(function (v) {
@@ -77,9 +84,9 @@ function useRecord(recordType) {
           newrecord.checked = false;
           return newrecord;
         });
-    return setRecords(function (param) {
-                return rs;
-              });
+    setRecords(function (param) {
+          return rs;
+        });
   };
   var onDelete = async function (checkedRecords) {
     await chrome.runtime.sendMessage(getDeleteManyMsgContent({
@@ -89,14 +96,8 @@ function useRecord(recordType) {
             }));
     return await getAll(undefined);
   };
-  var onClear = async function (param) {
-    await chrome.runtime.sendMessage(recordType ? ({
-              TAG: /* FavExtraMsgContent */5,
-              _0: /* Clear */1
-            }) : ({
-              TAG: /* HistoryExtraMsgContent */8,
-              _0: /* Clear */1
-            }));
+  var onClear = async function () {
+    await chrome.runtime.sendMessage(getExtraMsgContent("Clear"));
     return await getAll(undefined);
   };
   return {
@@ -107,7 +108,7 @@ function useRecord(recordType) {
               onDelete(args);
             }),
           onClear: (function () {
-              onClear();
+              onClear(undefined);
             }),
           onCancel: onCancel
         };
