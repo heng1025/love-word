@@ -35,7 +35,7 @@ module Webapi = {
       ctrlKey: bool,
       shiftKey: bool,
       target: Dom.element,
-      stopPropagation: @uncurry (. unit) => unit,
+      stopPropagation: @uncurry unit => unit,
     }
   }
 
@@ -87,24 +87,25 @@ module Webapi = {
     @set
     external setAudioSrc: (audio, string) => unit = "src"
     @set
-    external onEnded: (audio, @uncurry ('e => unit)) => unit = "onended"
+    external onEnded: (audio, @uncurry 'e => unit) => unit = "onended"
     @send
     external playAudio: audio => unit = "play"
     @scope("window") @val
-    external addMouseEventListener: (string, @uncurry (MouseEvent.t => unit)) => unit =
+    external addMouseEventListener: (string, @uncurry MouseEvent.t => unit) => unit =
       "addEventListener"
     @scope("window") @val
-    external removeMouseEventListener: (string, @uncurry (MouseEvent.t => unit)) => unit =
+    external removeMouseEventListener: (string, @uncurry MouseEvent.t => unit) => unit =
       "removeEventListener"
     @scope("window") @val
-    external addKeyboardEventListener: (string, @uncurry (KeyboardEvent.t => unit)) => unit =
+    external addKeyboardEventListener: (string, @uncurry KeyboardEvent.t => unit) => unit =
       "addEventListener"
     @scope("window") @val
-    external removeKeyboardEventListener: (string, @uncurry (KeyboardEvent.t => unit)) => unit =
+    external removeKeyboardEventListener: (string, @uncurry KeyboardEvent.t => unit) => unit =
       "removeEventListener"
 
-    type init<'body> = {
+    type init<'header, 'body> = {
       method?: string,
+      headers?: 'header,
       mode?: string,
       body?: 'body,
     }
@@ -114,7 +115,7 @@ module Webapi = {
     }
 
     @val
-    external fetch: (~input: string, ~init: init<int>=?, unit) => promise<Response.t<'result>> =
+    external fetch: (~input: string, ~init: init<'a, 'b>=?, unit) => promise<Response.t<'result>> =
       "fetch"
   }
 }
@@ -125,7 +126,7 @@ module Chrome = {
   @scope(("chrome", "runtime")) @val
   external sendMessage: 'message => promise<'ret> = "sendMessage"
   @scope(("chrome", "runtime", "onMessage")) @val
-  external addMessageListener: (@uncurry ('message, 'sender, (. 'params) => unit) => bool) => unit =
+  external addMessageListener: (@uncurry ('message, 'sender, 'params => unit) => bool) => unit =
     "addListener"
 
   @scope(("chrome", "storage", "onChanged")) @val
@@ -162,10 +163,10 @@ module Idb = {
   type data
   type cursor
   type rec objStore = {
-    add: (. data) => promise<unit>,
-    delete: (. data) => promise<unit>,
+    add: data => promise<unit>,
+    delete: data => promise<unit>,
     index: string => objStore,
-    openCursor: (. unit) => promise<cursor>,
+    openCursor: unit => promise<cursor>,
   }
   type transaction = {objectStore: string => objStore, store: objStore, done: promise<unit>}
 

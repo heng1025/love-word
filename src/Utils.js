@@ -5,8 +5,11 @@ import Md5 from "md5";
 import * as Js_exn from "rescript/lib/es6/js_exn.js";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as FrancMin from "franc-min";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as Js_null_undefined from "rescript/lib/es6/js_null_undefined.js";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
+
+var apiHost = import.meta.env.LW_API_HOST;
 
 function getSourceLang(text) {
   return FrancMin.franc(text, {
@@ -16,6 +19,60 @@ function getSourceLang(text) {
                 "cmn"
               ]
             });
+}
+
+async function fetchByHttp(url, body) {
+  try {
+    var headers = {};
+    var result = await chrome.storage.local.get(["user"]);
+    var user = result.user;
+    if (!(user == null)) {
+      Object.assign(headers, {
+            "x-token": user.token
+          });
+    }
+    var res = body !== undefined ? await fetch(apiHost + url, {
+            method: "post",
+            headers: Caml_option.some(headers),
+            body: Caml_option.some(JSON.stringify(Caml_option.valFromOption(body)))
+          }) : await fetch(apiHost + url, {
+            headers: Caml_option.some(headers)
+          });
+    var json = await res.json();
+    var match = json.code;
+    if (match !== 0) {
+      return {
+              TAG: "Error",
+              _0: json.msg
+            };
+    } else {
+      return {
+              TAG: "Ok",
+              _0: json.data
+            };
+    }
+  }
+  catch (raw_err){
+    var err = Caml_js_exceptions.internalToOCamlException(raw_err);
+    if (err.RE_EXN_ID !== Js_exn.$$Error) {
+      return {
+              TAG: "Error",
+              _0: "Unexpected error occurred"
+            };
+    }
+    var msg = err._1.message;
+    if (msg !== undefined) {
+      return {
+              TAG: "Error",
+              _0: msg
+            };
+    } else {
+      return {
+              TAG: "Error",
+              _0: ""
+            };
+    }
+  }
 }
 
 function debounce(delay, callback) {
@@ -56,60 +113,19 @@ function debounce(delay, callback) {
 }
 
 var Lib = {
+  fetchByHttp: fetchByHttp,
   debounce: debounce
 };
 
-var apiHost = import.meta.env.LW_API_HOST;
-
-var endpoint = apiHost + "/dict";
-
 async function translate(q) {
-  try {
-    var res = await fetch(endpoint + "?q=" + q, undefined);
-    var dictRet = await res.json();
-    var match = dictRet.code;
-    if (match !== 0) {
-      return {
-              TAG: "Error",
-              _0: dictRet.msg
-            };
-    } else {
-      return {
-              TAG: "Ok",
-              _0: dictRet.data
-            };
-    }
-  }
-  catch (raw_err){
-    var err = Caml_js_exceptions.internalToOCamlException(raw_err);
-    if (err.RE_EXN_ID !== Js_exn.$$Error) {
-      return {
-              TAG: "Error",
-              _0: "Unexpected error occurred"
-            };
-    }
-    var msg = err._1.message;
-    if (msg !== undefined) {
-      return {
-              TAG: "Error",
-              _0: msg
-            };
-    } else {
-      return {
-              TAG: "Error",
-              _0: ""
-            };
-    }
-  }
+  return await fetchByHttp("/dict?q=" + q, undefined);
 }
 
 var OfflineDict = {
-  apiHost: apiHost,
-  endpoint: endpoint,
   translate: translate
 };
 
-var endpoint$1 = "https://api.fanyi.baidu.com/api/trans/vip/translate";
+var endpoint = "https://api.fanyi.baidu.com/api/trans/vip/translate";
 
 function textToSpeech(text) {
   var query = Qs.stringify({
@@ -148,7 +164,7 @@ async function translate$1(q) {
             salt: salt,
             sign: sign
           });
-      queryUrl = endpoint$1 + "?" + query;
+      queryUrl = endpoint + "?" + query;
     }
     var res = await fetch(queryUrl, undefined);
     var data = await res.json();
@@ -196,7 +212,7 @@ async function translate$1(q) {
 }
 
 var Baidu = {
-  endpoint: endpoint$1,
+  endpoint: endpoint,
   textToSpeech: textToSpeech,
   translate: translate$1
 };
@@ -233,6 +249,7 @@ async function adapterTrans(text) {
 }
 
 export {
+  apiHost ,
   getSourceLang ,
   Lib ,
   OfflineDict ,

@@ -2,9 +2,50 @@ open Common
 open Common.Chrome
 open Common.Webapi.Window
 
+let apiHost = %raw(`import.meta.env.LW_API_HOST`)
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
 
 module Lib = {
+  type api<'data> = {
+    code: int,
+    data: 'data,
+    msg: string,
+  }
+  let fetchByHttp = async (~url, ~body=?) => {
+    try {
+      let headers = Js.Obj.empty()
+      let result = await getExtStorage(~keys=["user"])
+      let user = result["user"]
+      let _ = switch Js.toOption(user) {
+      | Some(val) => Js.Obj.assign(headers, {"x-token": val["token"]})
+      | _ => headers
+      }
+
+      let res = switch body {
+      | Some(b) =>
+        await fetch(
+          ~input=`${apiHost}${url}`,
+          ~init={method: "post", headers, body: Js.Json.stringifyAny(b)},
+          (),
+        )
+      | _ => await fetch(~input=`${apiHost}${url}`, ~init={headers: headers}, ())
+      }
+
+      let json: api<'data> = await Response.json(res)
+      switch json.code {
+      | 0 => Ok(json.data)
+      | _ => Error(json.msg)
+      }
+    } catch {
+    | Js.Exn.Error(err) =>
+      switch Js.Exn.message(err) {
+      | Some(msg) => Error(msg)
+      | _ => Error("")
+      }
+    | _ => Error("Unexpected error occurred")
+    }
+  }
+
   let debounce = (delay, callback) => {
     let timeoutID = ref(Js.Nullable.null)
     let cancelled = ref(false)
@@ -31,10 +72,8 @@ module Lib = {
     (wrapper, cancel)
   }
 }
-module OfflineDict = {
-  let apiHost = %raw(`import.meta.env.LW_API_HOST`)
-  let endpoint = `${apiHost}/dict`
 
+module OfflineDict = {
   type dictOk = {
     id: int,
     word: string,
@@ -45,29 +84,7 @@ module OfflineDict = {
     exchange: string,
   }
 
-  type response = {
-    code: int,
-    msg: string,
-    data: dictOk,
-  }
-
-  let translate = async q => {
-    try {
-      let res = await fetch(~input=`${endpoint}?q=${q}`, ())
-      let dictRet = await Response.json(res)
-      switch dictRet.code {
-      | 0 => Ok(dictRet.data)
-      | _ => Error(dictRet.msg)
-      }
-    } catch {
-    | Js.Exn.Error(err) =>
-      switch Js.Exn.message(err) {
-      | Some(msg) => Error(msg)
-      | _ => Error("")
-      }
-    | _ => Error("Unexpected error occurred")
-    }
-  }
+  let translate = async q => await Lib.fetchByHttp(~url=`/dict?q=${q}`)
 }
 
 module Baidu = {
@@ -173,12 +190,7 @@ type recordData = {
 }
 
 type recordDataWithExtra = {
-  url: string,
-  title: string,
-  favIconUrl: string,
-  date: float,
-  text: string,
-  trans?: transR,
+  ...recordData,
   mutable checked: bool,
 }
 

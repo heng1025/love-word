@@ -27,7 +27,7 @@ function RecordAction(props) {
     }
   };
   return React.createElement("div", {
-              className: "sticky top-0 z-50 bg-base-100 p-4 border-b-2"
+              className: "sticky top-0 z-40 bg-base-100 p-4 border-b-2"
             }, React.createElement("input", {
                   className: "modal-toggle",
                   id: "my-modal",
