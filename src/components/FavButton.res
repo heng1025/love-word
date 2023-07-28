@@ -10,7 +10,7 @@ let make = (~text, ~trans) => {
   let favAction = async action => {
     let msgContent = switch action {
     | Get => FavGetOneMsgContent({text: text})
-    | Add => FavAddMsgContent({text, trans})
+    | Add => FavAddMsgContent({text, translation: trans})
     | Delete => FavDeleteOneMsgContent({text: text})
     }
     if text !== "" {

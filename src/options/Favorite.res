@@ -5,7 +5,7 @@ open RecordHook
 let make = () => {
   let {records, onCheck, onCancel, onClear, onDelete, onSearch} = useRecord(Favorite)
   let recordEles = records->Js.Array2.map(record => {
-    let {date, title, url, text, favIconUrl, checked} = record
+    let {date, title, url, text, favIconUrl, checked, sync} = record
     let boarderClass = checked ? "border-primary" : ""
 
     <div
@@ -15,14 +15,17 @@ let make = () => {
       <div className="card-body">
         <div className="border-b pb-1">
           <div className="flex justify-between">
-            <span> {React.string(Js.Date.toLocaleDateString(Js.Date.fromFloat(date)))} </span>
+            <div>
+              <span> {React.string(Js.Date.toLocaleDateString(Js.Date.fromFloat(date)))} </span>
+              <span className="ml-2"> {React.string(sync ? "sync" : "")} </span>
+            </div>
             <a target="_blank" title href=url>
               <img className="w-5" src={favIconUrl} />
             </a>
           </div>
           <p className="font-bold text-xl line-clamp-1"> {React.string(text)} </p>
         </div>
-        {switch record.trans {
+        {switch record.translation {
         | Some(val) => <TranslateResult data=val />
         | _ => React.null
         }}

@@ -27,7 +27,7 @@ function FavButton(props) {
             TAG: "FavAddMsgContent",
             _0: {
               text: text,
-              trans: trans
+              translation: trans
             }
           };
           break;

@@ -6,14 +6,15 @@ import * as RecordAction from "./RecordAction.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
 function Favorite(props) {
-  var match = RecordHook.useRecord("Favorite");
+  var match = RecordHook.useRecord("favorite");
   var onCheck = match.onCheck;
   var records = match.records;
   var recordEles = records.map(function (record) {
         var date = record.date;
         var checked = record.checked;
+        var sync = record.sync;
         var boarderClass = checked ? "border-primary" : "";
-        var val = record.trans;
+        var val = record.translation;
         return React.createElement("div", {
                     key: date.toString(),
                     className: "card card-compact w-72 card-bordered cursor-pointer bg-base-100 shadow-xl " + boarderClass,
@@ -26,7 +27,9 @@ function Favorite(props) {
                             className: "border-b pb-1"
                           }, React.createElement("div", {
                                 className: "flex justify-between"
-                              }, React.createElement("span", undefined, new Date(date).toLocaleDateString()), React.createElement("a", {
+                              }, React.createElement("div", undefined, React.createElement("span", undefined, new Date(date).toLocaleDateString()), React.createElement("span", {
+                                        className: "ml-2"
+                                      }, sync ? "sync" : "")), React.createElement("a", {
                                     title: record.title,
                                     href: record.url,
                                     target: "_blank"

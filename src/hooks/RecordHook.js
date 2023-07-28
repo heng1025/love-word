@@ -14,7 +14,7 @@ function useRecord(recordType) {
   var setRecords = match[1];
   var records = match[0];
   var getExtraMsgContent = function (action) {
-    if (recordType === "History") {
+    if (recordType === "history") {
       return {
               TAG: "HistoryExtraMsgContent",
               _0: action
@@ -26,16 +26,16 @@ function useRecord(recordType) {
             };
     }
   };
-  var getDeleteManyMsgContent = function (dates) {
-    if (recordType === "History") {
+  var getDeleteManyMsgContent = function (records) {
+    if (recordType === "history") {
       return {
               TAG: "HistoryDeleteManyMsgContent",
-              _0: dates
+              _0: records
             };
     } else {
       return {
               TAG: "FavDeleteManyMsgContent",
-              _0: dates
+              _0: records
             };
     }
   };
@@ -90,8 +90,11 @@ function useRecord(recordType) {
   };
   var onDelete = async function (checkedRecords) {
     await chrome.runtime.sendMessage(getDeleteManyMsgContent({
-              dates: checkedRecords.map(function (v) {
-                    return v.date;
+              records: checkedRecords.map(function (v) {
+                    return {
+                            text: v.text,
+                            date: v.date
+                          };
                   })
             }));
     return await getAll(undefined);

@@ -21,7 +21,8 @@ function getSourceLang(text) {
             });
 }
 
-async function fetchByHttp(url, body) {
+async function fetchByHttp(url, methodOpt, body) {
+  var method = methodOpt !== undefined ? methodOpt : "get";
   try {
     var headers = {};
     var result = await chrome.storage.local.get(["user"]);
@@ -32,7 +33,7 @@ async function fetchByHttp(url, body) {
           });
     }
     var res = body !== undefined ? await fetch(apiHost + url, {
-            method: "post",
+            method: method,
             headers: Caml_option.some(headers),
             body: Caml_option.some(JSON.stringify(Caml_option.valFromOption(body)))
           }) : await fetch(apiHost + url, {
@@ -69,7 +70,7 @@ async function fetchByHttp(url, body) {
     } else {
       return {
               TAG: "Error",
-              _0: ""
+              _0: "Err happen"
             };
     }
   }
@@ -118,7 +119,7 @@ var Lib = {
 };
 
 async function translate(q) {
-  return await fetchByHttp("/dict?q=" + q, undefined);
+  return await fetchByHttp("/dict?q=" + q, undefined, undefined);
 }
 
 var OfflineDict = {
@@ -248,6 +249,26 @@ async function adapterTrans(text) {
   }
 }
 
+async function recordRemoteAction(recordType, data, methodOpt) {
+  var method = methodOpt !== undefined ? methodOpt : "post";
+  var loginInfo = await chrome.storage.local.get(["user"]);
+  var match = loginInfo.user;
+  if (match == null) {
+    return {
+            TAG: "Error",
+            _0: "nothing"
+          };
+  }
+  var rType;
+  rType = recordType === "history" ? "1" : "2";
+  var url = "/records?type=" + rType;
+  if (data !== undefined) {
+    return await fetchByHttp(url, method, Caml_option.some(Caml_option.valFromOption(data)));
+  } else {
+    return await fetchByHttp(url, undefined, undefined);
+  }
+}
+
 export {
   apiHost ,
   getSourceLang ,
@@ -255,5 +276,6 @@ export {
   OfflineDict ,
   Baidu ,
   adapterTrans ,
+  recordRemoteAction ,
 }
 /* apiHost Not a pure module */

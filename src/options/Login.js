@@ -23,7 +23,7 @@ function Login(props) {
   var setPasswordVisible = match$2[1];
   var passwordVisible = match$2[0];
   var handleSubmit = async function () {
-    var val = await Utils.Lib.fetchByHttp("/login", {
+    var val = await Utils.Lib.fetchByHttp("/login", "post", {
           username: username,
           password: password
         });

@@ -11,7 +11,7 @@ module Lib = {
     data: 'data,
     msg: string,
   }
-  let fetchByHttp = async (~url, ~body=?) => {
+  let fetchByHttp = async (~url, ~method="get", ~body=?) => {
     try {
       let headers = Js.Obj.empty()
       let result = await getExtStorage(~keys=["user"])
@@ -25,7 +25,7 @@ module Lib = {
       | Some(b) =>
         await fetch(
           ~input=`${apiHost}${url}`,
-          ~init={method: "post", headers, body: Js.Json.stringifyAny(b)},
+          ~init={method, headers, body: Js.Json.stringifyAny(b)},
           (),
         )
       | _ => await fetch(~input=`${apiHost}${url}`, ~init={headers: headers}, ())
@@ -40,7 +40,7 @@ module Lib = {
     | Js.Exn.Error(err) =>
       switch Js.Exn.message(err) {
       | Some(msg) => Error(msg)
-      | _ => Error("")
+      | _ => Error("Err happen")
       }
     | _ => Error("Unexpected error occurred")
     }
@@ -171,11 +171,17 @@ type transR =
 
 type transRWithError = result<transR, string>
 
+type recordType = | @as("history") History | @as("favorite") Favorite
+
+type recordItem = {
+  text: string,
+  date: float,
+}
 type textMsgContent = {text: string}
-type datesMsgContent = {dates: array<float>}
+type recordsMsgContent = {records: array<recordItem>}
 type favAddMsgContent = {
   text: string,
-  trans: transR,
+  translation: transR,
 }
 
 type extraAction = GetAll | Clear
@@ -186,12 +192,13 @@ type recordData = {
   favIconUrl: string,
   date: float,
   text: string,
-  trans?: transR,
+  translation?: transR,
 }
 
 type recordDataWithExtra = {
   ...recordData,
   mutable checked: bool,
+  mutable sync: bool,
 }
 
 type msgContent =
@@ -200,11 +207,11 @@ type msgContent =
   | FavAddMsgContent(favAddMsgContent)
   | FavGetOneMsgContent(textMsgContent)
   | FavDeleteOneMsgContent(textMsgContent)
-  | FavDeleteManyMsgContent(datesMsgContent)
+  | FavDeleteManyMsgContent(recordsMsgContent)
   | FavExtraMsgContent(extraAction)
   // history
   | HistoryAddMsgContent(textMsgContent)
-  | HistoryDeleteManyMsgContent(datesMsgContent)
+  | HistoryDeleteManyMsgContent(recordsMsgContent)
   | HistoryExtraMsgContent(extraAction)
 
 let adapterTrans = async text => {
@@ -225,5 +232,23 @@ let adapterTrans = async text => {
     | Ok(val) => Ok(DictT(val))
     | _ => await baiduResult()
     }
+  }
+}
+
+let recordRemoteAction = async (~recordType: recordType, ~data=?, ~method="post") => {
+  let loginInfo = await getExtStorage(~keys=["user"])
+  switch Js.toOption(loginInfo["user"]) {
+  | Some(_) => {
+      let rType = switch recordType {
+      | Favorite => "2"
+      | History => "1"
+      }
+      let url = `/records?type=${rType}`
+      switch data {
+      | Some(v) => await Lib.fetchByHttp(~url, ~body=v, ~method)
+      | _ => await Lib.fetchByHttp(~url)
+      }
+    }
+  | _ => Error("nothing")
   }
 }

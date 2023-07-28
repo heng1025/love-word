@@ -190,10 +190,10 @@ module Idb = {
   @module("idb") external wrap: unWrappedDB => wrappedDB = "wrap"
   @module("idb") external unwrap: wrappedDB => unWrappedDB = "unwrap"
   @send
-  external createObjectStore: (~db: db, ~storeName: string, ~options: objStoreOptions) => objStore =
+  external createObjectStore: (~db: db, ~storeName: 'sn, ~options: objStoreOptions) => objStore =
     "createObjectStore"
   @send
-  external createTransaction: (~db: db, ~storeName: string, ~mode: string=?, unit) => transaction =
+  external createTransaction: (~db: db, ~storeName: 'sn, ~mode: string=?, unit) => transaction =
     "transaction"
   @send
   external createIndex: (~objStore: objStore, ~indexName: string, ~keyPath: string) => unit =
@@ -202,27 +202,24 @@ module Idb = {
   @send
   external getDBValueFromIndex: (
     ~db: db,
-    ~storeName: string,
+    ~storeName: 'sn,
     ~indexName: string,
     ~key: 'key,
   ) => promise<'val> = "getFromIndex"
   @send
-  external getDBAllValueFromIndex: (
-    ~db: db,
-    ~storeName: string,
-    ~indexName: string,
-  ) => promise<'val> = "getAllFromIndex"
+  external getDBAllValueFromIndex: (~db: db, ~storeName: 'sn, ~indexName: string) => promise<'val> =
+    "getAllFromIndex"
   @send
   external getDBKeyFromIndex: (
     ~db: db,
-    ~storeName: string,
+    ~storeName: 'sn,
     ~indexName: string,
     ~key: 'key,
   ) => promise<'val> = "getKeyFromIndex"
   @send
   external addDBValue: (
     ~db: db,
-    ~storeName: string,
+    ~storeName: 'sn,
     ~data: 'data,
     ~key: 'key=?,
     unit,
@@ -230,13 +227,13 @@ module Idb = {
   @send
   external putDBValue: (
     ~db: db,
-    ~storeName: string,
+    ~storeName: 'sn,
     ~data: 'data,
     ~key: 'key=?,
     unit,
   ) => promise<'val> = "put"
   @send
-  external deleteDBValue: (~db: db, ~storeName: string, ~key: 'key) => promise<'val> = "delete"
+  external deleteDBValue: (~db: db, ~storeName: 'sn, ~key: 'key) => promise<'val> = "delete"
   @send
-  external clearDBValue: (~db: db, ~storeName: string) => promise<unit> = "clear"
+  external clearDBValue: (~db: db, ~storeName: 'sn) => promise<unit> = "clear"
 }

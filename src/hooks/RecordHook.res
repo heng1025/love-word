@@ -12,8 +12,6 @@ type return = {
   onCancel: unit => unit,
 }
 
-type recordType = History | Favorite
-
 let useRecord = recordType => {
   let (records, setRecords) = React.Uncurried.useState(_ => [])
 
@@ -23,10 +21,10 @@ let useRecord = recordType => {
     | History => HistoryExtraMsgContent(action)
     }
   }
-  let getDeleteManyMsgContent = dates => {
+  let getDeleteManyMsgContent = records => {
     switch recordType {
-    | Favorite => FavDeleteManyMsgContent({dates})
-    | History => HistoryDeleteManyMsgContent({dates})
+    | Favorite => FavDeleteManyMsgContent({records})
+    | History => HistoryDeleteManyMsgContent({records})
     }
   }
 
@@ -80,7 +78,9 @@ let useRecord = recordType => {
 
   let onDelete = async checkedRecords => {
     let _ = await sendMessage(
-      getDeleteManyMsgContent({dates: Js.Array2.map(checkedRecords, v => v.date)}),
+      getDeleteManyMsgContent({
+        records: Js.Array2.map(checkedRecords, v => {text: v.text, date: v.date}),
+      }),
     )
     await getAll()
   }

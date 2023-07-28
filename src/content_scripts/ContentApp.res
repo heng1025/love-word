@@ -5,7 +5,6 @@ open TranslateResult
 
 open Common.Webapi
 open Common.Webapi.Window
-open TranslateHook
 
 let panelDelay = 200
 
@@ -17,7 +16,7 @@ let make = (~host) => {
   let (left, setLeft) = React.Uncurried.useState(_ => "0")
   let (opacity, setOpactity) = React.Uncurried.useState(_ => "0")
 
-  let {loading, data} = useTranslate(sourceText)
+  let {loading, data} = TranslateHook.useTranslate(sourceText)
 
   let showTransPanel = range => {
     let rect = range->getBoundingClientRect

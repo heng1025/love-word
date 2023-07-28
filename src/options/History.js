@@ -5,12 +5,13 @@ import * as RecordHook from "../hooks/RecordHook.js";
 import * as RecordAction from "./RecordAction.js";
 
 function $$History(props) {
-  var match = RecordHook.useRecord("History");
+  var match = RecordHook.useRecord("history");
   var onCheck = match.onCheck;
   var records = match.records;
   var recordEles = records.map(function (record) {
         var date = record.date;
         var checked = record.checked;
+        var sync = record.sync;
         var boarderClass = checked ? "border-primary" : "";
         return React.createElement("div", {
                     key: date.toString(),
@@ -21,11 +22,13 @@ function $$History(props) {
                   }, React.createElement("div", {
                         className: "card-body"
                       }, React.createElement("div", {
-                            className: "flex justify-between"
-                          }, React.createElement("span", {
-                                className: "w-40"
-                              }, new Date(date).toLocaleString()), React.createElement("a", {
-                                className: "inline-flex gap-2",
+                            className: "flex gap-2 justify-between"
+                          }, React.createElement("div", {
+                                className: "w-50"
+                              }, React.createElement("span", undefined, new Date(date).toLocaleString()), React.createElement("span", {
+                                    className: "ml-4"
+                                  }, sync ? "sync" : "")), React.createElement("a", {
+                                className: "inline-flex gap-2 flex-1 justify-end",
                                 href: record.url,
                                 target: "_blank"
                               }, React.createElement("span", {

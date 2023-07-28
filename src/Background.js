@@ -38,16 +38,17 @@ async function favAddMessageHandler(msg, sender, sendResponse) {
   var data_favIconUrl = tab.favIconUrl;
   var data_date = Date.now();
   var data_text = msg.text;
-  var data_trans = msg.trans;
+  var data_translation = msg.translation;
   var data = {
     url: data_url,
     title: data_title,
     favIconUrl: data_favIconUrl,
     date: data_date,
     text: data_text,
-    trans: data_trans
+    translation: data_translation
   };
   await db.add("favorite", data, undefined);
+  await Utils.recordRemoteAction("favorite", data, "post");
   return sendResponse(true);
 }
 
@@ -55,23 +56,65 @@ async function favDeleteOneMessageHandler(msg, sendResponse) {
   var db = await dbInstance;
   var key = await db.getKeyFromIndex("favorite", "text", msg.text);
   await db.delete("favorite", key);
+  await Utils.recordRemoteAction("favorite", {
+        text: msg.text
+      }, "delete");
   return sendResponse(false);
 }
 
 async function recordDeleteManyMessageHandler(recordType, msg, sendResponse) {
   var db = await dbInstance;
   var tx = db.transaction(recordType, "readwrite");
-  var pstores = msg.dates.map(function (item) {
-        return tx.store.delete(item);
+  var pstores = msg.records.map(function (item) {
+        return tx.store.delete(item.date);
       });
   await Promise.all(pstores);
+  await Utils.recordRemoteAction(recordType, {
+        text: msg.records.map(function (v) {
+              return v.text;
+            })
+      }, "delete");
   return sendResponse(false);
 }
 
 async function recordMessageHandler(recordType, extraAction, sendResponse) {
   if (extraAction === "GetAll") {
     var db = await dbInstance;
-    var ret = await db.getAllFromIndex(recordType, "text");
+    var retFromLocals = await db.getAllFromIndex(recordType, "text");
+    var val = await Utils.recordRemoteAction(recordType, undefined, undefined);
+    var retFromServers;
+    retFromServers = val.TAG === "Ok" ? val._0 : [];
+    var concatLocalWithRemote = function (acc, local) {
+      local.sync = false;
+      retFromServers.forEach(function (remote) {
+            var isTextExisted = local.text === remote.text;
+            if (isTextExisted) {
+              local.sync = true;
+              return ;
+            } else {
+              remote.sync = true;
+              if (acc.every(function (v) {
+                      return v.text !== remote.text;
+                    })) {
+                acc.push(remote);
+                return ;
+              } else {
+                return ;
+              }
+            }
+          });
+      if (acc.every(function (v) {
+              return v.text !== local.text;
+            })) {
+        acc.push(local);
+      }
+      return acc;
+    };
+    var tranverseLocals = retFromLocals;
+    if (retFromLocals.length === 0) {
+      tranverseLocals = retFromServers;
+    }
+    var ret = tranverseLocals.reduce(concatLocalWithRemote, []);
     return sendResponse(ret);
   }
   var db$1 = await dbInstance;
@@ -98,6 +141,7 @@ async function historyAddMessageHandler(msg, sender, sendResponse) {
   var match = !ret;
   if (match) {
     await db.add("history", data, undefined);
+    await Utils.recordRemoteAction("history", data, undefined);
   }
   return sendResponse(undefined);
 }

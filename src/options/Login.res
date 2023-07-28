@@ -9,7 +9,11 @@ let make = (~onSubmit, ~onCancel) => {
   let (passwordVisible, setPasswordVisible) = React.Uncurried.useState(_ => true)
 
   let handleSubmit = async () => {
-    switch await fetchByHttp(~url="/login", ~body={"username": username, "password": password}) {
+    switch await fetchByHttp(
+      ~url="/login",
+      ~method="post",
+      ~body={"username": username, "password": password},
+    ) {
     | Ok(val) => {
         Js.log2("val", val)
         setExtStorage(~items={"user": val})->ignore
