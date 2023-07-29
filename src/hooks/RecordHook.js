@@ -39,6 +39,19 @@ function useRecord(recordType) {
             };
     }
   };
+  var getAddManyMsgContent = function (records) {
+    if (recordType === "history") {
+      return {
+              TAG: "HistoryAddManyMsgContent",
+              _0: records
+            };
+    } else {
+      return {
+              TAG: "FavAddManyMsgContent",
+              _0: records
+            };
+    }
+  };
   var getAll = async function () {
     var ret = await chrome.runtime.sendMessage(getExtraMsgContent("GetAll"));
     var rs = ret.sort(function (v1, v2) {
@@ -99,6 +112,10 @@ function useRecord(recordType) {
             }));
     return await getAll(undefined);
   };
+  var onSync = async function (checkedRecords) {
+    await chrome.runtime.sendMessage(getAddManyMsgContent(checkedRecords));
+    return await getAll(undefined);
+  };
   var onClear = async function () {
     await chrome.runtime.sendMessage(getExtraMsgContent("Clear"));
     return await getAll(undefined);
@@ -107,6 +124,9 @@ function useRecord(recordType) {
           records: records,
           onCheck: onCheck,
           onSearch: onSearch,
+          onSync: (function (args) {
+              onSync(args);
+            }),
           onDelete: (function (args) {
               onDelete(args);
             }),

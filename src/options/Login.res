@@ -15,7 +15,6 @@ let make = (~onSubmit, ~onCancel) => {
       ~body={"username": username, "password": password},
     ) {
     | Ok(val) => {
-        Js.log2("val", val)
         setExtStorage(~items={"user": val})->ignore
         onSubmit(val)
       }

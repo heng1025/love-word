@@ -3,7 +3,7 @@ open RecordHook
 
 @react.component
 let make = () => {
-  let {records, onCheck, onCancel, onClear, onDelete, onSearch} = useRecord(Favorite)
+  let {records, onCheck, onCancel, onClear, onDelete, onSync, onSearch} = useRecord(Favorite)
   let recordEles = records->Js.Array2.map(record => {
     let {date, title, url, text, favIconUrl, checked, sync} = record
     let boarderClass = checked ? "border-primary" : ""
@@ -26,7 +26,11 @@ let make = () => {
           <p className="font-bold text-xl line-clamp-1"> {React.string(text)} </p>
         </div>
         {switch record.translation {
-        | Some(val) => <TranslateResult data=val />
+        | Some(val) =>
+          switch Js.Nullable.toOption(val) {
+          | Some(v) => <TranslateResult data=v />
+          | _ => React.string("No translation")
+          }
         | _ => React.null
         }}
       </div>
@@ -35,7 +39,7 @@ let make = () => {
 
   <>
     <RecordAction
-      records={Js.Array2.filter(records, v => v.checked)} onCancel onDelete onClear onSearch
+      records={Js.Array2.filter(records, v => v.checked)} onCancel onDelete onSync onClear onSearch
     />
     <div className="flex flex-wrap gap-4 p-5"> {React.array(recordEles)} </div>
   </>

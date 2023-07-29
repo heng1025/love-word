@@ -2,7 +2,7 @@ open RecordHook
 
 @react.component
 let make = () => {
-  let {records, onCheck, onCancel, onClear, onDelete, onSearch} = useRecord(History)
+  let {records, onCheck, onCancel, onClear, onDelete, onSync, onSearch} = useRecord(History)
 
   let recordEles = records->Js.Array2.map(record => {
     let {date, title, url, text, favIconUrl, checked, sync} = record
@@ -29,7 +29,7 @@ let make = () => {
   })
   <>
     <RecordAction
-      records={Js.Array2.filter(records, v => v.checked)} onCancel onDelete onClear onSearch
+      records={Js.Array2.filter(records, v => v.checked)} onCancel onDelete onSync onClear onSearch
     />
     <div className="flex flex-col gap-y-4 p-5"> {React.array(recordEles)} </div>
   </>

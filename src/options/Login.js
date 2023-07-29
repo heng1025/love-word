@@ -31,7 +31,6 @@ function Login(props) {
       return ;
     }
     var val$1 = val._0;
-    console.log("val", val$1);
     chrome.storage.local.set({
           user: val$1
         });

@@ -169,7 +169,7 @@ type transR =
   | @unboxed DictT(OfflineDict.dictOk)
   | @unboxed BaiduT(array<Baidu.baiduOk>)
 
-type transRWithError = result<transR, string>
+type transRWithError = result<Js.Nullable.t<transR>, string>
 
 type recordType = | @as("history") History | @as("favorite") Favorite
 
@@ -181,7 +181,7 @@ type textMsgContent = {text: string}
 type recordsMsgContent = {records: array<recordItem>}
 type favAddMsgContent = {
   text: string,
-  translation: transR,
+  translation: Js.Nullable.t<transR>,
 }
 
 type extraAction = GetAll | Clear
@@ -192,7 +192,7 @@ type recordData = {
   favIconUrl: string,
   date: float,
   text: string,
-  translation?: transR,
+  translation?: Js.Nullable.t<transR>,
 }
 
 type recordDataWithExtra = {
@@ -205,12 +205,14 @@ type msgContent =
   | TranslateMsgContent(textMsgContent)
   // favorite
   | FavAddMsgContent(favAddMsgContent)
+  | FavAddManyMsgContent(array<recordDataWithExtra>)
   | FavGetOneMsgContent(textMsgContent)
   | FavDeleteOneMsgContent(textMsgContent)
   | FavDeleteManyMsgContent(recordsMsgContent)
   | FavExtraMsgContent(extraAction)
   // history
   | HistoryAddMsgContent(textMsgContent)
+  | HistoryAddManyMsgContent(array<recordDataWithExtra>)
   | HistoryDeleteManyMsgContent(recordsMsgContent)
   | HistoryExtraMsgContent(extraAction)
 

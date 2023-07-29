@@ -6,6 +6,7 @@ function RecordAction(props) {
   var onCancel = props.onCancel;
   var onSearch = props.onSearch;
   var onClear = props.onClear;
+  var onSync = props.onSync;
   var onDelete = props.onDelete;
   var records = props.records;
   var records$1 = records !== undefined ? records : [];
@@ -19,6 +20,8 @@ function RecordAction(props) {
     switch (btnState) {
       case "DELETE" :
           return onDelete(records$1);
+      case "SYNC" :
+          return onSync(records$1);
       case "CLEAR" :
           return onClear(undefined);
       case "None" :
@@ -69,6 +72,14 @@ function RecordAction(props) {
                                     });
                               })
                           }, React.createElement("span", undefined, "Delete"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("label", {
+                            className: "btn btn-primary gap-2",
+                            htmlFor: "my-modal",
+                            onClick: (function (param) {
+                                setBtnState(function (param) {
+                                      return "SYNC";
+                                    });
+                              })
+                          }, React.createElement("span", undefined, "Sync"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("label", {
                             className: "btn btn-error",
                             htmlFor: "my-modal",
                             onClick: (function (param) {

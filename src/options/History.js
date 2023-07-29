@@ -45,6 +45,7 @@ function $$History(props) {
                         return v.checked;
                       }),
                   onDelete: match.onDelete,
+                  onSync: match.onSync,
                   onClear: match.onClear,
                   onSearch: match.onSearch,
                   onCancel: match.onCancel

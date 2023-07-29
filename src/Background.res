@@ -45,6 +45,7 @@ let favAddMessageHandler = async (msg: favAddMsgContent, sender, sendResponse) =
   let _ = await recordRemoteAction(~recordType=Favorite, ~data, ~method="post")
   sendResponse(Obj.magic(true))
 }
+
 // fav cancel
 let favDeleteOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
   let db = await dbInstance
@@ -53,8 +54,25 @@ let favDeleteOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
   // local
   let _ = await deleteDBValue(~db, ~storeName=Favorite, ~key)
   // server
-  let _ = await recordRemoteAction(~recordType=Favorite, ~data={"text": msg.text}, ~method="delete")
+  let _ = await recordRemoteAction(
+    ~recordType=Favorite,
+    ~data={"text": [msg.text]},
+    ~method="delete",
+  )
   sendResponse(Obj.magic(false))
+}
+
+let recordAddManyMessageHandler = async (msg: array<recordDataWithExtra>, _, sendResponse) => {
+  let didNotSyncedRecords = Js.Array2.filter(msg, v => v.sync === false)
+  if Js.Array2.length(didNotSyncedRecords) !== 0 {
+    // server
+    let _ = await recordRemoteAction(
+      ~recordType=Favorite,
+      ~data=didNotSyncedRecords,
+      ~method="post",
+    )
+  }
+  sendResponse(Obj.magic(true))
 }
 
 let recordDeleteManyMessageHandler = async (
@@ -118,6 +136,7 @@ let recordMessageHandler = async (recordType: recordType, extraAction, sendRespo
       if Js.Array2.length(retFromLocals) === 0 {
         tranverseLocals := retFromServers
       }
+
       let ret = Js.Array2.reduce(tranverseLocals.contents, concatLocalWithRemote, [])
       sendResponse(Obj.magic(ret))
     }
@@ -163,11 +182,13 @@ Chrome.addMessageListener((message: msgContent, sender, sendResponse) => {
   // favorite
   | FavGetOneMsgContent(msg) => favGetOneMessageHandler(msg, sendResponse)
   | FavAddMsgContent(msg) => favAddMessageHandler(msg, sender, sendResponse)
+  | FavAddManyMsgContent(msg) => recordAddManyMessageHandler(msg, sender, sendResponse)
   | FavDeleteOneMsgContent(msg) => favDeleteOneMessageHandler(msg, sendResponse)
   | FavDeleteManyMsgContent(msg) => recordDeleteManyMessageHandler(Favorite, msg, sendResponse)
   | FavExtraMsgContent(msg) => recordMessageHandler(Favorite, msg, sendResponse)
   // history
   | HistoryAddMsgContent(msg) => historyAddMessageHandler(msg, sender, sendResponse)
+  | HistoryAddManyMsgContent(msg) => recordAddManyMessageHandler(msg, sender, sendResponse)
   | HistoryDeleteManyMsgContent(msg) => recordDeleteManyMessageHandler(History, msg, sendResponse)
   | HistoryExtraMsgContent(msg) => recordMessageHandler(History, msg, sendResponse)
   }->ignore

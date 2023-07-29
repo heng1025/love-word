@@ -38,7 +38,7 @@ async function favAddMessageHandler(msg, sender, sendResponse) {
   var data_favIconUrl = tab.favIconUrl;
   var data_date = Date.now();
   var data_text = msg.text;
-  var data_translation = msg.translation;
+  var data_translation = Caml_option.some(msg.translation);
   var data = {
     url: data_url,
     title: data_title,
@@ -57,9 +57,19 @@ async function favDeleteOneMessageHandler(msg, sendResponse) {
   var key = await db.getKeyFromIndex("favorite", "text", msg.text);
   await db.delete("favorite", key);
   await Utils.recordRemoteAction("favorite", {
-        text: msg.text
+        text: [msg.text]
       }, "delete");
   return sendResponse(false);
+}
+
+async function recordAddManyMessageHandler(msg, param, sendResponse) {
+  var didNotSyncedRecords = msg.filter(function (v) {
+        return v.sync === false;
+      });
+  if (didNotSyncedRecords.length !== 0) {
+    await Utils.recordRemoteAction("favorite", didNotSyncedRecords, "post");
+  }
+  return sendResponse(true);
 }
 
 async function recordDeleteManyMessageHandler(recordType, msg, sendResponse) {
@@ -169,6 +179,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         case "HistoryAddMsgContent" :
             historyAddMessageHandler(message._0, sender, sendResponse);
             break;
+        case "FavAddManyMsgContent" :
+        case "HistoryAddManyMsgContent" :
+            recordAddManyMessageHandler(message._0, sender, sendResponse);
+            break;
         case "HistoryDeleteManyMsgContent" :
             recordDeleteManyMessageHandler("history", message._0, sendResponse);
             break;
@@ -187,6 +201,7 @@ export {
   favGetOneMessageHandler ,
   favAddMessageHandler ,
   favDeleteOneMessageHandler ,
+  recordAddManyMessageHandler ,
   recordDeleteManyMessageHandler ,
   recordMessageHandler ,
   historyAddMessageHandler ,

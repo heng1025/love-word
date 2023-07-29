@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as RecordHook from "../hooks/RecordHook.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as RecordAction from "./RecordAction.js";
 import * as TranslateResult from "../components/TranslateResult.js";
 
@@ -15,6 +16,15 @@ function Favorite(props) {
         var sync = record.sync;
         var boarderClass = checked ? "border-primary" : "";
         var val = record.translation;
+        var tmp;
+        if (val !== undefined) {
+          var val$1 = Caml_option.valFromOption(val);
+          tmp = (val$1 == null) ? "No translation" : React.createElement(TranslateResult.TranslateResult.make, {
+                  data: val$1
+                });
+        } else {
+          tmp = null;
+        }
         return React.createElement("div", {
                     key: date.toString(),
                     className: "card card-compact w-72 card-bordered cursor-pointer bg-base-100 shadow-xl " + boarderClass,
@@ -38,15 +48,14 @@ function Favorite(props) {
                                         src: record.favIconUrl
                                       }))), React.createElement("p", {
                                 className: "font-bold text-xl line-clamp-1"
-                              }, record.text)), val !== undefined ? React.createElement(TranslateResult.TranslateResult.make, {
-                              data: val
-                            }) : null));
+                              }, record.text)), tmp));
       });
   return React.createElement(React.Fragment, {}, React.createElement(RecordAction.make, {
                   records: records.filter(function (v) {
                         return v.checked;
                       }),
                   onDelete: match.onDelete,
+                  onSync: match.onSync,
                   onClear: match.onClear,
                   onSearch: match.onSearch,
                   onCancel: match.onCancel

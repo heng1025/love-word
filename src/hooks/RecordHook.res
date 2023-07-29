@@ -7,6 +7,7 @@ type return = {
   records: array<recordDataWithExtra>,
   onCheck: recordDataWithExtra => unit,
   onSearch: string => unit,
+  onSync: array<recordDataWithExtra> => unit,
   onDelete: array<recordDataWithExtra> => unit,
   onClear: unit => unit,
   onCancel: unit => unit,
@@ -25,6 +26,13 @@ let useRecord = recordType => {
     switch recordType {
     | Favorite => FavDeleteManyMsgContent({records})
     | History => HistoryDeleteManyMsgContent({records})
+    }
+  }
+
+  let getAddManyMsgContent = records => {
+    switch recordType {
+    | Favorite => FavAddManyMsgContent({records})
+    | History => HistoryAddManyMsgContent({records})
     }
   }
 
@@ -85,6 +93,11 @@ let useRecord = recordType => {
     await getAll()
   }
 
+  let onSync = async checkedRecords => {
+    let _ = await sendMessage(getAddManyMsgContent(checkedRecords))
+    await getAll()
+  }
+
   let onClear = async () => {
     let _ = await sendMessage(getExtraMsgContent(Clear))
     await getAll()
@@ -97,5 +110,6 @@ let useRecord = recordType => {
     onSearch,
     onClear: () => onClear()->ignore,
     onDelete: args => onDelete(args)->ignore,
+    onSync: args => onSync(args)->ignore,
   }
 }

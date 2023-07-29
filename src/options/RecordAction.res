@@ -1,13 +1,14 @@
-type state = DELETE | CLEAR | None
+type state = DELETE | SYNC | CLEAR | None
 
 @react.component
-let make = (~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
+let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => {
   let (btnState, setBtnState) = React.Uncurried.useState(_ => None)
   let checkedLen = Js.Array2.length(records)
 
   let onClick = _ => {
     switch btnState {
     | DELETE => onDelete(records)
+    | SYNC => onSync(records)
     | CLEAR => onClear()
     | _ => ()
     }
@@ -46,6 +47,13 @@ let make = (~records=[], ~onDelete, ~onClear, ~onSearch, ~onCancel) => {
             className="btn btn-warning gap-2"
             onClick={_ => setBtnState(_ => DELETE)}>
             <span> {React.string("Delete")} </span>
+            <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>
+          </label>
+          <label
+            htmlFor="my-modal"
+            className="btn btn-primary gap-2"
+            onClick={_ => setBtnState(_ => SYNC)}>
+            <span> {React.string("Sync")} </span>
             <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>
           </label>
           <label

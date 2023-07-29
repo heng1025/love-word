@@ -15,11 +15,15 @@ module TranslateResult = {
 
 module TranslateResultWithState = {
   @react.component
-  let make = (~loading=false, ~data, ~delay=0, ~className="") => {
+  let make = (~loading=false, ~data: option<transRWithError>, ~delay=0, ~className="") => {
     <Loading loading delay>
       {switch data {
       | Some(Error(msg)) => <div className="text-error"> {React.string(msg)} </div>
-      | Some(Ok(val)) => <TranslateResult className data=val />
+      | Some(Ok(val)) =>
+        switch Js.Nullable.toOption(val) {
+        | Some(v) => <TranslateResult data=v />
+        | _ => React.string("No translation")
+        }
       | _ => React.null
       }}
     </Loading>
