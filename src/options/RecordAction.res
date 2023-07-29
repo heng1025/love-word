@@ -51,7 +51,7 @@ let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => 
           </label>
           <label
             htmlFor="my-modal"
-            className="btn btn-primary gap-2"
+            className="btn btn-secondary gap-2"
             onClick={_ => setBtnState(_ => SYNC)}>
             <span> {React.string("Sync")} </span>
             <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>

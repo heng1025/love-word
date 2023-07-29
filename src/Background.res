@@ -85,6 +85,7 @@ let recordDeleteManyMessageHandler = async (
   let pstores = Js.Array2.map(msg.records, item => {
     tx.store.delete(Obj.magic(item.date))
   })
+  let _len = Js.Array2.push(pstores, tx.done)
   // local
   let _ = await Js.Promise2.all(pstores)
   // server
@@ -107,38 +108,38 @@ let recordMessageHandler = async (recordType: recordType, extraAction, sendRespo
         ~storeName=recordType,
         ~indexName="text",
       )
-      // server
-      let retFromServers = switch await recordRemoteAction(~recordType) {
-      | Ok(val) => val
-      | Error(_) => []
-      }
-      let concatLocalWithRemote = (acc, local) => {
-        local["sync"] = false
-        Js.Array2.forEach(retFromServers, remote => {
-          let isTextExisted = local["text"] === remote["text"]
-          if isTextExisted {
-            local["sync"] = true
-          } else {
-            remote["sync"] = true
-            if Js.Array2.every(acc, v => v["text"] !== remote["text"]) {
-              let _ = Js.Array2.push(acc, remote)
-            }
-          }
-        })
+      // // server
+      // let retFromServers = switch await recordRemoteAction(~recordType) {
+      // | Ok(val) => val
+      // | Error(_) => []
+      // }
+      // let concatLocalWithRemote = (acc, local) => {
+      //   local["sync"] = false
+      //   Js.Array2.forEach(retFromServers, remote => {
+      //     let isTextExisted = local["text"] === remote["text"]
+      //     if isTextExisted {
+      //       local["sync"] = true
+      //     } else {
+      //       remote["sync"] = true
+      //       if Js.Array2.every(acc, v => v["text"] !== remote["text"]) {
+      //         let _ = Js.Array2.push(acc, remote)
+      //       }
+      //     }
+      //   })
 
-        if Js.Array2.every(acc, v => v["text"] !== local["text"]) {
-          let _ = Js.Array2.push(acc, local)
-        }
-        acc
-      }
-      // strategy: local first
-      let tranverseLocals = ref(retFromLocals)
-      if Js.Array2.length(retFromLocals) === 0 {
-        tranverseLocals := retFromServers
-      }
+      //   if Js.Array2.every(acc, v => v["text"] !== local["text"]) {
+      //     let _ = Js.Array2.push(acc, local)
+      //   }
+      //   acc
+      // }
+      // // strategy: local first
+      // let tranverseLocals = ref(retFromLocals)
+      // if Js.Array2.length(retFromLocals) === 0 {
+      //   tranverseLocals := retFromServers
+      // }
 
-      let ret = Js.Array2.reduce(tranverseLocals.contents, concatLocalWithRemote, [])
-      sendResponse(Obj.magic(ret))
+      // let ret = Js.Array2.reduce(tranverseLocals.contents, concatLocalWithRemote, [])
+      sendResponse(Obj.magic(retFromLocals))
     }
 
   | Clear =>

@@ -78,6 +78,7 @@ async function recordDeleteManyMessageHandler(recordType, msg, sendResponse) {
   var pstores = msg.records.map(function (item) {
         return tx.store.delete(item.date);
       });
+  pstores.push(tx.done);
   await Promise.all(pstores);
   await Utils.recordRemoteAction(recordType, {
         text: msg.records.map(function (v) {
@@ -91,41 +92,7 @@ async function recordMessageHandler(recordType, extraAction, sendResponse) {
   if (extraAction === "GetAll") {
     var db = await dbInstance;
     var retFromLocals = await db.getAllFromIndex(recordType, "text");
-    var val = await Utils.recordRemoteAction(recordType, undefined, undefined);
-    var retFromServers;
-    retFromServers = val.TAG === "Ok" ? val._0 : [];
-    var concatLocalWithRemote = function (acc, local) {
-      local.sync = false;
-      retFromServers.forEach(function (remote) {
-            var isTextExisted = local.text === remote.text;
-            if (isTextExisted) {
-              local.sync = true;
-              return ;
-            } else {
-              remote.sync = true;
-              if (acc.every(function (v) {
-                      return v.text !== remote.text;
-                    })) {
-                acc.push(remote);
-                return ;
-              } else {
-                return ;
-              }
-            }
-          });
-      if (acc.every(function (v) {
-              return v.text !== local.text;
-            })) {
-        acc.push(local);
-      }
-      return acc;
-    };
-    var tranverseLocals = retFromLocals;
-    if (retFromLocals.length === 0) {
-      tranverseLocals = retFromServers;
-    }
-    var ret = tranverseLocals.reduce(concatLocalWithRemote, []);
-    return sendResponse(ret);
+    return sendResponse(retFromLocals);
   }
   var db$1 = await dbInstance;
   await db$1.clear(recordType);

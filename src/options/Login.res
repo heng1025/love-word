@@ -1,12 +1,69 @@
 open Common.Chrome
+open Common.Idb
 open Widget
+open Utils
 open Utils.Lib
+open Database
+
+let dbInstance = getDB()
 
 @react.component
 let make = (~onSubmit, ~onCancel) => {
   let (username, setUsername) = React.Uncurried.useState(_ => "")
   let (password, setPassword) = React.Uncurried.useState(_ => "")
   let (passwordVisible, setPasswordVisible) = React.Uncurried.useState(_ => true)
+
+  let getRecordsWithServer = async recordType => {
+    let recordMsg = switch recordType {
+    | Favorite => FavExtraMsgContent(GetAll)
+    | History => HistoryExtraMsgContent(GetAll)
+    }
+    // local
+    let retLocal: array<recordDataWithExtra> = await sendMessage(recordMsg)
+    // server
+    let retFromServers = switch await recordRemoteAction(~recordType) {
+    | Ok(val) => val
+    | Error(_) => []
+    }
+
+    // strategy: local first
+    let tranverseLocals = ref(retLocal)
+    if Js.Array2.length(tranverseLocals.contents) === 0 {
+      tranverseLocals := retFromServers
+    }
+
+    let db = await dbInstance
+
+    let concatLocalWithRemote = (acc, local) => {
+      local.sync = false
+      Js.Array2.forEach(retFromServers, remote => {
+        let isTextExisted = local.text === remote.text
+        if isTextExisted {
+          local.sync = true
+          // update local
+          putDBValue(~db, ~storeName=recordType, ~data=local, ())->ignore
+        } else {
+          remote.sync = true
+          if Js.Array2.every(tranverseLocals.contents, v => v.text !== remote.text) {
+            let _ = Js.Array2.push(acc, remote)
+          }
+        }
+      })
+      acc
+    }
+
+    let records: array<recordDataWithExtra> = Js.Array2.reduce(
+      tranverseLocals.contents,
+      concatLocalWithRemote,
+      [],
+    )
+    let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
+    let pstores = Js.Array2.map(records, item => {
+      tx.store.add(Obj.magic(item))
+    })
+    let _len = Js.Array2.push(pstores, tx.done)
+    let _ = await Js.Promise2.all(pstores)
+  }
 
   let handleSubmit = async () => {
     switch await fetchByHttp(
@@ -16,6 +73,9 @@ let make = (~onSubmit, ~onCancel) => {
     ) {
     | Ok(val) => {
         setExtStorage(~items={"user": val})->ignore
+        // sync records
+        let _f = await getRecordsWithServer(Favorite)
+        let _h = await getRecordsWithServer(History)
         onSubmit(val)
       }
     | _ => ()

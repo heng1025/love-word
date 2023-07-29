@@ -72,7 +72,7 @@ function RecordAction(props) {
                                     });
                               })
                           }, React.createElement("span", undefined, "Delete"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("label", {
-                            className: "btn btn-primary gap-2",
+                            className: "btn btn-secondary gap-2",
                             htmlFor: "my-modal",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
