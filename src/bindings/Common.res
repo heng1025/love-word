@@ -70,6 +70,8 @@ module Webapi = {
     external scrollX: int = "scrollX"
     @scope("window") @val
     external getSelection: unit => selection = "getSelection"
+    @scope(("window", "location")) @val
+    external reload: unit => unit = "reload"
     @get
     external rangeCount: selection => int = "rangeCount"
     @send

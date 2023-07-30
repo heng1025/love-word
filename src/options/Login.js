@@ -4,12 +4,14 @@ import * as Utils from "../Utils.js";
 import * as React from "react";
 import * as Widget from "../components/Widget.js";
 import * as Database from "../Database.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
 
 var dbInstance = Database.getDB(undefined);
 
 function Login(props) {
   var onCancel = props.onCancel;
   var onSubmit = props.onSubmit;
+  var url = RescriptReactRouter.useUrl(undefined, undefined);
   var match = React.useState(function () {
         return "";
       });
@@ -89,7 +91,15 @@ function Login(props) {
         });
     await getRecordsWithServer("favorite");
     await getRecordsWithServer("history");
-    return onSubmit(val$1);
+    onSubmit(val$1);
+    if ([
+          "favorite",
+          "history"
+        ].includes(url.hash)) {
+      window.location.reload();
+      return ;
+    }
+    
   };
   return React.createElement("div", undefined, React.createElement("h3", undefined, "Login"), React.createElement("div", {
                   className: "form-control "

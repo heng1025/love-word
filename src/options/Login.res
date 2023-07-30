@@ -1,5 +1,6 @@
 open Common.Chrome
 open Common.Idb
+open Common.Webapi.Window
 open Widget
 open Utils
 open Utils.Lib
@@ -9,6 +10,7 @@ let dbInstance = getDB()
 
 @react.component
 let make = (~onSubmit, ~onCancel) => {
+  let url = RescriptReactRouter.useUrl()
   let (username, setUsername) = React.Uncurried.useState(_ => "")
   let (password, setPassword) = React.Uncurried.useState(_ => "")
   let (passwordVisible, setPasswordVisible) = React.Uncurried.useState(_ => true)
@@ -77,6 +79,10 @@ let make = (~onSubmit, ~onCancel) => {
         let _f = await getRecordsWithServer(Favorite)
         let _h = await getRecordsWithServer(History)
         onSubmit(val)
+        switch Js.Array2.includes(["favorite", "history"], url.hash) {
+        | true => reload()
+        | false => ()
+        }
       }
     | _ => ()
     }
