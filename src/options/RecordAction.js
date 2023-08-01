@@ -30,7 +30,7 @@ function RecordAction(props) {
     }
   };
   return React.createElement("div", {
-              className: "sticky top-0 z-40 bg-base-100 p-4 border-b-2"
+              className: "sticky top-0 z-40 bg-base-100 p-4 shadow-lg"
             }, React.createElement("dialog", {
                   className: "modal",
                   id: "recordAction"
@@ -49,7 +49,7 @@ function RecordAction(props) {
                             }, "Cancel")))), React.createElement("div", {
                   className: "flex gap-5 items-center"
                 }, React.createElement("input", {
-                      className: "input input-primary w-full max-w-xs",
+                      className: "input input-bordered w-full max-w-xs",
                       placeholder: "Search...",
                       type: "text",
                       onChange: (function (e) {
@@ -58,7 +58,7 @@ function RecordAction(props) {
                     }), checkedLen > 0 ? React.createElement("div", {
                         className: "join"
                       }, React.createElement("button", {
-                            className: "btn btn-warning join-item",
+                            className: "btn join-item btn-warning",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
                                       return "DELETE";
@@ -66,7 +66,7 @@ function RecordAction(props) {
                                 window.recordAction.showModal();
                               })
                           }, React.createElement("span", undefined, "Delete"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("button", {
-                            className: "btn btn-secondary join-item",
+                            className: "btn join-item btn-secondary",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
                                       return "SYNC";
@@ -74,7 +74,7 @@ function RecordAction(props) {
                                 window.recordAction.showModal();
                               })
                           }, React.createElement("span", undefined, "Sync"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("button", {
-                            className: "btn btn-error join-item",
+                            className: "btn join-item btn-error",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
                                       return "CLEAR";

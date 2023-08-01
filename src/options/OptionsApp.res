@@ -1,4 +1,7 @@
 open Common.Chrome
+open Common.Idb
+open Utils
+open Database
 
 type user = Logined({email: string, profileImage: string, token: string}) | UnLogined
 
@@ -6,6 +9,70 @@ type user = Logined({email: string, profileImage: string, token: string}) | UnLo
 external showModal: unit => unit = "showModal"
 @scope(("window", "login")) @val
 external closeModal: unit => unit = "close"
+
+let getRecordsWithServer = async recordType => {
+  let recordMsg = switch recordType {
+  | Favorite => FavExtraMsgContent(GetAll)
+  | History => HistoryExtraMsgContent(GetAll)
+  }
+  // local
+  let retLocal: array<recordDataWithExtra> = await sendMessage(recordMsg)
+
+  // server
+  let retFromServers = switch await recordRemoteAction(~recordType) {
+  | Ok(val) => val
+  | Error(_) => []
+  }
+
+  // strategy: local first
+  let tranverseLocals = ref(retLocal)
+  if Js.Array2.length(tranverseLocals.contents) === 0 {
+    tranverseLocals := retFromServers
+  }
+
+  let db = await getDB()
+
+  let concatLocalWithRemote = (acc, local) => {
+    local.sync = false
+    Js.Array2.forEach(retFromServers, remote => {
+      let isTextExisted = local.text === remote.text
+      if isTextExisted {
+        local.sync = true
+        // update local
+        putDBValue(~db, ~storeName=recordType, ~data=local, ())->ignore
+      } else {
+        remote.sync = true
+        let isNotAtLocal = Js.Array2.every(tranverseLocals.contents, v => v.text !== remote.text)
+        let isNotAtAcc = Js.Array2.every(acc, v => v.text !== remote.text)
+        if isNotAtLocal && isNotAtAcc {
+          let _ = Js.Array2.push(acc, remote)
+        }
+      }
+    })
+    acc
+  }
+
+  let records: array<recordDataWithExtra> = Js.Array2.reduce(
+    tranverseLocals.contents,
+    concatLocalWithRemote,
+    [],
+  )
+  let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
+  let pstores = Js.Array2.map(records, item => {
+    tx.store.add(Obj.magic(item))
+  })
+  let _len = Js.Array2.push(pstores, tx.done)
+  try {
+    let _ = await Js.Promise2.all(pstores)
+  } catch {
+  | Js.Exn.Error(err) =>
+    switch Js.Exn.message(err) {
+    | Some(msg) => Js.log(msg)
+    | _ => Js.log("Err happen")
+    }
+  | _ => Js.log("Unexpected error occurred")
+  }
+}
 
 @react.component
 let make = () => {
@@ -15,7 +82,7 @@ let make = () => {
   React.useEffect0(() => {
     let getUser = async () => {
       let result = await getExtStorage(~keys=["user"])
-      let u = result["user"]
+      let u: user = result["user"]
       setUser(_ => u)
     }
     getUser()->ignore
@@ -75,33 +142,38 @@ let make = () => {
 
   let loginStatus = switch user {
   | Logined(_) => hasLoginedComponent
-  | _ => <button className="btn" onClick={_ => showModal()}> {React.string("Login")} </button>
+  | _ =>
+    <button className="btn btn-neutral" onClick={_ => showModal()}>
+      {React.string("Login")}
+    </button>
   }
 
-  <div>
-    <div className="flex flex-col h-screen">
-      <div className="navbar bg-base-100 border-b-2">
+  let handleCommit = async user => {
+    setUser(user)
+    closeModal()
+    // sync records
+    let _f = await getRecordsWithServer(Favorite)
+    let _h = await getRecordsWithServer(History)
+  }
+
+  <div className="bg-base-200">
+    <div className="flex flex-col gap-1 h-screen">
+      <div className="navbar bg-base-100">
         <div className="flex-1">
           <a className="btn btn-ghost normal-case text-xl" href="#service">
             <img src="/icons/lw32x32.png" className=" inline-block mr-2" />
             {React.string("Love Word")}
           </a>
         </div>
-        <div className="flex-none gap-2"> loginStatus </div>
+        <div className="flex gap-2"> loginStatus </div>
         <dialog id="login" className="modal">
           <form method="dialog" className="modal-box">
-            <Login
-              onSubmit={u => {
-                setUser(u)
-                closeModal()
-              }}
-              onCancel={_ => closeModal()}
-            />
+            <Login onSubmit={u => handleCommit(u)} onCancel={_ => closeModal()} />
           </form>
         </dialog>
       </div>
-      <div className="flex flex-1 overflow-y-hidden">
-        <div className="overflow-y-auto border-r-2">
+      <div className="flex flex-1 gap-1 overflow-y-hidden">
+        <div className="overflow-y-auto bg-base-100">
           <ul className="menu bg-base-100 w-56 p-2">
             <li className="menu-title">
               <span> {React.string("Setting")} </span>

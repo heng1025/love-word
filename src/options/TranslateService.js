@@ -85,7 +85,7 @@ function TranslateService(props) {
                         }, React.createElement("span", {
                               className: "label-text"
                             }, "baidu appid")), React.createElement("input", {
-                          className: "input input-bordered input-primary w-full",
+                          className: "input input-bordered w-full",
                           placeholder: "Appid",
                           type: "text",
                           value: appid,
@@ -106,7 +106,7 @@ function TranslateService(props) {
                             }, "baidu secret")), React.createElement("div", {
                           className: "relative"
                         }, React.createElement("input", {
-                              className: "input input-bordered input-primary w-full pr-8",
+                              className: "input input-bordered w-full pr-8",
                               placeholder: "Secret",
                               type: passwordVisible ? "password" : "text",
                               value: secret,
@@ -128,7 +128,7 @@ function TranslateService(props) {
                             }, passwordVisible ? React.createElement(Widget.EyeSlash.make, {}) : React.createElement(Widget.Eye.make, {})))), warnMessage !== "" ? React.createElement("div", {
                         className: "alert alert-warning shadow-lg mt-5"
                       }, React.createElement("div", undefined, React.createElement(Widget.Alert.make, {}), React.createElement("span", undefined, "Warning: " + warnMessage + "!"))) : null, React.createElement("button", {
-                      className: "btn btn-primary " + (
+                      className: "btn btn-neutral " + (
                         match$2[0] ? "btn-disabled" : ""
                       ) + " w-5/6 mt-8 mx-auto",
                       onClick: (function (param) {

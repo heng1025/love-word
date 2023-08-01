@@ -3,10 +3,7 @@
 import * as Utils from "../Utils.js";
 import * as React from "react";
 import * as Widget from "../components/Widget.js";
-import * as Database from "../Database.js";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
-
-var dbInstance = Database.getDB(undefined);
 
 function Login(props) {
   var onCancel = props.onCancel;
@@ -27,56 +24,6 @@ function Login(props) {
       });
   var setPasswordVisible = match$2[1];
   var passwordVisible = match$2[0];
-  var getRecordsWithServer = async function (recordType) {
-    var recordMsg;
-    recordMsg = recordType === "history" ? ({
-          TAG: "HistoryExtraMsgContent",
-          _0: "GetAll"
-        }) : ({
-          TAG: "FavExtraMsgContent",
-          _0: "GetAll"
-        });
-    var retLocal = await chrome.runtime.sendMessage(recordMsg);
-    var val = await Utils.recordRemoteAction(recordType, undefined, undefined);
-    var retFromServers;
-    retFromServers = val.TAG === "Ok" ? val._0 : [];
-    var tranverseLocals = {
-      contents: retLocal
-    };
-    if (tranverseLocals.contents.length === 0) {
-      tranverseLocals.contents = retFromServers;
-    }
-    var db = await dbInstance;
-    var concatLocalWithRemote = function (acc, local) {
-      local.sync = false;
-      retFromServers.forEach(function (remote) {
-            var isTextExisted = local.text === remote.text;
-            if (isTextExisted) {
-              local.sync = true;
-              db.put(recordType, local, undefined);
-              return ;
-            } else {
-              remote.sync = true;
-              if (tranverseLocals.contents.every(function (v) {
-                      return v.text !== remote.text;
-                    })) {
-                acc.push(remote);
-                return ;
-              } else {
-                return ;
-              }
-            }
-          });
-      return acc;
-    };
-    var records = tranverseLocals.contents.reduce(concatLocalWithRemote, []);
-    var tx = db.transaction(recordType, "readwrite");
-    var pstores = records.map(function (item) {
-          return tx.store.add(item);
-        });
-    pstores.push(tx.done);
-    await Promise.all(pstores);
-  };
   var handleSubmit = async function () {
     var val = await Utils.Lib.fetchByHttp("/login", "post", {
           username: username,
@@ -89,9 +36,7 @@ function Login(props) {
     chrome.storage.local.set({
           user: val$1
         });
-    await getRecordsWithServer("favorite");
-    await getRecordsWithServer("history");
-    onSubmit(val$1);
+    await onSubmit(val$1);
     if ([
           "favorite",
           "history"
@@ -108,7 +53,7 @@ function Login(props) {
                     }, React.createElement("span", {
                           className: "label-text"
                         }, "Username")), React.createElement("input", {
-                      className: "input input-bordered input-primary w-full",
+                      className: "input input-bordered w-full",
                       placeholder: "Username",
                       type: "text",
                       value: username,
@@ -126,7 +71,7 @@ function Login(props) {
                         }, "Password")), React.createElement("div", {
                       className: "relative"
                     }, React.createElement("input", {
-                          className: "input input-bordered input-primary w-full pr-8",
+                          className: "input input-bordered w-full pr-8",
                           placeholder: "Password",
                           type: passwordVisible ? "password" : "text",
                           value: password,
@@ -145,7 +90,7 @@ function Login(props) {
                         }, passwordVisible ? React.createElement(Widget.EyeSlash.make, {}) : React.createElement(Widget.Eye.make, {})))), React.createElement("div", {
                   className: "modal-action fle mt-8 justify-center"
                 }, React.createElement("button", {
-                      className: "btn btn-primary",
+                      className: "btn btn-neutral",
                       onClick: (function (param) {
                           handleSubmit(undefined);
                         })
@@ -160,7 +105,6 @@ function Login(props) {
 var make = Login;
 
 export {
-  dbInstance ,
   make ,
 }
-/* dbInstance Not a pure module */
+/* Utils Not a pure module */

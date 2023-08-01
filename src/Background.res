@@ -62,15 +62,23 @@ let favDeleteOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
   sendResponse(Obj.magic(false))
 }
 
-let recordAddManyMessageHandler = async (msg: array<recordDataWithExtra>, _, sendResponse) => {
-  let didNotSyncedRecords = Js.Array2.filter(msg, v => v.sync === false)
+let recordAddManyMessageHandler = async (
+  recordType: recordType,
+  msg: array<recordDataWithExtra>,
+  sendResponse,
+) => {
+  let didNotSyncedRecords = Js.Array2.filter(msg, v => !v.sync)
   if Js.Array2.length(didNotSyncedRecords) !== 0 {
     // server
-    let _ = await recordRemoteAction(
-      ~recordType=Favorite,
-      ~data=didNotSyncedRecords,
-      ~method="post",
-    )
+    let _ = await recordRemoteAction(~recordType, ~data=didNotSyncedRecords, ~method="post")
+    // update local
+    let db = await dbInstance
+    let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
+    let pstores = Js.Array2.map(didNotSyncedRecords, item => {
+      tx.store.put(Obj.magic({...item, sync: true}))
+    })
+    let _len = Js.Array2.push(pstores, tx.done)
+    let _ = await Js.Promise2.all(pstores)
   }
   sendResponse(Obj.magic(true))
 }
@@ -108,38 +116,7 @@ let recordMessageHandler = async (recordType: recordType, extraAction, sendRespo
         ~storeName=recordType,
         ~indexName="text",
       )
-      // // server
-      // let retFromServers = switch await recordRemoteAction(~recordType) {
-      // | Ok(val) => val
-      // | Error(_) => []
-      // }
-      // let concatLocalWithRemote = (acc, local) => {
-      //   local["sync"] = false
-      //   Js.Array2.forEach(retFromServers, remote => {
-      //     let isTextExisted = local["text"] === remote["text"]
-      //     if isTextExisted {
-      //       local["sync"] = true
-      //     } else {
-      //       remote["sync"] = true
-      //       if Js.Array2.every(acc, v => v["text"] !== remote["text"]) {
-      //         let _ = Js.Array2.push(acc, remote)
-      //       }
-      //     }
-      //   })
-
-      //   if Js.Array2.every(acc, v => v["text"] !== local["text"]) {
-      //     let _ = Js.Array2.push(acc, local)
-      //   }
-      //   acc
-      // }
-      // // strategy: local first
-      // let tranverseLocals = ref(retFromLocals)
-      // if Js.Array2.length(retFromLocals) === 0 {
-      //   tranverseLocals := retFromServers
-      // }
-
-      // let ret = Js.Array2.reduce(tranverseLocals.contents, concatLocalWithRemote, [])
-      sendResponse(Obj.magic(retFromLocals))
+      sendResponse(retFromLocals)
     }
 
   | Clear =>
@@ -183,13 +160,13 @@ Chrome.addMessageListener((message: msgContent, sender, sendResponse) => {
   // favorite
   | FavGetOneMsgContent(msg) => favGetOneMessageHandler(msg, sendResponse)
   | FavAddMsgContent(msg) => favAddMessageHandler(msg, sender, sendResponse)
-  | FavAddManyMsgContent(msg) => recordAddManyMessageHandler(msg, sender, sendResponse)
+  | FavAddManyMsgContent(msg) => recordAddManyMessageHandler(Favorite, msg, sendResponse)
   | FavDeleteOneMsgContent(msg) => favDeleteOneMessageHandler(msg, sendResponse)
   | FavDeleteManyMsgContent(msg) => recordDeleteManyMessageHandler(Favorite, msg, sendResponse)
   | FavExtraMsgContent(msg) => recordMessageHandler(Favorite, msg, sendResponse)
   // history
   | HistoryAddMsgContent(msg) => historyAddMessageHandler(msg, sender, sendResponse)
-  | HistoryAddManyMsgContent(msg) => recordAddManyMessageHandler(msg, sender, sendResponse)
+  | HistoryAddManyMsgContent(msg) => recordAddManyMessageHandler(History, msg, sendResponse)
   | HistoryDeleteManyMsgContent(msg) => recordDeleteManyMessageHandler(History, msg, sendResponse)
   | HistoryExtraMsgContent(msg) => recordMessageHandler(History, msg, sendResponse)
   }->ignore

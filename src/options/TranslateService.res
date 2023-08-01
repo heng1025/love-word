@@ -61,7 +61,7 @@ let make = () => {
             setAppid(_ => ReactEvent.Form.target(e)["value"])
             setDisabled(_ => false)
           }}
-          className="input input-bordered input-primary w-full"
+          className="input input-bordered w-full"
         />
       </div>
       <div className="form-control mt-5">
@@ -77,7 +77,7 @@ let make = () => {
               setSecret(_ => ReactEvent.Form.target(e)["value"])
               setDisabled(_ => false)
             }}
-            className="input input-bordered input-primary w-full pr-8"
+            className="input input-bordered w-full pr-8"
           />
           <span
             className="cursor-pointer absolute w-6 h-6 top-1/2 right-1.5 -translate-y-1/2"
@@ -97,7 +97,7 @@ let make = () => {
       | false => React.null
       }}
       <button
-        className={`btn btn-primary ${disabled ? "btn-disabled" : ""} w-5/6 mt-8 mx-auto`}
+        className={`btn btn-neutral ${disabled ? "btn-disabled" : ""} w-5/6 mt-8 mx-auto`}
         onClick={_ => handleSubmit()->ignore}>
         {React.string("Submit")}
       </button>

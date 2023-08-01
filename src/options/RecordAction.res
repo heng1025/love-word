@@ -22,7 +22,7 @@ let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => 
   let handleChange = val => {
     onSearch(val)
   }
-  <div className="sticky top-0 z-40 bg-base-100 p-4 border-b-2">
+  <div className="sticky top-0 z-40 bg-base-100 p-4 shadow-lg">
     <dialog id="recordAction" className="modal">
       <form method="dialog" className="modal-box">
         <h3 className="font-bold text-lg"> {React.string("Do you confirm?")} </h3>
@@ -36,14 +36,14 @@ let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => 
       <input
         type_="text"
         placeholder="Search..."
-        className="input input-primary w-full max-w-xs"
+        className="input input-bordered w-full max-w-xs"
         onChange={e => handleChange(ReactEvent.Form.target(e)["value"])}
       />
       {switch checkedLen > 0 {
       | true =>
         <div className="join">
           <button
-            className="btn btn-warning join-item"
+            className="btn join-item btn-warning"
             onClick={_ => {
               setBtnState(_ => DELETE)
               showModal()
@@ -52,7 +52,7 @@ let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => 
             <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>
           </button>
           <button
-            className="btn btn-secondary join-item"
+            className="btn join-item btn-secondary"
             onClick={_ => {
               setBtnState(_ => SYNC)
               showModal()
@@ -61,7 +61,7 @@ let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => 
             <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>
           </button>
           <button
-            className="btn btn-error join-item"
+            className="btn join-item btn-error"
             onClick={_ => {
               setBtnState(_ => CLEAR)
               showModal()

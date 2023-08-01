@@ -16,7 +16,7 @@ function Shortcut(props) {
                         }, React.createElement("span", {
                               className: "label-text"
                             }, "ALT"), React.createElement("input", {
-                              className: "checkbox checkbox-primary",
+                              className: "checkbox",
                               checked: true,
                               type: "checkbox"
                             })))));

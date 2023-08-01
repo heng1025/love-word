@@ -6,7 +6,7 @@ let make = () => {
       <div className="form-control">
         <label className="label cursor-pointer">
           <span className="label-text"> {React.string("ALT")} </span>
-          <input type_="checkbox" checked=true className="checkbox checkbox-primary" />
+          <input type_="checkbox" checked=true className="checkbox" />
         </label>
       </div>
     </div>

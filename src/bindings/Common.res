@@ -167,6 +167,7 @@ module Idb = {
   type rec objStore = {
     add: data => promise<unit>,
     delete: data => promise<unit>,
+    put: data => promise<unit>,
     index: string => objStore,
     openCursor: unit => promise<cursor>,
   }
