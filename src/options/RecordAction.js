@@ -31,28 +31,22 @@ function RecordAction(props) {
   };
   return React.createElement("div", {
               className: "sticky top-0 z-40 bg-base-100 p-4 border-b-2"
-            }, React.createElement("input", {
-                  className: "modal-toggle",
-                  id: "my-modal",
-                  type: "checkbox"
-                }), React.createElement("div", {
-                  className: "modal"
-                }, React.createElement("div", {
-                      className: "modal-box"
+            }, React.createElement("dialog", {
+                  className: "modal",
+                  id: "recordAction"
+                }, React.createElement("form", {
+                      className: "modal-box",
+                      method: "dialog"
                     }, React.createElement("h3", {
                           className: "font-bold text-lg"
                         }, "Do you confirm?"), React.createElement("div", {
                           className: "modal-action"
-                        }, React.createElement("div", {
-                              className: "btn-group"
-                            }, React.createElement("label", {
-                                  className: "btn btn-error",
-                                  htmlFor: "my-modal",
-                                  onClick: onClick
-                                }, "Confirm"), React.createElement("label", {
-                                  className: "btn",
-                                  htmlFor: "my-modal"
-                                }, "Cancel"))))), React.createElement("div", {
+                        }, React.createElement("button", {
+                              className: "btn btn-error",
+                              onClick: onClick
+                            }, "Confirm"), React.createElement("button", {
+                              className: "btn"
+                            }, "Cancel")))), React.createElement("div", {
                   className: "flex gap-5 items-center"
                 }, React.createElement("input", {
                       className: "input input-primary w-full max-w-xs",
@@ -62,33 +56,33 @@ function RecordAction(props) {
                           onSearch(e.target.value);
                         })
                     }), checkedLen > 0 ? React.createElement("div", {
-                        className: "btn-group"
-                      }, React.createElement("label", {
-                            className: "btn btn-warning gap-2",
-                            htmlFor: "my-modal",
+                        className: "join"
+                      }, React.createElement("button", {
+                            className: "btn btn-warning join-item",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
                                       return "DELETE";
                                     });
+                                window.recordAction.showModal();
                               })
-                          }, React.createElement("span", undefined, "Delete"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("label", {
-                            className: "btn btn-secondary gap-2",
-                            htmlFor: "my-modal",
+                          }, React.createElement("span", undefined, "Delete"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("button", {
+                            className: "btn btn-secondary join-item",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
                                       return "SYNC";
                                     });
+                                window.recordAction.showModal();
                               })
-                          }, React.createElement("span", undefined, "Sync"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("label", {
-                            className: "btn btn-error",
-                            htmlFor: "my-modal",
+                          }, React.createElement("span", undefined, "Sync"), React.createElement("span", undefined, "(" + checkedLen.toString() + ")")), React.createElement("button", {
+                            className: "btn btn-error join-item",
                             onClick: (function (param) {
                                 setBtnState(function (param) {
                                       return "CLEAR";
                                     });
+                                window.recordAction.showModal();
                               })
                           }, "Clear"), React.createElement("button", {
-                            className: "btn",
+                            className: "btn join-item",
                             onClick: (function (param) {
                                 onCancel(undefined);
                               })

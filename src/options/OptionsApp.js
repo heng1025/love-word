@@ -11,14 +11,10 @@ import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js
 function OptionsApp(props) {
   var url = RescriptReactRouter.useUrl(undefined, undefined);
   var match = React.useState(function () {
-        return "";
-      });
-  var setVisibleClass = match[1];
-  var match$1 = React.useState(function () {
         return "UnLogined";
       });
-  var setUser = match$1[1];
-  var user = match$1[0];
+  var setUser = match[1];
+  var user = match[0];
   React.useEffect((function () {
           var getUser = async function () {
             var result = await chrome.storage.local.get(["user"]);
@@ -64,7 +60,7 @@ function OptionsApp(props) {
               }, React.createElement("img", {
                     src: tmp
                   }))), React.createElement("ul", {
-            className: "mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 border border-slate-500 rounded-box w-52",
+            className: "mt-3 z-[99] p-2 shadow menu menu-compact dropdown-content bg-base-100 border border-slate-500 rounded-box w-52",
             tabIndex: 1
           }, React.createElement("li", undefined, React.createElement("a", {
                     className: "justify-between"
@@ -72,21 +68,19 @@ function OptionsApp(props) {
                 onClick: logout
               }, React.createElement("a", undefined, "Logout"))));
   var loginStatus;
-  loginStatus = typeof user !== "object" ? React.createElement("label", {
-          className: "btn btn-active btn-primary",
+  loginStatus = typeof user !== "object" ? React.createElement("button", {
+          className: "btn",
           onClick: (function (param) {
-              setVisibleClass(function (param) {
-                    return "modal-open";
-                  });
+              window.login.showModal();
             })
         }, "Login") : hasLoginedComponent;
-  var match$2 = url.hash === "service";
-  var match$3 = url.hash === "shortcut";
-  var match$4 = url.hash === "favorite";
-  var match$5 = url.hash === "history";
-  var match$6 = url.hash;
+  var match$1 = url.hash === "service";
+  var match$2 = url.hash === "shortcut";
+  var match$3 = url.hash === "favorite";
+  var match$4 = url.hash === "history";
+  var match$5 = url.hash;
   var tmp$1;
-  switch (match$6) {
+  switch (match$5) {
     case "favorite" :
         tmp$1 = React.createElement(Favorite.make, {});
         break;
@@ -103,9 +97,9 @@ function OptionsApp(props) {
       tmp$1 = "Page Not Found";
   }
   return React.createElement("div", undefined, React.createElement("div", {
-                  className: "flex flex-col h-screen text-base"
+                  className: "flex flex-col h-screen"
                 }, React.createElement("div", {
-                      className: "navbar bg-primary text-primary-content"
+                      className: "navbar bg-base-100 border-b-2"
                     }, React.createElement("div", {
                           className: "flex-1"
                         }, React.createElement("a", {
@@ -114,45 +108,45 @@ function OptionsApp(props) {
                             }, React.createElement("img", {
                                   className: " inline-block mr-2",
                                   src: "/icons/lw32x32.png"
-                                }), "Love Word")), loginStatus, React.createElement("div", {
-                          className: "modal " + match[0]
-                        }, React.createElement("div", {
-                              className: "modal-box"
+                                }), "Love Word")), React.createElement("div", {
+                          className: "flex-none gap-2"
+                        }, loginStatus), React.createElement("dialog", {
+                          className: "modal",
+                          id: "login"
+                        }, React.createElement("form", {
+                              className: "modal-box",
+                              method: "dialog"
                             }, React.createElement(Login.make, {
                                   onSubmit: (function (u) {
                                       setUser(u);
-                                      setVisibleClass(function (param) {
-                                            return "";
-                                          });
+                                      window.login.close();
                                     }),
                                   onCancel: (function () {
-                                      setVisibleClass(function (param) {
-                                            return "";
-                                          });
+                                      window.login.close();
                                     })
                                 })))), React.createElement("div", {
                       className: "flex flex-1 overflow-y-hidden"
                     }, React.createElement("div", {
-                          className: "overflow-y-auto border-r border-r-slate-600"
+                          className: "overflow-y-auto border-r-2"
                         }, React.createElement("ul", {
                               className: "menu bg-base-100 w-56 p-2"
                             }, React.createElement("li", {
                                   className: "menu-title"
                                 }, React.createElement("span", undefined, "Setting")), React.createElement("li", undefined, React.createElement("a", {
-                                      className: match$2 ? "active" : "",
+                                      className: match$1 ? "active" : "",
                                       href: "#service"
                                     }, "Translate Service")), React.createElement("li", undefined, React.createElement("a", {
-                                      className: match$3 ? "active" : "",
+                                      className: match$2 ? "active" : "",
                                       href: "#shortcut"
                                     }, "Shortcut")), React.createElement("div", {
                                   className: "divider"
                                 }), React.createElement("li", {
                                   className: "menu-title"
                                 }, React.createElement("span", undefined, "User")), React.createElement("li", undefined, React.createElement("a", {
-                                      className: match$4 ? "active" : "",
+                                      className: match$3 ? "active" : "",
                                       href: "#favorite"
                                     }, "Favorite")), React.createElement("li", undefined, React.createElement("a", {
-                                      className: match$5 ? "active" : "",
+                                      className: match$4 ? "active" : "",
                                       href: "#history"
                                     }, "History Query")))), React.createElement("div", {
                           className: "flex-1 overflow-y-auto bg-base-200 " + contentClass

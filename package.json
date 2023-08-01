@@ -19,12 +19,12 @@
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^10.4.14",
-    "concurrently": "^8.0.1",
-    "daisyui": "^2.51.6",
+    "concurrently": "^8.2.0",
+    "daisyui": "^3.5.0",
     "postcss": "^8.4.23",
-    "rescript": "11.0.0-beta.2",
+    "rescript": "11.0.0-beta.4",
     "tailwindcss": "^3.3.2",
-    "vite": "^4.3.3"
+    "vite": "^4.4.8"
   },
   "dependencies": {
     "@rescript/react": "0.12.0-alpha.2",
