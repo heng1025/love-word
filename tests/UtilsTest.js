@@ -14,13 +14,21 @@ Vitest.vi.stubGlobal("chrome", {
     });
 
 Vitest.describe("Utils Lib", (function () {
-        Vitest.test("fetchByHttp", (async function () {
+        Vitest.test("fetchByHttp is ok", (async function () {
                 var res = await Utils.Lib.fetchByHttp("/dict?q=hello", undefined, undefined);
                 if (res.TAG === "Ok") {
                   Vitest.expect(res._0.word).toBe("hello");
                   return ;
                 }
                 Vitest.expect(res._0).toBe("error");
+              }));
+        Vitest.test("Baidu translate is ok", (async function () {
+                var val = await Utils.Baidu.translate("hello");
+                if (val.TAG === "Ok") {
+                  Vitest.expect(val._0).toBe("hello");
+                  return ;
+                }
+                Vitest.expect(val._0).toBe("No translation key");
               }));
       }));
 
