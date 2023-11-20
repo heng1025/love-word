@@ -15,7 +15,7 @@ const baseConfig = {
   build: {
     outDir,
     emptyOutDir: false,
-    sourcemap: enableDev,
+    sourcemap: enableDev ? "inline" : false,
     watch: enableDev,
   },
 };
