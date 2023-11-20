@@ -13,39 +13,39 @@ function shouldDelay(spanning, delay) {
 }
 
 function Widget$Loading(props) {
-  var children = props.children;
-  var delay = props.delay;
-  var loading = props.loading;
-  var loading$1 = loading !== undefined ? loading : true;
-  var delay$1 = delay !== undefined ? delay : 0;
-  var children$1 = children !== undefined ? Caml_option.valFromOption(children) : null;
+  var __children = props.children;
+  var __delay = props.delay;
+  var __loading = props.loading;
+  var loading = __loading !== undefined ? __loading : true;
+  var delay = __delay !== undefined ? __delay : 0;
+  var children = __children !== undefined ? Caml_option.valFromOption(__children) : null;
   var match = React.useState(function () {
-        if (loading$1) {
-          return !shouldDelay(loading$1, delay$1);
+        if (loading) {
+          return !shouldDelay(loading, delay);
         } else {
           return false;
         }
       });
   var setSpinning = match[1];
   React.useEffect((function () {
-          if (loading$1) {
-            var match = Utils.Lib.debounce(delay$1, (function () {
+          if (loading) {
+            var match = Utils.Lib.debounce(delay, (function () {
                     setSpinning(function (param) {
                           return true;
                         });
                   }));
             var cancel = match[1];
-            match[0](undefined);
+            match[0]();
             return (function () {
-                      cancel(undefined);
+                      cancel();
                     });
           }
           setSpinning(function (param) {
                 return false;
               });
         }), [
-        delay$1,
-        loading$1
+        delay,
+        loading
       ]);
   var loadingEl = React.createElement("div", {
         className: "animate-pulse"
@@ -57,7 +57,7 @@ function Widget$Loading(props) {
   if (match[0]) {
     return loadingEl;
   } else {
-    return children$1;
+    return children;
   }
 }
 
@@ -67,10 +67,10 @@ var Loading = {
 };
 
 function Widget$Tag(props) {
-  var className = props.className;
-  var className$1 = className !== undefined ? className : "";
+  var __className = props.className;
+  var className = __className !== undefined ? __className : "";
   return React.createElement("span", {
-              className: "rounded-sm inline-block text-white px-1 " + className$1
+              className: "rounded-sm inline-block text-white px-1 " + className
             }, props.children);
 }
 
@@ -79,10 +79,10 @@ var Tag = {
 };
 
 function Widget$Link(props) {
-  var className = props.className;
-  var className$1 = className !== undefined ? className : "";
+  var __className = props.className;
+  var className = __className !== undefined ? __className : "";
   return React.createElement("a", {
-              className: "link text-white " + className$1,
+              className: "link text-white " + className,
               href: props.href,
               target: "_blank"
             }, props.children);
@@ -125,11 +125,11 @@ var Zh2en = {
 };
 
 function Widget$Speaker(props) {
-  var className = props.className;
-  var className$1 = className !== undefined ? className : "";
+  var __className = props.className;
+  var className = __className !== undefined ? __className : "";
   var animate200ms = props.isPlay ? "animate-fadeInOut-200ms" : "";
   return React.createElement("button", {
-              className: "btn btn-xs btn-circle btn-ghost min-h-0 " + className$1,
+              className: "btn btn-xs btn-circle btn-ghost min-h-0 " + className,
               onClick: props.onClick
             }, React.createElement("svg", {
                   className: "w-4 h-4",
@@ -246,10 +246,10 @@ var StarFill = {
 };
 
 function Widget$Eye(props) {
-  var className = props.className;
-  var className$1 = className !== undefined ? className : "";
+  var __className = props.className;
+  var className = __className !== undefined ? __className : "";
   return React.createElement("svg", {
-              className: className$1,
+              className: className,
               fill: "currentColor",
               viewBox: "0 0 24 24",
               xmlns: "http://www.w3.org/2000/svg"
@@ -267,10 +267,10 @@ var Eye = {
 };
 
 function Widget$EyeSlash(props) {
-  var className = props.className;
-  var className$1 = className !== undefined ? className : "";
+  var __className = props.className;
+  var className = __className !== undefined ? __className : "";
   return React.createElement("svg", {
-              className: className$1,
+              className: className,
               fill: "currentColor",
               viewBox: "0 0 24 24",
               xmlns: "http://www.w3.org/2000/svg"

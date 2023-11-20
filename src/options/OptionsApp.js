@@ -31,7 +31,7 @@ async function getRecordsWithServer(recordType) {
   if (tranverseLocals.contents.length === 0) {
     tranverseLocals.contents = retFromServers;
   }
-  var db = await Database.getDB(undefined);
+  var db = await Database.getDB();
   var concatLocalWithRemote = function (acc, local) {
     local.sync = false;
     retFromServers.forEach(function (remote) {
@@ -97,7 +97,7 @@ function OptionsApp(props) {
                         return u;
                       });
           };
-          getUser(undefined);
+          getUser();
         }), []);
   React.useEffect((function () {
           if (url.hash === "") {

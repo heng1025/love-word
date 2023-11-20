@@ -92,17 +92,17 @@ function debounce(delay, callback) {
     
   };
   var cancel = function () {
-    clearExistingTimeout(undefined);
+    clearExistingTimeout();
     cancelled.contents = true;
   };
   var wrapper = function () {
-    clearExistingTimeout(undefined);
+    clearExistingTimeout();
     var match = cancelled.contents;
     if (match) {
       return ;
     } else {
       timeoutID.contents = setTimeout((function () {
-              callback(undefined);
+              callback();
             }), delay);
       return ;
     }
@@ -236,7 +236,7 @@ async function adapterTrans(text) {
     }
   };
   if (sl !== "eng" || wordCount.length > 4) {
-    return await baiduResult(undefined);
+    return await baiduResult();
   }
   var val = await translate(text);
   if (val.TAG === "Ok") {
@@ -245,7 +245,7 @@ async function adapterTrans(text) {
             _0: val._0
           };
   } else {
-    return await baiduResult(undefined);
+    return await baiduResult();
   }
 }
 

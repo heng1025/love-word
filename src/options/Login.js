@@ -92,12 +92,12 @@ function Login(props) {
                 }, React.createElement("button", {
                       className: "btn btn-neutral",
                       onClick: (function (param) {
-                          handleSubmit(undefined);
+                          handleSubmit();
                         })
                     }, "Submit"), React.createElement("label", {
                       className: "btn",
                       onClick: (function (param) {
-                          onCancel(undefined);
+                          onCancel();
                         })
                     }, "close")));
 }

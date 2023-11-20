@@ -7,9 +7,9 @@ import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as MachineTPanel from "./MachineTPanel.js";
 
 function TranslateResult$TranslateResult(props) {
-  var className = props.className;
+  var __className = props.className;
   var data = props.data;
-  var className$1 = className !== undefined ? className : "";
+  var className = __className !== undefined ? __className : "";
   var tmp;
   tmp = typeof data === "object" && !Array.isArray(data) ? React.createElement(DictPanel.make, {
           data: data
@@ -17,7 +17,7 @@ function TranslateResult$TranslateResult(props) {
           data: data
         });
   return React.createElement("div", {
-              className: className$1 + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
+              className: className + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
             }, tmp);
 }
 
@@ -26,11 +26,11 @@ var TranslateResult = {
 };
 
 function TranslateResult$TranslateResultWithState(props) {
-  var delay = props.delay;
+  var __delay = props.delay;
   var data = props.data;
-  var loading = props.loading;
-  var loading$1 = loading !== undefined ? loading : false;
-  var delay$1 = delay !== undefined ? delay : 0;
+  var __loading = props.loading;
+  var loading = __loading !== undefined ? __loading : false;
+  var delay = __delay !== undefined ? __delay : 0;
   var tmp;
   if (data !== undefined) {
     if (data.TAG === "Ok") {
@@ -47,8 +47,8 @@ function TranslateResult$TranslateResultWithState(props) {
     tmp = null;
   }
   return React.createElement(Widget.Loading.make, {
-              loading: loading$1,
-              delay: delay$1,
+              loading: loading,
+              delay: delay,
               children: Caml_option.some(tmp)
             });
 }

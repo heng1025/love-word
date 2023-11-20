@@ -66,7 +66,7 @@ function useRecord(recordType) {
               });
   };
   React.useEffect((function () {
-          getAll(undefined);
+          getAll();
         }), [recordType]);
   var onSearch = function (val) {
     if (val !== "") {
@@ -77,7 +77,7 @@ function useRecord(recordType) {
                   return rs;
                 });
     }
-    getAll(undefined);
+    getAll();
   };
   var onCheck = function (record) {
     var rs = records.map(function (v) {
@@ -110,15 +110,15 @@ function useRecord(recordType) {
                           };
                   })
             }));
-    return await getAll(undefined);
+    return await getAll();
   };
   var onSync = async function (checkedRecords) {
     await chrome.runtime.sendMessage(getAddManyMsgContent(checkedRecords));
-    return await getAll(undefined);
+    return await getAll();
   };
   var onClear = async function () {
     await chrome.runtime.sendMessage(getExtraMsgContent("Clear"));
-    return await getAll(undefined);
+    return await getAll();
   };
   return {
           records: records,
@@ -131,7 +131,7 @@ function useRecord(recordType) {
               onDelete(args);
             }),
           onClear: (function () {
-              onClear(undefined);
+              onClear();
             }),
           onCancel: onCancel
         };

@@ -43,7 +43,7 @@ function TranslateService(props) {
             }
             
           };
-          fetchBaiduKey(undefined);
+          fetchBaiduKey();
         }), []);
   var handleSubmit = async function () {
     var config = {
@@ -132,7 +132,7 @@ function TranslateService(props) {
                         match$2[0] ? "btn-disabled" : ""
                       ) + " w-5/6 mt-8 mx-auto",
                       onClick: (function (param) {
-                          handleSubmit(undefined);
+                          handleSubmit();
                         })
                     }, "Submit")));
 }

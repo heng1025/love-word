@@ -65,7 +65,7 @@ function ContentApp(props) {
                           return "1";
                         });
                   }));
-            match[0](undefined);
+            match[0]();
           };
           window.addEventListener("keyup", handleKeyup);
           return (function () {
@@ -74,7 +74,7 @@ function ContentApp(props) {
         }), []);
   React.useEffect((function () {
           var handleClick = function (e) {
-            e.stopPropagation(undefined);
+            e.stopPropagation();
             if (opacity === "1" && !host.contains(e.target)) {
               setTop(function (param) {
                     return "0";

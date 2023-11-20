@@ -18,7 +18,7 @@ function getBrowserTab(sender) {
   }
 }
 
-var dbInstance = Database.getDB(undefined);
+var dbInstance = Database.getDB();
 
 async function translateMessageHandler(msg, sendResponse) {
   var ret = await Utils.adapterTrans(msg.text);

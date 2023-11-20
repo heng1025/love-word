@@ -8,22 +8,22 @@ function RecordAction(props) {
   var onClear = props.onClear;
   var onSync = props.onSync;
   var onDelete = props.onDelete;
-  var records = props.records;
-  var records$1 = records !== undefined ? records : [];
+  var __records = props.records;
+  var records = __records !== undefined ? __records : [];
   var match = React.useState(function () {
         return "None";
       });
   var setBtnState = match[1];
   var btnState = match[0];
-  var checkedLen = records$1.length;
+  var checkedLen = records.length;
   var onClick = function (param) {
     switch (btnState) {
       case "DELETE" :
-          return onDelete(records$1);
+          return onDelete(records);
       case "SYNC" :
-          return onSync(records$1);
+          return onSync(records);
       case "CLEAR" :
-          return onClear(undefined);
+          return onClear();
       case "None" :
           return ;
       
@@ -84,7 +84,7 @@ function RecordAction(props) {
                           }, "Clear"), React.createElement("button", {
                             className: "btn join-item",
                             onClick: (function (param) {
-                                onCancel(undefined);
+                                onCancel();
                               })
                           }, "Cancel")) : null));
 }

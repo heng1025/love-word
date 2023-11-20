@@ -36,7 +36,7 @@ function PopupApp(props) {
                   return text;
                 });
     } else {
-      return focusTextInput(undefined);
+      return focusTextInput();
     }
   };
   var handleChange = function ($$event) {
@@ -56,7 +56,7 @@ function PopupApp(props) {
     
   };
   React.useEffect((function () {
-          focusTextInput(undefined);
+          focusTextInput();
         }), []);
   var tmp;
   tmp = data !== undefined && data.TAG === "Ok" ? React.createElement(FavButton.make, {
