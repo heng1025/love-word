@@ -4,9 +4,9 @@
   "description": "Love because of words, a translation extension for chrome browser",
   "scripts": {
     "build": "node ./scripts/build.mjs",
-    "dev": "conc 'rescript build -w' 'npm run build -- --dev'",
+    "dev": "conc \"rescript build -w\" \"npm run build -- --dev\"",
     "prod": "rescript build && npm run build",
-    "test": "conc 'rescript build -w' 'vitest'"
+    "test": "conc \"rescript build -w\" \"vitest\""
   },
   "keywords": [
     "chrome extension",
