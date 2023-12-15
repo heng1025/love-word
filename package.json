@@ -3,15 +3,19 @@
   "version": "0.0.9",
   "description": "Love because of words, a translation extension for chrome browser",
   "scripts": {
+    "res:build": "rescript",
+    "res:clean": "rescript clean",
+    "res:dev": "rescript build -w",
     "build": "node ./scripts/build.mjs",
-    "dev": "conc \"rescript build -w\" \"npm run build -- --dev\"",
-    "prod": "rescript build && npm run build",
-    "test": "conc \"rescript build -w\" \"vitest\""
+    "prod": "npm run res:build && npm run build",
+    "dev": "conc \"npm run res:dev\" \"npm run build -- --dev\"",
+    "test": "vitest"
   },
   "keywords": [
     "chrome extension",
     "rescript",
     "vite",
+    "vitest",
     "daisyui",
     "react",
     "IndexedDB"
@@ -21,18 +25,18 @@
   "devDependencies": {
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
-    "daisyui": "^4.4.2",
+    "daisyui": "^4.4.20",
     "happy-dom": "^12.10.3",
-    "postcss": "^8.4.31",
-    "rescript": "11.0.0-rc.5",
-    "tailwindcss": "^3.3.5",
-    "vite": "^5.0.0",
-    "vitest": "1.0.0-beta.5"
+    "postcss": "^8.4.32",
+    "rescript": "11.0.0-rc.7",
+    "tailwindcss": "^3.3.6",
+    "vite": "^5.0.10",
+    "vitest": "1.0.4"
   },
   "dependencies": {
     "@rescript/react": "0.12.0-alpha.3",
     "franc-min": "^6.1.0",
-    "idb": "^7.1.1",
+    "idb": "^8.0.0",
     "md5": "^2.3.0",
     "qs": "^6.11.2",
     "react": "^18.2.0",
