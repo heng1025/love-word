@@ -10,8 +10,8 @@ function createStoreWithIndex(db, storeName) {
   favoriteStore.createIndex("text", "text");
 }
 
-function getDB() {
-  return Idb.openDB("loveWord", undefined, {
+async function getDB() {
+  return await Idb.openDB("loveWord", undefined, {
               upgrade: (function (db) {
                   createStoreWithIndex(db, "favorite");
                   createStoreWithIndex(db, "history");

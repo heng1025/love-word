@@ -16,7 +16,7 @@ let getRecordsWithServer = async recordType => {
   | History => HistoryExtraMsgContent(GetAll)
   }
   // local
-  let retLocal: array<recordDataWithExtra> = await sendMessage(recordMsg)
+  let retLocal: array<recordDataWithExtra> = await chromeRuntime->sendMessage(recordMsg)
 
   // server
   let retFromServers = switch await recordRemoteAction(~recordType) {
@@ -81,7 +81,7 @@ let make = () => {
 
   React.useEffect0(() => {
     let getUser = async () => {
-      let result = await getExtStorage(~keys=["user"])
+      let result = await chromeStore->get(~keys=["user"])
       let u: user = result["user"]
       setUser(_ => u)
     }
@@ -112,7 +112,7 @@ let make = () => {
   }
 
   let logout = _ => {
-    removeExtStorage(~keys=["user"])->ignore
+    chromeStore->remove(~keys=["user"])->ignore
     setUser(_ => UnLogined)
   }
 

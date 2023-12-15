@@ -1,10 +1,10 @@
 open Common
 open Common.Chrome
-open Common.Webapi.Window
+open Common.Http
 
 let apiHost = %raw(`import.meta.env.LW_API_HOST`)
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
-
+let includeWith = (target, substring) => Js.Re.fromString(substring)->Js.Re.test_(target)
 module Lib = {
   type api<'data> = {
     code: int,
@@ -14,7 +14,7 @@ module Lib = {
   let fetchByHttp = async (~url, ~method="get", ~body=?) => {
     try {
       let headers = Js.Obj.empty()
-      let result = await getExtStorage(~keys=["user"])
+      let result = await chromeStore->get(~keys=["user"])
       let user = result["user"]
       let _ = switch Js.toOption(user) {
       | Some(val) => Js.Obj.assign(headers, {"x-token": val["token"]})
@@ -30,7 +30,6 @@ module Lib = {
         )
       | _ => await fetch(~input=`${apiHost}${url}`, ~init={headers: headers}, ())
       }
-
       let json: api<'data> = await Response.json(res)
       switch json.code {
       | 0 => Ok(json.data)
@@ -64,7 +63,9 @@ module Lib = {
       clearExistingTimeout()
 
       switch cancelled.contents {
-      | false => timeoutID := Js.Nullable.return(Js.Global.setTimeout(() => callback(), delay))
+      | false => timeoutID := Js.Nullable.return(Js.Global.setTimeout(() => {
+              callback()
+            }, delay))
       | _ => ()
       }
     }
@@ -79,9 +80,9 @@ module OfflineDict = {
     word: string,
     translation: string,
     phonetic: string,
-    definition: string,
+    definition?: string,
     tag: string,
-    exchange: string,
+    exchange?: string,
   }
 
   let translate = async q => await Lib.fetchByHttp(~url=`/dict?q=${q}`)
@@ -113,7 +114,7 @@ module Baidu = {
 
   let translate = async q => {
     try {
-      let result = await getExtStorage(~keys=["baiduKey"])
+      let result = await chromeStore->get(~keys=["baiduKey"])
 
       let baiduKey = result["baiduKey"]
       let queryUrl = switch Js.toOption(baiduKey) {
@@ -204,9 +205,9 @@ type recordDataWithExtra = {
 type msgContent =
   | TranslateMsgContent(textMsgContent)
   // favorite
+  | FavGetOneMsgContent(textMsgContent)
   | FavAddMsgContent(favAddMsgContent)
   | FavAddManyMsgContent(array<recordDataWithExtra>)
-  | FavGetOneMsgContent(textMsgContent)
   | FavDeleteOneMsgContent(textMsgContent)
   | FavDeleteManyMsgContent(recordsMsgContent)
   | FavExtraMsgContent(extraAction)
@@ -238,7 +239,7 @@ let adapterTrans = async text => {
 }
 
 let recordRemoteAction = async (~recordType: recordType, ~data=?, ~method="post") => {
-  let loginInfo = await getExtStorage(~keys=["user"])
+  let loginInfo = await chromeStore->get(~keys=["user"])
   switch Js.toOption(loginInfo["user"]) {
   | Some(_) => {
       let rType = switch recordType {

@@ -1,8 +1,6 @@
 open Utils
 open Common.Chrome
 
-let includeWith = (target, substring) => Js.Re.fromString(substring)->Js.Re.test_(target)
-
 type return = {
   records: array<recordDataWithExtra>,
   onCheck: recordDataWithExtra => unit,
@@ -37,7 +35,8 @@ let useRecord = recordType => {
   }
 
   let getAll = async () => {
-    let ret: array<recordDataWithExtra> = await sendMessage(getExtraMsgContent(GetAll))
+    let ret: array<recordDataWithExtra> =
+      await chromeRuntime->sendMessage(getExtraMsgContent(GetAll))
     let rs =
       ret
       ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2.date -. v1.date))
@@ -85,7 +84,7 @@ let useRecord = recordType => {
   }
 
   let onDelete = async checkedRecords => {
-    let _ = await sendMessage(
+    let _ = await chromeRuntime->sendMessage(
       getDeleteManyMsgContent({
         records: Js.Array2.map(checkedRecords, v => {text: v.text, date: v.date}),
       }),
@@ -94,12 +93,12 @@ let useRecord = recordType => {
   }
 
   let onSync = async checkedRecords => {
-    let _ = await sendMessage(getAddManyMsgContent(checkedRecords))
+    let _ = await chromeRuntime->sendMessage(getAddManyMsgContent(checkedRecords))
     await getAll()
   }
 
   let onClear = async () => {
-    let _ = await sendMessage(getExtraMsgContent(Clear))
+    let _ = await chromeRuntime->sendMessage(getExtraMsgContent(Clear))
     await getAll()
   }
 

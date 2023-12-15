@@ -18,21 +18,19 @@ function getBrowserTab(sender) {
   }
 }
 
-var dbInstance = Database.getDB();
-
 async function translateMessageHandler(msg, sendResponse) {
   var ret = await Utils.adapterTrans(msg.text);
-  return sendResponse(ret);
+  sendResponse(ret);
 }
 
 async function favGetOneMessageHandler(msg, sendResponse) {
-  var db = await dbInstance;
+  var db = await Database.getDB();
   var ret = await db.getFromIndex("favorite", "text", msg.text);
-  return sendResponse(ret);
+  sendResponse(ret);
 }
 
 async function favAddMessageHandler(msg, sender, sendResponse) {
-  var db = await dbInstance;
+  var db = await Database.getDB();
   var tab = getBrowserTab(sender);
   var data_url = tab.url;
   var data_title = tab.title;
@@ -50,11 +48,11 @@ async function favAddMessageHandler(msg, sender, sendResponse) {
   };
   await db.add("favorite", data, undefined);
   await Utils.recordRemoteAction("favorite", data, "post");
-  return sendResponse(true);
+  sendResponse(true);
 }
 
 async function favDeleteOneMessageHandler(msg, sendResponse) {
-  var db = await dbInstance;
+  var db = await Database.getDB();
   var key = await db.getKeyFromIndex("favorite", "text", msg.text);
   await db.delete("favorite", key);
   await Utils.recordRemoteAction("favorite", {
@@ -69,7 +67,7 @@ async function recordAddManyMessageHandler(recordType, msg, sendResponse) {
       });
   if (didNotSyncedRecords.length !== 0) {
     await Utils.recordRemoteAction(recordType, didNotSyncedRecords, "post");
-    var db = await dbInstance;
+    var db = await Database.getDB();
     var tx = db.transaction(recordType, "readwrite");
     var pstores = didNotSyncedRecords.map(function (item) {
           var newrecord = Caml_obj.obj_dup(item);
@@ -82,7 +80,7 @@ async function recordAddManyMessageHandler(recordType, msg, sendResponse) {
 }
 
 async function recordDeleteManyMessageHandler(recordType, msg, sendResponse) {
-  var db = await dbInstance;
+  var db = await Database.getDB();
   var tx = db.transaction(recordType, "readwrite");
   var pstores = msg.records.map(function (item) {
         return tx.store.delete(item.date);
@@ -98,18 +96,17 @@ async function recordDeleteManyMessageHandler(recordType, msg, sendResponse) {
 }
 
 async function recordMessageHandler(recordType, extraAction, sendResponse) {
+  var db = await Database.getDB();
   if (extraAction === "GetAll") {
-    var db = await dbInstance;
     var retFromLocals = await db.getAllFromIndex(recordType, "text");
     return sendResponse(retFromLocals);
   }
-  var db$1 = await dbInstance;
-  await db$1.clear(recordType);
+  await db.clear(recordType);
   return sendResponse(undefined);
 }
 
 async function historyAddMessageHandler(msg, sender, sendResponse) {
-  var db = await dbInstance;
+  var db = await Database.getDB();
   var mText = msg.text;
   var tab = getBrowserTab(sender);
   var data_url = tab.url;
@@ -132,49 +129,50 @@ async function historyAddMessageHandler(msg, sender, sendResponse) {
   return sendResponse(undefined);
 }
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-      switch (message.TAG) {
-        case "TranslateMsgContent" :
-            translateMessageHandler(message._0, sendResponse);
-            break;
-        case "FavAddMsgContent" :
-            favAddMessageHandler(message._0, sender, sendResponse);
-            break;
-        case "FavAddManyMsgContent" :
-            recordAddManyMessageHandler("favorite", message._0, sendResponse);
-            break;
-        case "FavGetOneMsgContent" :
-            favGetOneMessageHandler(message._0, sendResponse);
-            break;
-        case "FavDeleteOneMsgContent" :
-            favDeleteOneMessageHandler(message._0, sendResponse);
-            break;
-        case "FavDeleteManyMsgContent" :
-            recordDeleteManyMessageHandler("favorite", message._0, sendResponse);
-            break;
-        case "FavExtraMsgContent" :
-            recordMessageHandler("favorite", message._0, sendResponse);
-            break;
-        case "HistoryAddMsgContent" :
-            historyAddMessageHandler(message._0, sender, sendResponse);
-            break;
-        case "HistoryAddManyMsgContent" :
-            recordAddManyMessageHandler("history", message._0, sendResponse);
-            break;
-        case "HistoryDeleteManyMsgContent" :
-            recordDeleteManyMessageHandler("history", message._0, sendResponse);
-            break;
-        case "HistoryExtraMsgContent" :
-            recordMessageHandler("history", message._0, sendResponse);
-            break;
-        
-      }
-      return true;
-    });
+function handleMessage(message, sender, sendResponse) {
+  switch (message.TAG) {
+    case "TranslateMsgContent" :
+        translateMessageHandler(message._0, sendResponse);
+        break;
+    case "FavGetOneMsgContent" :
+        favGetOneMessageHandler(message._0, sendResponse);
+        break;
+    case "FavAddMsgContent" :
+        favAddMessageHandler(message._0, sender, sendResponse);
+        break;
+    case "FavAddManyMsgContent" :
+        recordAddManyMessageHandler("favorite", message._0, sendResponse);
+        break;
+    case "FavDeleteOneMsgContent" :
+        favDeleteOneMessageHandler(message._0, sendResponse);
+        break;
+    case "FavDeleteManyMsgContent" :
+        recordDeleteManyMessageHandler("favorite", message._0, sendResponse);
+        break;
+    case "FavExtraMsgContent" :
+        recordMessageHandler("favorite", message._0, sendResponse);
+        break;
+    case "HistoryAddMsgContent" :
+        historyAddMessageHandler(message._0, sender, sendResponse);
+        break;
+    case "HistoryAddManyMsgContent" :
+        recordAddManyMessageHandler("history", message._0, sendResponse);
+        break;
+    case "HistoryDeleteManyMsgContent" :
+        recordDeleteManyMessageHandler("history", message._0, sendResponse);
+        break;
+    case "HistoryExtraMsgContent" :
+        recordMessageHandler("history", message._0, sendResponse);
+        break;
+    
+  }
+  return true;
+}
+
+chrome.runtime.onMessage.addListener(handleMessage);
 
 export {
   getBrowserTab ,
-  dbInstance ,
   translateMessageHandler ,
   favGetOneMessageHandler ,
   favAddMessageHandler ,
@@ -183,5 +181,6 @@ export {
   recordDeleteManyMessageHandler ,
   recordMessageHandler ,
   historyAddMessageHandler ,
+  handleMessage ,
 }
-/* dbInstance Not a pure module */
+/*  Not a pure module */

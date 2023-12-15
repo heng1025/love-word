@@ -50,6 +50,7 @@ module Webapi = {
   }
 
   module Window = {
+    type cusEvent
     type selection
     type selectionRange
     type domRect = {
@@ -70,6 +71,8 @@ module Webapi = {
     external scrollX: int = "scrollX"
     @scope("window") @val
     external getSelection: unit => selection = "getSelection"
+    @scope("window") @new
+    external createEvent: string => cusEvent = "Event"
     @scope(("window", "location")) @val
     external reload: unit => unit = "reload"
     @get
@@ -104,41 +107,54 @@ module Webapi = {
     @scope("window") @val
     external removeKeyboardEventListener: (string, @uncurry KeyboardEvent.t => unit) => unit =
       "removeEventListener"
-
-    type init<'header, 'body> = {
-      method?: string,
-      headers?: 'header,
-      mode?: string,
-      body?: 'body,
-    }
-    module Response = {
-      type t<'data>
-      @send external json: t<'data> => promise<'data> = "json"
-    }
-
-    @val
-    external fetch: (~input: string, ~init: init<'a, 'b>=?, unit) => promise<Response.t<'result>> =
-      "fetch"
   }
 }
 
-module Chrome = {
-  @scope(("chrome", "runtime")) @val
-  external getURL: string => string = "getURL"
-  @scope(("chrome", "runtime")) @val
-  external sendMessage: 'message => promise<'ret> = "sendMessage"
-  @scope(("chrome", "runtime", "onMessage")) @val
-  external addMessageListener: (@uncurry ('message, 'sender, 'params => unit) => bool) => unit =
-    "addListener"
+module Http = {
+  type init<'header, 'body> = {
+    method?: string,
+    headers?: 'header,
+    mode?: string,
+    body?: 'body,
+  }
+  module Response = {
+    type t<'data>
+    @send external json: t<'data> => promise<'data> = "json"
+  }
 
+  // only run in service worker, scope is self(or globalThis),not window
+  @val
+  external fetch: (~input: string, ~init: init<'a, 'b>=?, unit) => promise<Response.t<'result>> =
+    "fetch"
+}
+
+module Chrome = {
+  type localStore
+  type chromeRuntime
+  type chromeOnMessage
+  @scope("chrome") @val
+  external chromeRuntime: chromeRuntime = "runtime"
+  @send
+  external getURL: (chromeRuntime, string) => string = "getURL"
+  @send
+  external sendMessage: (chromeRuntime, 'message) => promise<'ret> = "sendMessage"
+  @get
+  external onMessage: chromeRuntime => chromeOnMessage = "onMessage"
+  @send
+  external addMessageListener: (
+    chromeOnMessage,
+    ('message, 'sender, 'sendRespone => unit) => bool,
+  ) => unit = "addListener"
   @scope(("chrome", "storage", "onChanged")) @val
   external addStorageListener: (@uncurry ('changes, 'areaName) => unit) => unit = "addListener"
-  @scope(("chrome", "storage", "local")) @val
-  external getExtStorage: (~keys: 'keys=?) => promise<'obj> = "get"
-  @scope(("chrome", "storage", "local")) @val
-  external setExtStorage: (~items: 'items) => promise<unit> = "set"
-  @scope(("chrome", "storage", "local")) @val
-  external removeExtStorage: (~keys: 'keys=?) => promise<unit> = "remove"
+  @scope(("chrome", "storage")) @val
+  external chromeStore: localStore = "local"
+  @send
+  external get: (localStore, ~keys: 'keys=?) => promise<'obj> = "get"
+  @send
+  external set: (localStore, 'items) => promise<unit> = "set"
+  @send
+  external remove: (localStore, ~keys: 'keys=?) => promise<unit> = "remove"
 }
 
 module Md5 = {
@@ -180,6 +196,8 @@ module Idb = {
     terminated?: unit => unit,
   }
   type deleteDbOptions = {blocked: unit => unit}
+  @module("idb")
+  external mockOpenDB: 'a = "openDB"
   @module("idb")
   external openDB: (
     ~name: string,

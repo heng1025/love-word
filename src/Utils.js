@@ -21,6 +21,10 @@ function getSourceLang(text) {
             });
 }
 
+function includeWith(target, substring) {
+  return new RegExp(substring).test(target);
+}
+
 async function fetchByHttp(url, methodOpt, body) {
   var method = methodOpt !== undefined ? methodOpt : "get";
   try {
@@ -272,6 +276,7 @@ async function recordRemoteAction(recordType, data, methodOpt) {
 export {
   apiHost ,
   getSourceLang ,
+  includeWith ,
   Lib ,
   OfflineDict ,
   Baidu ,

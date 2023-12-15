@@ -17,7 +17,7 @@ let make = (~onSubmit, ~onCancel) => {
       ~body={"username": username, "password": password},
     ) {
     | Ok(val) => {
-        setExtStorage(~items={"user": val})->ignore
+        chromeStore->set({"user": val})->ignore
         await onSubmit(val)
         switch Js.Array2.includes(["favorite", "history"], url.hash) {
         | true => reload()

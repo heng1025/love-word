@@ -14,13 +14,14 @@ let useTranslate = (text: string) => {
     let fetchTranslateResult = async txt => {
       if txt !== "" {
         setLoading(_p => true)
-        let ret: transRWithError = await sendMessage(TranslateMsgContent({text: txt}))
+        let ret: transRWithError =
+          await chromeRuntime->sendMessage(TranslateMsgContent({text: txt}))
         let _ = switch ret {
         | Error(msg) => setData(_p => Some(Error(msg)))
         | Ok(val) =>
           setData(_p => Some(Ok(val)))
           // add history record
-          sendMessage(HistoryAddMsgContent({text: txt}))->ignore
+          chromeRuntime->sendMessage(HistoryAddMsgContent({text: txt}))->ignore
         }
         setLoading(_p => false)
       }
