@@ -19,7 +19,7 @@ function Favorite(props) {
         var tmp;
         if (val !== undefined) {
           var val$1 = Caml_option.valFromOption(val);
-          tmp = (val$1 == null) ? "No translation" : React.createElement(TranslateResult.TranslateResult.make, {
+          tmp = (val$1 == null) ? "No translation" : React.createElement(TranslateResult.StatelessTPanel.make, {
                   data: val$1
                 });
         } else {

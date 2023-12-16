@@ -89,7 +89,7 @@ function PopupApp(props) {
                         }), React.createElement("button", {
                           className: "btn btn-circle btn-xs btn-primary p-1 absolute bottom-2 right-1",
                           onClick: handleTranslate
-                        }, React.createElement(Widget.Search.make, {}))), React.createElement(TranslateResult.TranslateResultWithState.make, {
+                        }, React.createElement(Widget.Search.make, {}))), React.createElement(TranslateResult.make, {
                       loading: match$2.loading,
                       data: data,
                       delay: 200,

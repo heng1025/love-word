@@ -138,7 +138,7 @@ function ContentApp(props) {
                             }, tmp$1, React.createElement(Widget.Link.make, {
                                   children: React.createElement(Widget.Jump.make, {}),
                                   href: "https://fanyi.baidu.com/#en/zh/" + sourceText
-                                }))), React.createElement(TranslateResult.TranslateResultWithState.make, {
+                                }))), React.createElement(TranslateResult.make, {
                           loading: match$5.loading,
                           data: data,
                           delay: 200,

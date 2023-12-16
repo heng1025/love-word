@@ -77,7 +77,7 @@ let make = () => {
           <Search />
         </button>
       </div>
-      <TranslateResultWithState className="text-sm" loading data delay=200 />
+      <TranslateResult className="text-sm" loading data delay=200 />
     </div>
   </div>
 }

@@ -100,7 +100,7 @@ let make = (~host) => {
             </Link>
           </div>
         </h4>
-        <TranslateResultWithState className="text-sm" data loading delay=panelDelay />
+        <TranslateResult className="text-sm" data loading delay=panelDelay />
       </div>
     </div>
   </div>
