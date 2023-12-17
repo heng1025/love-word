@@ -5,6 +5,37 @@ import * as Caml_obj from "rescript/lib/es6/caml_obj.js";
 import * as Database from "./Database.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
+async function adapterTrans(text) {
+  var sl = Utils.getSourceLang(text);
+  var wordCount = text.split(" ");
+  var baiduResult = async function () {
+    var res = await Utils.Baidu.translate(text);
+    if (res.TAG === "Ok") {
+      return {
+              TAG: "Ok",
+              _0: res._0
+            };
+    } else {
+      return {
+              TAG: "Error",
+              _0: res._0
+            };
+    }
+  };
+  if (sl !== "eng" || wordCount.length > 4) {
+    return await baiduResult();
+  }
+  var val = await Utils.OfflineDict.translate(text);
+  if (val.TAG === "Ok") {
+    return {
+            TAG: "Ok",
+            _0: val._0
+          };
+  } else {
+    return await baiduResult();
+  }
+}
+
 function getBrowserTab(sender) {
   var v = sender.tab;
   if (v !== undefined) {
@@ -19,7 +50,7 @@ function getBrowserTab(sender) {
 }
 
 async function translateMessageHandler(msg, sendResponse) {
-  var ret = await Utils.adapterTrans(msg.text);
+  var ret = await adapterTrans(msg.text);
   sendResponse(ret);
 }
 
@@ -172,6 +203,7 @@ function handleMessage(message, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(handleMessage);
 
 export {
+  adapterTrans ,
   getBrowserTab ,
   translateMessageHandler ,
   favGetOneMessageHandler ,

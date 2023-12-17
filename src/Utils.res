@@ -5,6 +5,7 @@ open Common.Http
 let apiHost = %raw(`import.meta.env.LW_API_HOST`)
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
 let includeWith = (target, substring) => Js.Re.fromString(substring)->Js.Re.test_(target)
+
 module Lib = {
   type api<'data> = {
     code: int,
@@ -114,10 +115,13 @@ module Baidu = {
 
   let translate = async q => {
     try {
-      let result = await chromeStore->get(~keys=["baiduKey"])
+      let throwErr = () => Js.Exn.raiseError("No translation key")
+      let result = switch await chromeStore->get(~keys=["baiduKey"]) {
+      | Some(val) => val["baiduKey"]
+      | _ => throwErr()
+      }
 
-      let baiduKey = result["baiduKey"]
-      let queryUrl = switch Js.toOption(baiduKey) {
+      let queryUrl = switch Js.toOption(result) {
       | Some(key) => {
           let appid = key["appid"]
           let key = key["secret"]
@@ -141,7 +145,7 @@ module Baidu = {
           `${endpoint}?${query}`
         }
 
-      | None => Js.Exn.raiseError("No translation key")
+      | None => throwErr()
       }
       let res = await fetch(~input=queryUrl, ())
 
@@ -159,7 +163,7 @@ module Baidu = {
     | Js.Exn.Error(err) =>
       switch Js.Exn.message(err) {
       | Some(msg) => Error(msg)
-      | None => Error("")
+      | None => Error("error")
       }
     | _ => Error("Unexpected error occurred")
     }
@@ -216,27 +220,6 @@ type msgContent =
   | HistoryAddManyMsgContent(array<recordDataWithExtra>)
   | HistoryDeleteManyMsgContent(recordsMsgContent)
   | HistoryExtraMsgContent(extraAction)
-
-let adapterTrans = async text => {
-  let sl = getSourceLang(text)
-  let wordCount = Js.String2.split(text, " ")
-
-  let baiduResult = async () => {
-    switch await Baidu.translate(text) {
-    | Ok(res) => Ok(BaiduT(res))
-    | Error(msg) => Error(msg)
-    }
-  }
-
-  if sl !== "eng" || Js.Array2.length(wordCount) > 4 {
-    await baiduResult()
-  } else {
-    switch await OfflineDict.translate(text) {
-    | Ok(val) => Ok(DictT(val))
-    | _ => await baiduResult()
-    }
-  }
-}
 
 let recordRemoteAction = async (~recordType: recordType, ~data=?, ~method="post") => {
   let loginInfo = await chromeStore->get(~keys=["user"])

@@ -142,14 +142,14 @@ function textToSpeech(text) {
 
 async function translate$1(q) {
   try {
-    var result = await chrome.storage.local.get(["baiduKey"]);
-    var baiduKey = result.baiduKey;
+    var val = await chrome.storage.local.get(["baiduKey"]);
+    var result = val !== undefined ? Caml_option.valFromOption(val).baiduKey : Js_exn.raiseError("No translation key");
     var queryUrl;
-    if (baiduKey == null) {
+    if (result == null) {
       queryUrl = Js_exn.raiseError("No translation key");
     } else {
-      var appid = baiduKey.appid;
-      var key = baiduKey.secret;
+      var appid = result.appid;
+      var key = result.secret;
       var salt = Date.now().toString();
       var sign = Md5(appid + q + salt + key);
       var sl = getSourceLang(q);
@@ -160,11 +160,11 @@ async function translate$1(q) {
             ],
             tl: /* [] */0
           });
-      var val = Js_dict.get(tlDict, sl);
+      var val$1 = Js_dict.get(tlDict, sl);
       var query = Qs.stringify({
             q: q,
             from: "auto",
-            to: val !== undefined ? val : "zh",
+            to: val$1 !== undefined ? val$1 : "zh",
             appid: appid,
             salt: salt,
             sign: sign
@@ -180,11 +180,11 @@ async function translate$1(q) {
               _0: msg
             };
     }
-    var val$1 = data.trans_result;
-    if (val$1 !== undefined) {
+    var val$2 = data.trans_result;
+    if (val$2 !== undefined) {
       return {
               TAG: "Ok",
-              _0: val$1
+              _0: val$2
             };
     } else {
       return {
@@ -210,7 +210,7 @@ async function translate$1(q) {
     } else {
       return {
               TAG: "Error",
-              _0: ""
+              _0: "error"
             };
     }
   }
@@ -221,37 +221,6 @@ var Baidu = {
   textToSpeech: textToSpeech,
   translate: translate$1
 };
-
-async function adapterTrans(text) {
-  var sl = getSourceLang(text);
-  var wordCount = text.split(" ");
-  var baiduResult = async function () {
-    var res = await translate$1(text);
-    if (res.TAG === "Ok") {
-      return {
-              TAG: "Ok",
-              _0: res._0
-            };
-    } else {
-      return {
-              TAG: "Error",
-              _0: res._0
-            };
-    }
-  };
-  if (sl !== "eng" || wordCount.length > 4) {
-    return await baiduResult();
-  }
-  var val = await translate(text);
-  if (val.TAG === "Ok") {
-    return {
-            TAG: "Ok",
-            _0: val._0
-          };
-  } else {
-    return await baiduResult();
-  }
-}
 
 async function recordRemoteAction(recordType, data, methodOpt) {
   var method = methodOpt !== undefined ? methodOpt : "post";
@@ -280,7 +249,6 @@ export {
   Lib ,
   OfflineDict ,
   Baidu ,
-  adapterTrans ,
   recordRemoteAction ,
 }
 /* apiHost Not a pure module */
