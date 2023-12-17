@@ -42,8 +42,8 @@ module Loading = {
 
 module Tag = {
   @react.component
-  let make = (~className="", ~children) => {
-    <span className={`rounded-sm inline-block text-white px-1 ${className}`}> children </span>
+  let make = (~className="", ~role="", ~children) => {
+    <span role className={`rounded-sm inline-block text-white px-1 ${className}`}> children </span>
   }
 }
 
@@ -61,6 +61,7 @@ module En2zh = {
       className="w-6 fill-white"
       viewBox="0 0 1024 1024"
       version="1.1"
+      title="en2zh"
       xmlns="http://www.w3.org/2000/svg">
       <path
         d="M242.59892654 277.36035538h422.93071748v118.76821517h55.03892898V245.49571228c0-12.81827689-10.35600901-23.17428589-23.17428589-23.17428589H210.73428344c-12.81827689 0-23.17428589 10.35600901-23.17428588 23.17428589v533.00857544c0 12.81827689 10.35600901 23.17428589 23.17428588 23.17428589h393.96286012v-55.03892899H242.59892654V277.36035538z"
@@ -79,6 +80,7 @@ module Zh2en = {
       className="w-6 fill-white"
       viewBox="0 0 1024 1024"
       version="1.1"
+      title="zh2en"
       xmlns="http://www.w3.org/2000/svg">
       <path
         d="M295.7066648 604.69714356v61.79809546a61.79809547 61.79809547 0 0 0 57.163239 61.64360046L357.50476098 728.2933352h92.69714355v61.79809546H357.50476098a123.59619164 123.59619164 0 0 1-123.59619165-123.59619164v-61.79809546h61.79809547z m401.68762231-154.49523903l135.95581031 339.88952614h-66.58744764l-37.10975671-92.69714356h-126.37710595l-37.04795814 92.69714356h-66.55654908L635.59619164 450.20190453h61.79809547z m-30.89904809 89.14375282L627.96412659 635.59619164h77.00042701L666.49523902 539.34565735zM388.40380836 203.00952125v61.79809617h123.59619164v216.29333449H388.40380836v92.69714356H326.60571289v-92.69714356H203.00952125V264.80761742h123.59619164V203.00952125h61.79809547z m278.09143066 30.89904809a123.59619164 123.59619164 0 0 1 123.59619164 123.59619164v61.79809547h-61.79809546V357.50476098a61.79809547 61.79809547 0 0 0-61.79809618-61.79809618h-92.69714355V233.90856933h92.69714355zM326.60571289 326.60571289H264.80761742v92.69714356h61.79809547V326.60571289z m123.59619164 0H388.40380836v92.69714356h61.79809617V326.60571289z"
@@ -116,6 +118,7 @@ module Alert = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="alert"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
@@ -135,6 +138,7 @@ module Jump = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="jump"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
@@ -154,6 +158,7 @@ module Settting = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="setting"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
@@ -174,6 +179,7 @@ module Star = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="star"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
@@ -194,6 +200,7 @@ module StarFill = {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
+      title="star-fill"
       fill="currentColor"
       className="w-4 h-4">
       <path
@@ -208,7 +215,12 @@ module StarFill = {
 module Eye = {
   @react.component
   let make = (~className="") => {
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      title="eye"
+      fill="currentColor"
+      className>
       <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
       <path
         fillRule="evenodd"
@@ -222,7 +234,12 @@ module Eye = {
 module EyeSlash = {
   @react.component
   let make = (~className="") => {
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      title="eyeSlash"
+      fill="currentColor"
+      className>
       <path
         d="M3.53 2.47a.75.75 0 00-1.06 1.06l18 18a.75.75 0 101.06-1.06l-18-18zM22.676 12.553a11.249 11.249 0 01-2.631 4.31l-3.099-3.099a5.25 5.25 0 00-6.71-6.71L7.759 4.577a11.217 11.217 0 014.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113z"
       />
@@ -241,6 +258,7 @@ module Search = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="search"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="2"

@@ -67,10 +67,13 @@ var Loading = {
 };
 
 function Widget$Tag(props) {
+  var __role = props.role;
   var __className = props.className;
   var className = __className !== undefined ? __className : "";
+  var role = __role !== undefined ? __role : "";
   return React.createElement("span", {
-              className: "rounded-sm inline-block text-white px-1 " + className
+              className: "rounded-sm inline-block text-white px-1 " + className,
+              role: role
             }, props.children);
 }
 
@@ -95,6 +98,7 @@ var Link = {
 function Widget$En2zh(props) {
   return React.createElement("svg", {
               className: "w-6 fill-white",
+              title: "en2zh",
               version: "1.1",
               viewBox: "0 0 1024 1024",
               xmlns: "http://www.w3.org/2000/svg"
@@ -112,6 +116,7 @@ var En2zh = {
 function Widget$Zh2en(props) {
   return React.createElement("svg", {
               className: "w-6 fill-white",
+              title: "zh2en",
               version: "1.1",
               viewBox: "0 0 1024 1024",
               xmlns: "http://www.w3.org/2000/svg"
@@ -151,6 +156,7 @@ var Speaker = {
 function Widget$Alert(props) {
   return React.createElement("svg", {
               className: "w-6 h-6",
+              title: "alert",
               fill: "none",
               stroke: "currentColor",
               strokeWidth: "1.5",
@@ -170,6 +176,7 @@ var Alert = {
 function Widget$Jump(props) {
   return React.createElement("svg", {
               className: "w-h h-4",
+              title: "jump",
               fill: "none",
               stroke: "currentColor",
               strokeWidth: "1.5",
@@ -189,6 +196,7 @@ var Jump = {
 function Widget$Settting(props) {
   return React.createElement("svg", {
               className: "w-4 h-4",
+              title: "setting",
               fill: "none",
               stroke: "currentColor",
               strokeWidth: "1.5",
@@ -212,6 +220,7 @@ var Settting = {
 function Widget$Star(props) {
   return React.createElement("svg", {
               className: "w-4 h-4",
+              title: "star",
               fill: "none",
               stroke: "currentColor",
               strokeWidth: "1.5",
@@ -231,6 +240,7 @@ var Star = {
 function Widget$StarFill(props) {
   return React.createElement("svg", {
               className: "w-4 h-4",
+              title: "star-fill",
               fill: "currentColor",
               viewBox: "0 0 24 24",
               xmlns: "http://www.w3.org/2000/svg"
@@ -250,6 +260,7 @@ function Widget$Eye(props) {
   var className = __className !== undefined ? __className : "";
   return React.createElement("svg", {
               className: className,
+              title: "eye",
               fill: "currentColor",
               viewBox: "0 0 24 24",
               xmlns: "http://www.w3.org/2000/svg"
@@ -271,6 +282,7 @@ function Widget$EyeSlash(props) {
   var className = __className !== undefined ? __className : "";
   return React.createElement("svg", {
               className: className,
+              title: "eyeSlash",
               fill: "currentColor",
               viewBox: "0 0 24 24",
               xmlns: "http://www.w3.org/2000/svg"
@@ -289,6 +301,7 @@ var EyeSlash = {
 
 function Widget$Search(props) {
   return React.createElement("svg", {
+              title: "search",
               fill: "none",
               stroke: "currentColor",
               strokeWidth: "2",

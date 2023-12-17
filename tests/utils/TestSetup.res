@@ -1,5 +1,10 @@
+%%raw("import '@testing-library/jest-dom/vitest'")
+
 open TestBinding
 open TestBinding.Vitest
+open TestBinding.ReactTestingLibrary
+
+afterEach(cleanup)
 
 // chrome
 self["chrome"] = {
