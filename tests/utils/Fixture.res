@@ -37,3 +37,25 @@ let baiduData: array<Baidu.baiduOk> = [
     dst: "hello",
   },
 ]
+
+let baiduRecord = {
+  url: "1r21.cn",
+  title: "Love Word",
+  favIconUrl: "",
+  date: 1702484430247.0,
+  text: "你好",
+  translation: Js.Nullable.return(BaiduT(baiduData)),
+  checked: false,
+  sync: false,
+}
+
+let dictRecord = {
+  url: "1r21.cn",
+  title: "Love Word",
+  favIconUrl: "",
+  date: 1702484481543.0,
+  text: "hello",
+  translation: Js.Nullable.return(DictT(dictData)),
+  checked: false,
+  sync: false,
+}

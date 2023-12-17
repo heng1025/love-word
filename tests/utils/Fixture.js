@@ -24,17 +24,39 @@ function createMockHttpResponse(codeOpt, msgOpt, data) {
         };
 }
 
-var baiduData = [{
-    src: "你好",
-    dst: "hello"
-  }];
-
 var dictData = {
   id: 1,
   word: "hello",
   translation: "interj. 喂, 嘿",
   phonetic: "hә'lәu",
   tag: "zk gk"
+};
+
+var baiduData = [{
+    src: "你好",
+    dst: "hello"
+  }];
+
+var baiduRecord = {
+  url: "1r21.cn",
+  title: "Love Word",
+  favIconUrl: "",
+  date: 1702484430247.0,
+  text: "你好",
+  translation: baiduData,
+  checked: false,
+  sync: false
+};
+
+var dictRecord = {
+  url: "1r21.cn",
+  title: "Love Word",
+  favIconUrl: "",
+  date: 1702484481543.0,
+  text: "hello",
+  translation: dictData,
+  checked: false,
+  sync: false
 };
 
 export {
@@ -45,5 +67,7 @@ export {
   createMockHttpResponse ,
   dictData ,
   baiduData ,
+  baiduRecord ,
+  dictRecord ,
 }
 /* fetchSpy Not a pure module */
