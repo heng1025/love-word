@@ -9,7 +9,8 @@
     "build": "node ./scripts/build.mjs",
     "prod": "npm run res:build && npm run build",
     "dev": "conc \"npm run res:dev\" \"npm run build -- --dev\"",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "keywords": [
     "chrome extension",
@@ -26,6 +27,7 @@
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.1",
+    "@vitest/coverage-v8": "^1.0.4",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
     "daisyui": "^4.4.20",

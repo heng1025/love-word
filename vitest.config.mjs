@@ -6,6 +6,11 @@ export default defineConfig({
     globals: true,
     include: ["tests/**/*Test.js"],
     setupFiles: './tests/utils/TestSetup.js',
-    environment: 'happy-dom'
+    environment: 'happy-dom',
+    coverage: {
+      include: ["src/**/*.js"],
+      exclude: ["src/bindings", "src/**/*Entry.js"],
+      reporter: ['text', 'html'],
+    }
   },
 })
