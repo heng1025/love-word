@@ -1,6 +1,6 @@
 open Common.Chrome
 open Widget
-open Utils
+open TranSource
 
 @react.component
 let make = () => {
@@ -12,7 +12,7 @@ let make = () => {
 
   React.useEffect0(() => {
     let fetchBaiduKey = async () => {
-      let result = await getExtStorage(~keys=["baiduKey"])
+      let result = await chromeStore->get(~keys=["baiduKey"])
       switch Js.toOption(result["baiduKey"]) {
       | Some(config) => {
           setAppid(_ => config["appid"])
@@ -29,18 +29,18 @@ let make = () => {
 
   let handleSubmit = async () => {
     let config = {"appid": appid, "secret": secret}
-    setExtStorage(~items={"baiduKey": config})->ignore
+    chromeStore->set({"baiduKey": config})->ignore
     // test baidu key
     let br = await Baidu.translate("hello world")
     switch br {
     | Ok(_) => {
-        await setExtStorage(~items={"baiduKey": config})
+        await chromeStore->set({"baiduKey": config})
         setWarnMessage(_ => "")
         setDisabled(_ => true)
       }
 
     | Error(msg) => {
-        await removeExtStorage(~keys=["baiduKey"])
+        await chromeStore->remove(~keys=["baiduKey"])
         setWarnMessage(_ => msg)
         setDisabled(_ => false)
       }

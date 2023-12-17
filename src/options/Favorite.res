@@ -28,7 +28,7 @@ let make = () => {
         {switch record.translation {
         | Some(val) =>
           switch Js.Nullable.toOption(val) {
-          | Some(v) => <TranslateResult data=v />
+          | Some(v) => <StatelessTPanel data=v />
           | _ => React.string("No translation")
           }
         | _ => React.null

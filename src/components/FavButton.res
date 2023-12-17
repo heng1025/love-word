@@ -14,7 +14,7 @@ let make = (~text, ~trans) => {
     | Delete => FavDeleteOneMsgContent({text: text})
     }
     if text !== "" {
-      let faved = await sendMessage(msgContent)
+      let faved = await chromeRuntime->sendMessage(msgContent)
       setFaved(_ => faved)
     }
   }

@@ -9,11 +9,7 @@ var $$MouseEvent = {};
 
 var $$KeyboardEvent = {};
 
-var $$Response = {};
-
-var $$Window = {
-  $$Response: $$Response
-};
+var $$Window = {};
 
 var Webapi = {
   $$Element: $$Element,
@@ -21,6 +17,12 @@ var Webapi = {
   $$MouseEvent: $$MouseEvent,
   $$KeyboardEvent: $$KeyboardEvent,
   $$Window: $$Window
+};
+
+var $$Response = {};
+
+var Http = {
+  $$Response: $$Response
 };
 
 var Chrome = {};
@@ -35,6 +37,7 @@ var Idb = {};
 
 export {
   Webapi ,
+  Http ,
   Chrome ,
   Md5 ,
   Qs ,

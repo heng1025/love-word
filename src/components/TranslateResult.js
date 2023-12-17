@@ -6,10 +6,11 @@ import * as DictPanel from "./DictPanel.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as MachineTPanel from "./MachineTPanel.js";
 
-function TranslateResult$TranslateResult(props) {
-  var __className = props.className;
+function TranslateResult$StatelessTPanel(props) {
+  var className = props.className;
   var data = props.data;
-  var className = __className !== undefined ? __className : "";
+  var baseClasses = "lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain";
+  var classes = className !== undefined ? baseClasses + " " + className : baseClasses;
   var tmp;
   tmp = typeof data === "object" && !Array.isArray(data) ? React.createElement(DictPanel.make, {
           data: data
@@ -17,30 +18,35 @@ function TranslateResult$TranslateResult(props) {
           data: data
         });
   return React.createElement("div", {
-              className: className + " lw-scroll-wrap max-h-52 overflow-y-auto overscroll-contain"
+              className: classes,
+              "data-testid": "transWrap"
             }, tmp);
 }
 
-var TranslateResult = {
-  make: TranslateResult$TranslateResult
+var StatelessTPanel = {
+  make: TranslateResult$StatelessTPanel
 };
 
-function TranslateResult$TranslateResultWithState(props) {
+function TranslateResult(props) {
+  var __className = props.className;
   var __delay = props.delay;
   var data = props.data;
   var __loading = props.loading;
   var loading = __loading !== undefined ? __loading : false;
   var delay = __delay !== undefined ? __delay : 0;
+  var className = __className !== undefined ? __className : "";
   var tmp;
   if (data !== undefined) {
     if (data.TAG === "Ok") {
       var val = data._0;
-      tmp = (val == null) ? "No translation" : React.createElement(TranslateResult$TranslateResult, {
-              data: val
+      tmp = (val == null) ? "No translation" : React.createElement(TranslateResult$StatelessTPanel, {
+              data: val,
+              className: className
             });
     } else {
       tmp = React.createElement("div", {
-            className: "text-error"
+            className: "text-error",
+            role: "alert"
           }, data._0);
     }
   } else {
@@ -53,12 +59,10 @@ function TranslateResult$TranslateResultWithState(props) {
             });
 }
 
-var TranslateResultWithState = {
-  make: TranslateResult$TranslateResultWithState
-};
+var make = TranslateResult;
 
 export {
-  TranslateResult ,
-  TranslateResultWithState ,
+  StatelessTPanel ,
+  make ,
 }
 /* react Not a pure module */

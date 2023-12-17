@@ -1,4 +1,4 @@
-open Utils.Lib
+open Functions
 
 module Loading = {
   let shouldDelay = (spanning, delay) => {
@@ -28,7 +28,7 @@ module Loading = {
     }, (delay, loading))
 
     let loadingEl =
-      <div className="animate-pulse">
+      <div dataTestId="loading" className="animate-pulse">
         <h3 className="h-4 mb-2 w-2/3 bg-indigo-200  rounded" />
         <p className="h-3 w-full bg-indigo-300 rounded" />
       </div>
@@ -42,8 +42,8 @@ module Loading = {
 
 module Tag = {
   @react.component
-  let make = (~className="", ~children) => {
-    <span className={`rounded-sm inline-block text-white px-1 ${className}`}> children </span>
+  let make = (~className="", ~role="", ~children) => {
+    <span role className={`rounded-sm inline-block text-white px-1 ${className}`}> children </span>
   }
 }
 
@@ -61,6 +61,7 @@ module En2zh = {
       className="w-6 fill-white"
       viewBox="0 0 1024 1024"
       version="1.1"
+      title="en2zh"
       xmlns="http://www.w3.org/2000/svg">
       <path
         d="M242.59892654 277.36035538h422.93071748v118.76821517h55.03892898V245.49571228c0-12.81827689-10.35600901-23.17428589-23.17428589-23.17428589H210.73428344c-12.81827689 0-23.17428589 10.35600901-23.17428588 23.17428589v533.00857544c0 12.81827689 10.35600901 23.17428589 23.17428588 23.17428589h393.96286012v-55.03892899H242.59892654V277.36035538z"
@@ -79,6 +80,7 @@ module Zh2en = {
       className="w-6 fill-white"
       viewBox="0 0 1024 1024"
       version="1.1"
+      title="zh2en"
       xmlns="http://www.w3.org/2000/svg">
       <path
         d="M295.7066648 604.69714356v61.79809546a61.79809547 61.79809547 0 0 0 57.163239 61.64360046L357.50476098 728.2933352h92.69714355v61.79809546H357.50476098a123.59619164 123.59619164 0 0 1-123.59619165-123.59619164v-61.79809546h61.79809547z m401.68762231-154.49523903l135.95581031 339.88952614h-66.58744764l-37.10975671-92.69714356h-126.37710595l-37.04795814 92.69714356h-66.55654908L635.59619164 450.20190453h61.79809547z m-30.89904809 89.14375282L627.96412659 635.59619164h77.00042701L666.49523902 539.34565735zM388.40380836 203.00952125v61.79809617h123.59619164v216.29333449H388.40380836v92.69714356H326.60571289v-92.69714356H203.00952125V264.80761742h123.59619164V203.00952125h61.79809547z m278.09143066 30.89904809a123.59619164 123.59619164 0 0 1 123.59619164 123.59619164v61.79809547h-61.79809546V357.50476098a61.79809547 61.79809547 0 0 0-61.79809618-61.79809618h-92.69714355V233.90856933h92.69714355zM326.60571289 326.60571289H264.80761742v92.69714356h61.79809547V326.60571289z m123.59619164 0H388.40380836v92.69714356h61.79809617V326.60571289z"
@@ -93,7 +95,8 @@ module Speaker = {
   let make = (~isPlay, ~onClick, ~className="") => {
     // https://tailwindcss.com/docs/content-configuration#class-detection-in-depth
     let animate200ms = isPlay ? "animate-fadeInOut-200ms" : ""
-    <button className={`btn btn-xs btn-circle btn-ghost min-h-0 ${className}`} onClick>
+    let klass = `btn btn-xs btn-circle btn-ghost min-h-0 ${className}`
+    <button className=klass onClick>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -103,6 +106,7 @@ module Speaker = {
           d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z"
         />
         <path
+          dataTestId="play"
           className=animate200ms
           d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.06z"
         />
@@ -116,6 +120,7 @@ module Alert = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="alert"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
@@ -135,6 +140,7 @@ module Jump = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="jump"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
@@ -154,6 +160,7 @@ module Settting = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="setting"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
@@ -174,6 +181,7 @@ module Star = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="star"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
@@ -194,6 +202,7 @@ module StarFill = {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
+      title="star-fill"
       fill="currentColor"
       className="w-4 h-4">
       <path
@@ -208,7 +217,12 @@ module StarFill = {
 module Eye = {
   @react.component
   let make = (~className="") => {
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      title="eye"
+      fill="currentColor"
+      className>
       <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
       <path
         fillRule="evenodd"
@@ -222,7 +236,12 @@ module Eye = {
 module EyeSlash = {
   @react.component
   let make = (~className="") => {
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      title="eyeSlash"
+      fill="currentColor"
+      className>
       <path
         d="M3.53 2.47a.75.75 0 00-1.06 1.06l18 18a.75.75 0 101.06-1.06l-18-18zM22.676 12.553a11.249 11.249 0 01-2.631 4.31l-3.099-3.099a5.25 5.25 0 00-6.71-6.71L7.759 4.577a11.217 11.217 0 014.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113z"
       />
@@ -241,6 +260,7 @@ module Search = {
   let make = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      title="search"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="2"

@@ -1,32 +1,31 @@
 open TestBinding.Vitest
+open Fixture
+open Functions
 open Utils
-open Utils.OfflineDict
 
-stubGlobal(
-  vi,
-  "chrome",
-  {
-    "storage": {
-      "local": {
-        "get": () => "",
-      },
-    },
+let mockChromeStore = {
+  "user": "iron",
+  "baiduKey": {
+    "appid": "testAppid",
+    "secret": "testSecret",
   },
-)->ignore
+}
 
-describe("Utils Lib", () => {
-  test("fetchByHttp is ok", async () => {
-    let res = await Lib.fetchByHttp(~url=`/dict?q=hello`)
-    switch res {
-    | Ok(val) => expect(val.word)->toBe("hello")
-    | Error(msg) => expect(msg)->toBe("error")
-    }
+chromeGetStoreSpy->mockResolvedValue(mockChromeStore)->ignore
+
+describe("Utils module", () => {
+  testEach([Favorite, History])("recordRemoteAction works %s", async recordType => {
+    let ret = createMockHttpResponse(~data=dictData)
+    fetchSpy->mockResolvedValue(ret)->ignore
+    let res = await recordRemoteAction(~recordType)
+    expect(res)->toStrictEqual(Ok(DictT(dictData)))
   })
 
-  test("Baidu translate is ok", async () => {
-    switch await Baidu.translate("hello") {
-    | Ok(val) => expect(val)->toBe("hello")
-    | Error(msg) => expect(msg)->toBe("No translation key")
-    }
+  test("recordRemoteAction works with error", async () => {
+    chromeGetStoreSpy->mockReturnValue({"user": None})->ignore
+    let res = await recordRemoteAction(~recordType=Favorite)
+    expect(res)->toStrictEqual(Error("nothing"))
+    // restore default mock
+    chromeGetStoreSpy->mockResolvedValue(mockChromeStore)->ignore
   })
 })

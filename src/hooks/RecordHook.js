@@ -2,10 +2,7 @@
 
 import * as React from "react";
 import * as Caml_obj from "rescript/lib/es6/caml_obj.js";
-
-function includeWith(target, substring) {
-  return new RegExp(substring).test(target);
-}
+import * as Functions from "../Functions.js";
 
 function useRecord(recordType) {
   var match = React.useState(function () {
@@ -71,7 +68,7 @@ function useRecord(recordType) {
   var onSearch = function (val) {
     if (val !== "") {
       var rs = records.filter(function (item) {
-            return new RegExp(val).test(item.text);
+            return Functions.includeWith(item.text, val);
           });
       return setRecords(function (param) {
                   return rs;
@@ -138,7 +135,6 @@ function useRecord(recordType) {
 }
 
 export {
-  includeWith ,
   useRecord ,
 }
 /* react Not a pure module */

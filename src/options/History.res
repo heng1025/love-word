@@ -9,6 +9,7 @@ let make = () => {
     let boarderClass = checked ? "border-primary" : ""
 
     <div
+      dataTestId="historyItemWrap"
       key={Js.Float.toString(date)}
       onClick={_ => onCheck(record)}
       className={`card card-compact card-bordered cursor-pointer bg-base-100 shadow-xl ${boarderClass}`}>

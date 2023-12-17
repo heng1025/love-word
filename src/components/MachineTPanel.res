@@ -1,6 +1,7 @@
 open Utils
 open Widget
 open Common.Webapi
+open TranSource
 
 @react.component
 let make = (~data: array<Baidu.baiduOk>) => {
@@ -80,7 +81,12 @@ let make = (~data: array<Baidu.baiduOk>) => {
   })
 
   <>
-    <audio ref={ReactDOM.Ref.domRef(audioEl)} className="w-full h-8 mb-1" onEnded />
+    <audio
+      dataTestId="audioPlayer"
+      ref={ReactDOM.Ref.domRef(audioEl)}
+      className="w-full h-8 mb-1"
+      onEnded
+    />
     {React.array(resultEl)}
   </>
 }

@@ -1,5 +1,5 @@
 open Utils
-open Common
+open Common.Chrome
 open Common.Idb
 open Database
 
@@ -14,22 +14,20 @@ let getBrowserTab = sender => {
   }
 }
 
-let dbInstance = getDB()
-
 let translateMessageHandler = async (msg: textMsgContent, sendResponse) => {
   let ret = await adapterTrans(msg.text)
-  sendResponse(ret)
+  sendResponse(ret)->ignore
 }
 
 let favGetOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
-  let db = await dbInstance
+  let db = await getDB()
   let ret = await getDBValueFromIndex(~db, ~storeName=Favorite, ~indexName="text", ~key=msg.text)
-  sendResponse(Obj.magic(!(!ret)))
+  sendResponse(Obj.magic(!(!ret)))->ignore
 }
 
 // add fav
 let favAddMessageHandler = async (msg: favAddMsgContent, sender, sendResponse) => {
-  let db = await dbInstance
+  let db = await getDB()
   let tab = getBrowserTab(sender)
   let data = {
     url: tab["url"],
@@ -43,12 +41,12 @@ let favAddMessageHandler = async (msg: favAddMsgContent, sender, sendResponse) =
   await addDBValue(~db, ~storeName=Favorite, ~data, ())
   // server
   let _ = await recordRemoteAction(~recordType=Favorite, ~data, ~method="post")
-  sendResponse(Obj.magic(true))
+  sendResponse(Obj.magic(true))->ignore
 }
 
 // fav cancel
 let favDeleteOneMessageHandler = async (msg: textMsgContent, sendResponse) => {
-  let db = await dbInstance
+  let db = await getDB()
   // delete one text
   let key = await getDBKeyFromIndex(~db, ~storeName=Favorite, ~indexName="text", ~key=msg.text)
   // local
@@ -72,7 +70,7 @@ let recordAddManyMessageHandler = async (
     // server
     let _ = await recordRemoteAction(~recordType, ~data=didNotSyncedRecords, ~method="post")
     // update local
-    let db = await dbInstance
+    let db = await getDB()
     let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
     let pstores = Js.Array2.map(didNotSyncedRecords, item => {
       tx.store.put(Obj.magic({...item, sync: true}))
@@ -88,7 +86,7 @@ let recordDeleteManyMessageHandler = async (
   msg: recordsMsgContent,
   sendResponse,
 ) => {
-  let db = await dbInstance
+  let db = await getDB()
   let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
   let pstores = Js.Array2.map(msg.records, item => {
     tx.store.delete(Obj.magic(item.date))
@@ -107,9 +105,9 @@ let recordDeleteManyMessageHandler = async (
 
 // GetAll / Clear
 let recordMessageHandler = async (recordType: recordType, extraAction, sendResponse) => {
+  let db = await getDB()
   switch extraAction {
   | GetAll => {
-      let db = await dbInstance
       // local
       let retFromLocals = await getDBAllValueFromIndex(
         ~db,
@@ -121,7 +119,6 @@ let recordMessageHandler = async (recordType: recordType, extraAction, sendRespo
 
   | Clear =>
     {
-      let db = await dbInstance
       let _ = await clearDBValue(~db, ~storeName=recordType)
     }
 
@@ -130,7 +127,7 @@ let recordMessageHandler = async (recordType: recordType, extraAction, sendRespo
 }
 
 let historyAddMessageHandler = async (msg: textMsgContent, sender, sendResponse) => {
-  let db = await dbInstance
+  let db = await getDB()
   let mText = msg.text
   let tab = getBrowserTab(sender)
   let data: recordData = {
@@ -153,7 +150,7 @@ let historyAddMessageHandler = async (msg: textMsgContent, sender, sendResponse)
   sendResponse(Obj.magic(None))
 }
 
-Chrome.addMessageListener((message: msgContent, sender, sendResponse) => {
+let handleMessage = (message: msgContent, sender, sendResponse) => {
   // must invoke `sendRespone`, or message channel will close in advance
   switch message {
   | TranslateMsgContent(msg) => translateMessageHandler(msg, sendResponse)
@@ -171,6 +168,10 @@ Chrome.addMessageListener((message: msgContent, sender, sendResponse) => {
   | HistoryExtraMsgContent(msg) => recordMessageHandler(History, msg, sendResponse)
   }->ignore
 
-  // async operation must return `true`
+  // Return true to indicate that sendResponse will be used asynchronously
   true
-})
+}
+
+chromeRuntime
+->onMessage
+->addMessageListener(handleMessage)
