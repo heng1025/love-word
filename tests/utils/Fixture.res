@@ -2,6 +2,8 @@ open TestBinding
 open TestBinding.Vitest
 open Common.Chrome
 open Utils
+open Functions
+open TranSource
 
 let fetchSpy = vi->spyOn(self, "fetch")
 
@@ -10,7 +12,7 @@ let chromeSetStoreSpy = vi->spyOn(chromeStore, "set")
 let chromeRmStoreSpy = vi->spyOn(chromeStore, "remove")
 
 let createMockHttpResponse = (~code=0, ~msg="", ~data=?) => {
-  let apiBaseResponse: Lib.api<'a> = {
+  let apiBaseResponse: api<'a> = {
     code,
     msg,
     data,

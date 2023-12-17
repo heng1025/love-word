@@ -1,6 +1,6 @@
 open Common.Chrome
 open Common.Webapi.Window
-open Utils.Lib
+open Functions
 open Widget
 
 @react.component

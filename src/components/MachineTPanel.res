@@ -1,6 +1,7 @@
 open Utils
 open Widget
 open Common.Webapi
+open TranSource
 
 @react.component
 let make = (~data: array<Baidu.baiduOk>) => {

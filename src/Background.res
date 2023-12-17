@@ -3,27 +3,6 @@ open Common.Chrome
 open Common.Idb
 open Database
 
-let adapterTrans = async text => {
-  let sl = getSourceLang(text)
-  let wordCount = Js.String2.split(text, " ")
-
-  let baiduResult = async () => {
-    switch await Baidu.translate(text) {
-    | Ok(res) => Ok(BaiduT(res))
-    | Error(msg) => Error(msg)
-    }
-  }
-
-  if sl !== "eng" || Js.Array2.length(wordCount) > 4 {
-    await baiduResult()
-  } else {
-    switch await OfflineDict.translate(text) {
-    | Ok(val) => Ok(DictT(val))
-    | _ => await baiduResult()
-    }
-  }
-}
-
 let getBrowserTab = sender => {
   switch sender["tab"] {
   | Some(v) => v

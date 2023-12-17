@@ -1,5 +1,6 @@
 open Utils
 open Common.Chrome
+open Functions
 
 type return = {
   records: array<recordDataWithExtra>,

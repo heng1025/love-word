@@ -1,5 +1,5 @@
 open Common.Webapi.Window
-open Utils.OfflineDict
+open TranSource.OfflineDict
 open Widget
 
 @react.component

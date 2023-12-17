@@ -1,6 +1,6 @@
 open Common.Chrome
 open Widget
-open Utils
+open TranSource
 
 @react.component
 let make = () => {
