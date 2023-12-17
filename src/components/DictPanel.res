@@ -50,7 +50,7 @@ let make = (~data) => {
       | true =>
         React.array(
           Js.Array2.map(Js.String2.split(data.tag, " "), v => {
-            <Tag key=v className="bg-secondary mr-1 mb-1"> {React.string(v)} </Tag>
+            <Tag role="mark" key=v className="bg-secondary mr-1 mb-1"> {React.string(v)} </Tag>
           }),
         )
       | _ => React.null

@@ -22,3 +22,10 @@ self["chrome"] = {
     },
   },
 }
+
+// Auido
+let mockAudioInstance = {
+  "play": vi->fn,
+  "onended": vi->fn,
+}
+self["Audio"] = vi->fn->mockImplementation(() => mockAudioInstance)

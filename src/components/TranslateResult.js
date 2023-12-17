@@ -18,7 +18,8 @@ function TranslateResult$StatelessTPanel(props) {
           data: data
         });
   return React.createElement("div", {
-              className: classes
+              className: classes,
+              "data-testid": "transWrap"
             }, tmp);
 }
 
@@ -44,7 +45,8 @@ function TranslateResult(props) {
             });
     } else {
       tmp = React.createElement("div", {
-            className: "text-error"
+            className: "text-error",
+            role: "alert"
           }, data._0);
     }
   } else {

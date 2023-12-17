@@ -9,7 +9,7 @@ module StatelessTPanel = {
     | Some(cl) => `${baseClasses} ${cl}`
     | _ => baseClasses
     }
-    <div className=classes>
+    <div dataTestId="transWrap" className=classes>
       {switch data {
       | DictT(dr) => <DictPanel data=dr />
       | BaiduT(br) => <MachineTPanel data=br />
@@ -22,7 +22,7 @@ module StatelessTPanel = {
 let make = (~loading=false, ~data: option<transRWithError>, ~delay=0, ~className="") => {
   <Loading loading delay>
     {switch data {
-    | Some(Error(msg)) => <div className="text-error"> {React.string(msg)} </div>
+    | Some(Error(msg)) => <div role="alert" className="text-error"> {React.string(msg)} </div>
     | Some(Ok(val)) =>
       switch Js.Nullable.toOption(val) {
       | Some(v) => <StatelessTPanel className data=v />

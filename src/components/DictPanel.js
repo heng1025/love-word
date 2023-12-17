@@ -61,6 +61,7 @@ function DictPanel(props) {
                 }, trans), React.createElement("div", undefined, match$3 ? data.tag.split(" ").map(function (v) {
                         return JsxPPXReactSupportU.createElementWithKey(v, Widget.Tag.make, {
                                     className: "bg-secondary mr-1 mb-1",
+                                    role: "mark",
                                     children: v
                                   });
                       }) : null));

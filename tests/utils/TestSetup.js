@@ -25,7 +25,16 @@ self.chrome = {
   }
 };
 
+var mockAudioInstance = {
+  play: vi.fn(undefined),
+  onended: vi.fn(undefined)
+};
+
+self.Audio = vi.fn(undefined).mockImplementation(function () {
+      return mockAudioInstance;
+    });
+
 export {
-  
+  mockAudioInstance ,
 }
 /*  Not a pure module */

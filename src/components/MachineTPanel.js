@@ -84,6 +84,7 @@ function MachineTPanel(props) {
   return React.createElement(React.Fragment, {}, React.createElement("audio", {
                   ref: Caml_option.some(audioEl),
                   className: "w-full h-8 mb-1",
+                  "data-testid": "audioPlayer",
                   onEnded: onEnded
                 }), resultEl);
 }
