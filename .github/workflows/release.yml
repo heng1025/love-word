@@ -67,12 +67,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build browser extension
+      - name: Build and Package
         run: |
-          sed -i -e "s/\"version\": \".*\"/\"version\": \"$(VERSION)\"/" package.json
+          sed -i -e "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" package.json
           pnpm prod
-          cd dist && zip -r ../chromium.zip .
+          mv dist love-word-chrome-extension-$VERSION
+          zip -r love-word-chrome-extension-$VERSION.zip ./love-word-chrome-extension-$VERSION/*
         env:
+          LW_API_HOST: "${{ secrets.LW_API_HOST }}"
           VERSION: "${{ steps.get_version.outputs.version-without-v }}"
 
       - name: Upload extensions to release
@@ -82,7 +84,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.release_upload_url }}
-          asset_path: release/love-word-chrome-extension-${{ steps.get_version.outputs.version-without-v }}.zip
+          asset_path: ./love-word-chrome-extension-${{ steps.get_version.outputs.version-without-v }}.zip
           asset_name: love-word-chrome-extension-${{ steps.get_version.outputs.version-without-v }}.zip
           asset_content_type: application/zip
 
