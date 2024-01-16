@@ -4,9 +4,10 @@ const require = createRequire(import.meta.url);
 const pkg = require("./package.json");
 
 const { name, version, description } = pkg;
+const replacer = (match) => match.replace('-', ' ').toUpperCase()
 
 export default {
-  name: name.replace("-", " "),
+  name: name.replace(/(^|-)\w/g, replacer),
   version,
   description,
   manifest_version: 3,
