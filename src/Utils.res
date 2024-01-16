@@ -1,6 +1,4 @@
-open Common
 open Common.Chrome
-open Common.Http
 open Functions
 open TranSource
 
@@ -8,7 +6,7 @@ type transR =
   | @unboxed DictT(OfflineDict.dictOk)
   | @unboxed BaiduT(array<Baidu.baiduOk>)
 
-type transRWithError = result<Js.Nullable.t<transR>, string>
+type transRWithError = result<Nullable.t<transR>, string>
 
 type recordType = | @as("history") History | @as("favorite") Favorite
 
@@ -20,7 +18,7 @@ type textMsgContent = {text: string}
 type recordsMsgContent = {records: array<recordItem>}
 type favAddMsgContent = {
   text: string,
-  translation: Js.Nullable.t<transR>,
+  translation: Nullable.t<transR>,
 }
 
 type extraAction = GetAll | Clear
@@ -31,7 +29,7 @@ type recordData = {
   favIconUrl: string,
   date: float,
   text: string,
-  translation?: Js.Nullable.t<transR>,
+  translation?: Nullable.t<transR>,
 }
 
 type recordDataWithExtra = {
@@ -57,7 +55,7 @@ type msgContent =
 
 let adapterTrans = async text => {
   let sl = getSourceLang(text)
-  let wordCount = Js.String2.split(text, " ")
+  let wordCount = String.split(text, " ")
 
   let baiduResult = async () => {
     switch await Baidu.translate(text) {
@@ -66,7 +64,7 @@ let adapterTrans = async text => {
     }
   }
 
-  if sl !== "eng" || Js.Array2.length(wordCount) > 4 {
+  if sl !== "eng" || Array.length(wordCount) > 4 {
     await baiduResult()
   } else {
     switch await OfflineDict.translate(text) {
@@ -78,7 +76,7 @@ let adapterTrans = async text => {
 
 let recordRemoteAction = async (~recordType: recordType, ~data=?, ~method="post") => {
   let loginInfo = await chromeStore->get(~keys=["user"])
-  switch Js.toOption(loginInfo["user"]) {
+  switch Nullable.toOption(loginInfo["user"]) {
   | Some(_) => {
       let rType = switch recordType {
       | Favorite => "2"

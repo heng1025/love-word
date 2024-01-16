@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as Widget from "./Widget.js";
-import * as JsxPPXReactSupportU from "rescript/lib/es6/jsxPPXReactSupportU.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function DictPanel(props) {
   var data = props.data;
@@ -16,8 +16,8 @@ function DictPanel(props) {
       });
   var setAudioState = match$1[1];
   var trans = data.translation.split("\n").map(function (v) {
-        return React.createElement("p", {
-                    key: v,
+        return JsxRuntime.jsx("p", {
+                    children: v,
                     className: "mt-[2px]"
                   }, v);
       });
@@ -48,23 +48,37 @@ function DictPanel(props) {
   };
   var match$2 = data.phonetic !== "";
   var match$3 = data.tag !== "";
-  return React.createElement("div", undefined, match$2 ? React.createElement("div", {
-                    className: "inline-flex items-center"
-                  }, React.createElement("span", {
-                        className: "mr-2"
-                      }, "[ " + data.phonetic + " ]"), React.createElement(Widget.Speaker.make, {
-                        isPlay: match$1[0],
-                        onClick: play,
-                        className: "w-5 h-5"
-                      })) : null, React.createElement("div", {
-                  className: "my-2"
-                }, trans), React.createElement("div", undefined, match$3 ? data.tag.split(" ").map(function (v) {
-                        return JsxPPXReactSupportU.createElementWithKey(v, Widget.Tag.make, {
-                                    className: "bg-secondary mr-1 mb-1",
-                                    role: "mark",
-                                    children: v
-                                  });
-                      }) : null));
+  return JsxRuntime.jsxs("div", {
+              children: [
+                match$2 ? JsxRuntime.jsxs("div", {
+                        children: [
+                          JsxRuntime.jsx("span", {
+                                children: "[ " + data.phonetic + " ]",
+                                className: "mr-2"
+                              }),
+                          JsxRuntime.jsx(Widget.Speaker.make, {
+                                isPlay: match$1[0],
+                                onClick: play,
+                                className: "w-5 h-5"
+                              })
+                        ],
+                        className: "inline-flex items-center"
+                      }) : null,
+                JsxRuntime.jsx("div", {
+                      children: trans,
+                      className: "my-2"
+                    }),
+                JsxRuntime.jsx("div", {
+                      children: match$3 ? data.tag.split(" ").map(function (v) {
+                              return JsxRuntime.jsx(Widget.Tag.make, {
+                                          className: "bg-secondary mr-1 mb-1",
+                                          role: "mark",
+                                          children: v
+                                        }, v);
+                            }) : null
+                    })
+              ]
+            });
 }
 
 var make = DictPanel;

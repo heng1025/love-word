@@ -10,7 +10,7 @@ let _ = TranSource.Baidu.translate
 // just mock `Baidu.translate``
 let factory = async importOriginal => {
   let mod = await importOriginal()
-  let copy = Js.Obj.assign(Js.Obj.empty(), mod)
+  let copy = Object.assign(Object.empty(), mod)
   copy["Baidu"]["translate"] = vi->fn
   copy
 }

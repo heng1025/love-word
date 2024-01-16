@@ -6,6 +6,7 @@ import * as FavButton from "../components/FavButton.js";
 import * as Functions from "../Functions.js";
 import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function ContentApp(props) {
   var host = props.host;
@@ -111,39 +112,55 @@ function ContentApp(props) {
   var tmp;
   switch (match$1[0]) {
     case "cmn" :
-        tmp = React.createElement(Widget.Zh2en.make, {});
+        tmp = JsxRuntime.jsx(Widget.Zh2en.make, {});
         break;
     case "eng" :
-        tmp = React.createElement(Widget.En2zh.make, {});
+        tmp = JsxRuntime.jsx(Widget.En2zh.make, {});
         break;
     default:
       tmp = null;
   }
   var tmp$1;
-  tmp$1 = data !== undefined && data.TAG === "Ok" ? React.createElement(FavButton.make, {
+  tmp$1 = data !== undefined && data.TAG === "Ok" ? JsxRuntime.jsx(FavButton.make, {
           text: sourceText,
           trans: data._0
         }) : null;
-  return React.createElement("div", {
+  return JsxRuntime.jsx("div", {
+              children: JsxRuntime.jsx("div", {
+                    children: JsxRuntime.jsxs("div", {
+                          children: [
+                            JsxRuntime.jsxs("h4", {
+                                  children: [
+                                    JsxRuntime.jsx("span", {
+                                          children: tmp
+                                        }),
+                                    JsxRuntime.jsxs("div", {
+                                          children: [
+                                            tmp$1,
+                                            JsxRuntime.jsx(Widget.Link.make, {
+                                                  children: JsxRuntime.jsx(Widget.Jump.make, {}),
+                                                  href: "https://fanyi.baidu.com/#en/zh/" + sourceText
+                                                })
+                                          ],
+                                          className: "flex items-center"
+                                        })
+                                  ],
+                                  className: "card-title text-sm border-b justify-between"
+                                }),
+                            JsxRuntime.jsx(TranslateResult.make, {
+                                  loading: match$5.loading,
+                                  data: data,
+                                  delay: 200,
+                                  className: "text-sm"
+                                })
+                          ],
+                          className: "card-body p-3"
+                        }),
+                    className: "card w-52 bg-primary text-primary-content"
+                  }),
               className: "absolute z-[99999] " + mouseState,
               style: style
-            }, React.createElement("div", {
-                  className: "card w-52 bg-primary text-primary-content"
-                }, React.createElement("div", {
-                      className: "card-body p-3"
-                    }, React.createElement("h4", {
-                          className: "card-title text-sm border-b justify-between"
-                        }, React.createElement("span", undefined, tmp), React.createElement("div", {
-                              className: "flex items-center"
-                            }, tmp$1, React.createElement(Widget.Link.make, {
-                                  children: React.createElement(Widget.Jump.make, {}),
-                                  href: "https://fanyi.baidu.com/#en/zh/" + sourceText
-                                }))), React.createElement(TranslateResult.make, {
-                          loading: match$5.loading,
-                          data: data,
-                          delay: 200,
-                          className: "text-sm"
-                        }))));
+            });
 }
 
 var panelDelay = 200;

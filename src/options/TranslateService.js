@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as Widget from "../components/Widget.js";
 import * as TranSource from "../TranSource.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function TranslateService(props) {
   var match = React.useState(function () {
@@ -74,67 +75,100 @@ function TranslateService(props) {
                 return false;
               });
   };
-  return React.createElement("div", {
+  return JsxRuntime.jsx("div", {
+              children: JsxRuntime.jsxs("div", {
+                    children: [
+                      JsxRuntime.jsxs("div", {
+                            children: [
+                              JsxRuntime.jsx("label", {
+                                    children: JsxRuntime.jsx("span", {
+                                          children: "baidu appid",
+                                          className: "label-text"
+                                        }),
+                                    className: "label"
+                                  }),
+                              JsxRuntime.jsx("input", {
+                                    className: "input input-bordered w-full",
+                                    placeholder: "Appid",
+                                    type: "text",
+                                    value: appid,
+                                    onChange: (function (e) {
+                                        setAppid(function (param) {
+                                              return e.target.value;
+                                            });
+                                        setDisabled(function (param) {
+                                              return false;
+                                            });
+                                      })
+                                  })
+                            ],
+                            className: "form-control "
+                          }),
+                      JsxRuntime.jsxs("div", {
+                            children: [
+                              JsxRuntime.jsx("label", {
+                                    children: JsxRuntime.jsx("span", {
+                                          children: "baidu secret",
+                                          className: "label-text"
+                                        }),
+                                    className: "label"
+                                  }),
+                              JsxRuntime.jsxs("div", {
+                                    children: [
+                                      JsxRuntime.jsx("input", {
+                                            className: "input input-bordered w-full pr-8",
+                                            placeholder: "Secret",
+                                            type: passwordVisible ? "password" : "text",
+                                            value: secret,
+                                            onChange: (function (e) {
+                                                setSecret(function (param) {
+                                                      return e.target.value;
+                                                    });
+                                                setDisabled(function (param) {
+                                                      return false;
+                                                    });
+                                              })
+                                          }),
+                                      JsxRuntime.jsx("span", {
+                                            children: passwordVisible ? JsxRuntime.jsx(Widget.EyeSlash.make, {}) : JsxRuntime.jsx(Widget.Eye.make, {}),
+                                            className: "cursor-pointer absolute w-6 h-6 top-1/2 right-1.5 -translate-y-1/2",
+                                            onClick: (function (param) {
+                                                setPasswordVisible(function (_p) {
+                                                      return !passwordVisible;
+                                                    });
+                                              })
+                                          })
+                                    ],
+                                    className: "relative"
+                                  })
+                            ],
+                            className: "form-control mt-5"
+                          }),
+                      warnMessage !== "" ? JsxRuntime.jsx("div", {
+                              children: JsxRuntime.jsxs("div", {
+                                    children: [
+                                      JsxRuntime.jsx(Widget.Alert.make, {}),
+                                      JsxRuntime.jsx("span", {
+                                            children: "Warning: " + warnMessage + "!"
+                                          })
+                                    ]
+                                  }),
+                              className: "alert alert-warning shadow-lg mt-5"
+                            }) : null,
+                      JsxRuntime.jsx("button", {
+                            children: "Submit",
+                            className: "btn btn-neutral " + (
+                              match$2[0] ? "btn-disabled" : ""
+                            ) + " w-5/6 mt-8 mx-auto",
+                            onClick: (function (param) {
+                                handleSubmit();
+                              })
+                          })
+                    ],
+                    className: "card-body"
+                  }),
               className: "card w-1/3 bg-base-100 shadow-xl"
-            }, React.createElement("div", {
-                  className: "card-body"
-                }, React.createElement("div", {
-                      className: "form-control "
-                    }, React.createElement("label", {
-                          className: "label"
-                        }, React.createElement("span", {
-                              className: "label-text"
-                            }, "baidu appid")), React.createElement("input", {
-                          className: "input input-bordered w-full",
-                          placeholder: "Appid",
-                          type: "text",
-                          value: appid,
-                          onChange: (function (e) {
-                              setAppid(function (param) {
-                                    return e.target.value;
-                                  });
-                              setDisabled(function (param) {
-                                    return false;
-                                  });
-                            })
-                        })), React.createElement("div", {
-                      className: "form-control mt-5"
-                    }, React.createElement("label", {
-                          className: "label"
-                        }, React.createElement("span", {
-                              className: "label-text"
-                            }, "baidu secret")), React.createElement("div", {
-                          className: "relative"
-                        }, React.createElement("input", {
-                              className: "input input-bordered w-full pr-8",
-                              placeholder: "Secret",
-                              type: passwordVisible ? "password" : "text",
-                              value: secret,
-                              onChange: (function (e) {
-                                  setSecret(function (param) {
-                                        return e.target.value;
-                                      });
-                                  setDisabled(function (param) {
-                                        return false;
-                                      });
-                                })
-                            }), React.createElement("span", {
-                              className: "cursor-pointer absolute w-6 h-6 top-1/2 right-1.5 -translate-y-1/2",
-                              onClick: (function (param) {
-                                  setPasswordVisible(function (_p) {
-                                        return !passwordVisible;
-                                      });
-                                })
-                            }, passwordVisible ? React.createElement(Widget.EyeSlash.make, {}) : React.createElement(Widget.Eye.make, {})))), warnMessage !== "" ? React.createElement("div", {
-                        className: "alert alert-warning shadow-lg mt-5"
-                      }, React.createElement("div", undefined, React.createElement(Widget.Alert.make, {}), React.createElement("span", undefined, "Warning: " + warnMessage + "!"))) : null, React.createElement("button", {
-                      className: "btn btn-neutral " + (
-                        match$2[0] ? "btn-disabled" : ""
-                      ) + " w-5/6 mt-8 mx-auto",
-                      onClick: (function (param) {
-                          handleSubmit();
-                        })
-                    }, "Submit")));
+            });
 }
 
 var make = TranslateService;

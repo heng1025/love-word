@@ -1,6 +1,5 @@
 open TestBinding.Vitest
 open Fixture
-open Functions
 open Utils
 
 let mockChromeStore = {

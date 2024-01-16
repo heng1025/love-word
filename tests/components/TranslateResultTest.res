@@ -37,14 +37,14 @@ describe("TranslateResult component", () => {
   })
 
   test("show empty translate result", () => {
-    let data = Some(Ok(Js.Nullable.null))
+    let data = Some(Ok(Nullable.null))
     render(<TranslateResult data />)->ignore
     let empty = screen->getByText("No translation")
     expect(empty)->toBeInTheDocument
   })
 
   test("show correct translate result", () => {
-    let wrapperBaiduData = Some(Ok(Js.Nullable.return(BaiduT(baiduData))))
+    let wrapperBaiduData = Some(Ok(Nullable.make(BaiduT(baiduData))))
     let wrapper = render(<TranslateResult data=wrapperBaiduData />)
     let empty = screen->getByText("hello")
     expect(empty)->toBeInTheDocument

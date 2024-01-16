@@ -53,7 +53,7 @@ describe("DictPanel component", () => {
     await user->click(speaker)
 
     let mockAudioResults = self["Audio"]->mockResults
-    let mockAudioInstance = mockAudioResults[0]["value"]
+    let mockAudioInstance = (mockAudioResults->Array.getUnsafe(0))["value"]
 
     expect(mockAudioInstance["play"])->toHaveBeenCalled()
     let onEndedSpy = vi->spyOn(mockAudioInstance, "onended")

@@ -25,7 +25,7 @@ describe("Functions module", () => {
   })
 
   testEach((
-    {"exn": () => Js.Exn.raiseError("js error"), "expected": "js error"},
+    {"exn": () => Error.raise(Error.make("js error")), "expected": "js error"},
     {"exn": () => raise(Not_found), "expected": "Unexpected error occurred"},
   ))("fetchByHttp works with $expected  exception", async cases => {
     fetchSpy->mockImplementation(() => cases["exn"]())->ignore

@@ -3,10 +3,10 @@
 import * as React from "react";
 import * as Widget from "../components/Widget.js";
 import * as FavButton from "../components/FavButton.js";
-import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as TranslateHook from "../hooks/TranslateHook.js";
 import * as TranslateResult from "../components/TranslateResult.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function PopupApp(props) {
   var match = React.useState(function () {
@@ -26,9 +26,12 @@ function PopupApp(props) {
     textInput.current = element;
   };
   var focusTextInput = function () {
-    Belt_Option.forEach(Caml_option.nullable_to_opt(textInput.current), (function (input) {
-            input.focus();
-          }));
+    var input = textInput.current;
+    if (!(input == null)) {
+      input.focus();
+      return ;
+    }
+    
   };
   var handleTranslate = function (param) {
     if (text !== "") {
@@ -59,42 +62,60 @@ function PopupApp(props) {
           focusTextInput();
         }), []);
   var tmp;
-  tmp = data !== undefined && data.TAG === "Ok" ? React.createElement(FavButton.make, {
+  tmp = data !== undefined && data.TAG === "Ok" ? JsxRuntime.jsx(FavButton.make, {
           text: sourceText,
           trans: data._0
         }) : null;
-  return React.createElement("div", {
+  return JsxRuntime.jsxs("div", {
+              children: [
+                JsxRuntime.jsxs("div", {
+                      children: [
+                        tmp,
+                        JsxRuntime.jsx(Widget.Link.make, {
+                              children: JsxRuntime.jsx(Widget.Jump.make, {}),
+                              href: "https://fanyi.baidu.com/#en/zh/" + sourceText,
+                              className: "mx-1 tooltip-bottom"
+                            }),
+                        JsxRuntime.jsx(Widget.Link.make, {
+                              children: JsxRuntime.jsx(Widget.Settting.make, {}),
+                              href: "/options.html"
+                            })
+                      ],
+                      className: "bg-primary h-5 px-1 text-white flex items-center justify-end"
+                    }),
+                JsxRuntime.jsxs("div", {
+                      children: [
+                        JsxRuntime.jsxs("div", {
+                              children: [
+                                JsxRuntime.jsx("textarea", {
+                                      ref: Caml_option.some(setTextInputRef),
+                                      className: "textarea textarea-primary w-full leading-4 min-h-16 p-2",
+                                      placeholder: "please input...",
+                                      rows: 5,
+                                      value: text,
+                                      onKeyDown: handleKeyDown,
+                                      onChange: handleChange
+                                    }),
+                                JsxRuntime.jsx("button", {
+                                      children: JsxRuntime.jsx(Widget.Search.make, {}),
+                                      className: "btn btn-circle btn-xs btn-primary p-1 absolute bottom-2 right-1",
+                                      onClick: handleTranslate
+                                    })
+                              ],
+                              className: "relative"
+                            }),
+                        JsxRuntime.jsx(TranslateResult.make, {
+                              loading: match$2.loading,
+                              data: data,
+                              delay: 200,
+                              className: "text-sm"
+                            })
+                      ],
+                      className: "card-body"
+                    })
+              ],
               className: "card card-compact w-56 bg-base-100 shadow-xl rounded-none"
-            }, React.createElement("div", {
-                  className: "bg-primary h-5 px-1 text-white flex items-center justify-end"
-                }, tmp, React.createElement(Widget.Link.make, {
-                      children: React.createElement(Widget.Jump.make, {}),
-                      href: "https://fanyi.baidu.com/#en/zh/" + sourceText,
-                      className: "mx-1 tooltip-bottom"
-                    }), React.createElement(Widget.Link.make, {
-                      children: React.createElement(Widget.Settting.make, {}),
-                      href: "/options.html"
-                    })), React.createElement("div", {
-                  className: "card-body"
-                }, React.createElement("div", {
-                      className: "relative"
-                    }, React.createElement("textarea", {
-                          ref: Caml_option.some(setTextInputRef),
-                          className: "textarea textarea-primary w-full leading-4 min-h-16 p-2",
-                          placeholder: "please input...",
-                          rows: 5,
-                          value: text,
-                          onKeyDown: handleKeyDown,
-                          onChange: handleChange
-                        }), React.createElement("button", {
-                          className: "btn btn-circle btn-xs btn-primary p-1 absolute bottom-2 right-1",
-                          onClick: handleTranslate
-                        }, React.createElement(Widget.Search.make, {}))), React.createElement(TranslateResult.make, {
-                      loading: match$2.loading,
-                      data: data,
-                      delay: 200,
-                      className: "text-sm"
-                    })));
+            });
 }
 
 var make = PopupApp;

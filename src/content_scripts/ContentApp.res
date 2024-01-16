@@ -1,7 +1,6 @@
 open Widget
-open Utils
 open Functions
-open TranslateResult
+open! TranslateResult
 
 open Common.Webapi
 open Common.Webapi.Window
@@ -20,24 +19,23 @@ let make = (~host) => {
 
   let showTransPanel = range => {
     let rect = range->getBoundingClientRect
-    open Js.Float
     let posOffset = 8.0
-    let top = rect.top +. rect.height +. Js.Int.toFloat(Window.scrollY)
-    let left = rect.left +. Js.Int.toFloat(Window.scrollX)
-    setTop(_p => `${toString(top +. posOffset)}px`)
-    setLeft(_p => `${toString(left)}px`)
+    let top = rect.top +. rect.height +. Int.toFloat(Window.scrollY)
+    let left = rect.left +. Int.toFloat(Window.scrollX)
+    setTop(_p => `${Float.toString(top +. posOffset)}px`)
+    setLeft(_p => `${Float.toString(left)}px`)
     let (showPanel, _) = debounce(panelDelay, () => {
       setOpactity(_p => "1")
     })
     showPanel()
   }
 
-  React.useEffect0(() => {
+  React.useEffect(() => {
     let handleKeyup = (ev: KeyboardEvent.t) => {
       // altkey (left or right)
       if ev.keyCode === 18 {
         let selection = getSelection()
-        let text = Js.String2.trim(selection->selectionToString)
+        let text = String.trim(selection->selectionToString)
         if rangeCount(selection) > 0 && text !== "" {
           let range = getRangeAt(selection, 0)
           let sl = getSourceLang(text)
@@ -51,9 +49,9 @@ let make = (~host) => {
     addKeyboardEventListener("keyup", handleKeyup)
 
     Some(() => removeKeyboardEventListener("keyup", handleKeyup))
-  })
+  }, [])
 
-  React.useEffect1(() => {
+  React.useEffect(() => {
     let handleClick = (e: MouseEvent.t) => {
       e.stopPropagation()
       if opacity === "1" && !Element.contains(host, e.target) {
@@ -71,7 +69,7 @@ let make = (~host) => {
     )
   }, [opacity])
 
-  let mouseState = React.useMemo1(() => {
+  let mouseState = React.useMemo(() => {
     switch opacity {
     | "1" => "pointer-events-auto select-auto"
     | _ => "pointer-events-none select-none"

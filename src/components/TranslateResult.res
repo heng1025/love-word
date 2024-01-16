@@ -24,7 +24,7 @@ let make = (~loading=false, ~data: option<transRWithError>, ~delay=0, ~className
     {switch data {
     | Some(Error(msg)) => <div role="alert" className="text-error"> {React.string(msg)} </div>
     | Some(Ok(val)) =>
-      switch Js.Nullable.toOption(val) {
+      switch Nullable.toOption(val) {
       | Some(v) => <StatelessTPanel className data=v />
       | _ => React.string("No translation")
       }

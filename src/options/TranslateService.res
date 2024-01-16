@@ -10,10 +10,10 @@ let make = () => {
   let (passwordVisible, setPasswordVisible) = React.Uncurried.useState(_ => true)
   let (warnMessage, setWarnMessage) = React.Uncurried.useState(_ => "")
 
-  React.useEffect0(() => {
+  React.useEffect(() => {
     let fetchBaiduKey = async () => {
       let result = await chromeStore->get(~keys=["baiduKey"])
-      switch Js.toOption(result["baiduKey"]) {
+      switch Nullable.toOption(result["baiduKey"]) {
       | Some(config) => {
           setAppid(_ => config["appid"])
           setSecret(_ => config["secret"])
@@ -25,7 +25,7 @@ let make = () => {
     fetchBaiduKey()->ignore
 
     None
-  })
+  }, [])
 
   let handleSubmit = async () => {
     let config = {"appid": appid, "secret": secret}

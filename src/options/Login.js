@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as Widget from "../components/Widget.js";
 import * as Functions from "../Functions.js";
+import * as JsxRuntime from "react/jsx-runtime";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
 
 function Login(props) {
@@ -46,60 +47,92 @@ function Login(props) {
     }
     
   };
-  return React.createElement("div", undefined, React.createElement("h3", undefined, "Login"), React.createElement("div", {
-                  className: "form-control "
-                }, React.createElement("label", {
-                      className: "label"
-                    }, React.createElement("span", {
-                          className: "label-text"
-                        }, "Username")), React.createElement("input", {
-                      className: "input input-bordered w-full",
-                      placeholder: "Username",
-                      type: "text",
-                      value: username,
-                      onChange: (function (e) {
-                          setUsername(function (param) {
-                                return e.target.value;
-                              });
-                        })
-                    })), React.createElement("div", {
-                  className: "form-control mt-5"
-                }, React.createElement("label", {
-                      className: "label"
-                    }, React.createElement("span", {
-                          className: "label-text"
-                        }, "Password")), React.createElement("div", {
-                      className: "relative"
-                    }, React.createElement("input", {
-                          className: "input input-bordered w-full pr-8",
-                          placeholder: "Password",
-                          type: passwordVisible ? "password" : "text",
-                          value: password,
-                          onChange: (function (e) {
-                              setPassword(function (param) {
-                                    return e.target.value;
-                                  });
+  return JsxRuntime.jsxs("div", {
+              children: [
+                JsxRuntime.jsx("h3", {
+                      children: "Login"
+                    }),
+                JsxRuntime.jsxs("div", {
+                      children: [
+                        JsxRuntime.jsx("label", {
+                              children: JsxRuntime.jsx("span", {
+                                    children: "Username",
+                                    className: "label-text"
+                                  }),
+                              className: "label"
+                            }),
+                        JsxRuntime.jsx("input", {
+                              className: "input input-bordered w-full",
+                              placeholder: "Username",
+                              type: "text",
+                              value: username,
+                              onChange: (function (e) {
+                                  setUsername(function (param) {
+                                        return e.target.value;
+                                      });
+                                })
                             })
-                        }), React.createElement("span", {
-                          className: "cursor-pointer absolute w-6 h-6 top-1/2 right-1.5 -translate-y-1/2",
-                          onClick: (function (param) {
-                              setPasswordVisible(function (_p) {
-                                    return !passwordVisible;
-                                  });
+                      ],
+                      className: "form-control "
+                    }),
+                JsxRuntime.jsxs("div", {
+                      children: [
+                        JsxRuntime.jsx("label", {
+                              children: JsxRuntime.jsx("span", {
+                                    children: "Password",
+                                    className: "label-text"
+                                  }),
+                              className: "label"
+                            }),
+                        JsxRuntime.jsxs("div", {
+                              children: [
+                                JsxRuntime.jsx("input", {
+                                      className: "input input-bordered w-full pr-8",
+                                      placeholder: "Password",
+                                      type: passwordVisible ? "password" : "text",
+                                      value: password,
+                                      onChange: (function (e) {
+                                          setPassword(function (param) {
+                                                return e.target.value;
+                                              });
+                                        })
+                                    }),
+                                JsxRuntime.jsx("span", {
+                                      children: passwordVisible ? JsxRuntime.jsx(Widget.EyeSlash.make, {}) : JsxRuntime.jsx(Widget.Eye.make, {}),
+                                      className: "cursor-pointer absolute w-6 h-6 top-1/2 right-1.5 -translate-y-1/2",
+                                      onClick: (function (param) {
+                                          setPasswordVisible(function (_p) {
+                                                return !passwordVisible;
+                                              });
+                                        })
+                                    })
+                              ],
+                              className: "relative"
                             })
-                        }, passwordVisible ? React.createElement(Widget.EyeSlash.make, {}) : React.createElement(Widget.Eye.make, {})))), React.createElement("div", {
-                  className: "modal-action fle mt-8 justify-center"
-                }, React.createElement("button", {
-                      className: "btn btn-neutral",
-                      onClick: (function (param) {
-                          handleSubmit();
-                        })
-                    }, "Submit"), React.createElement("label", {
-                      className: "btn",
-                      onClick: (function (param) {
-                          onCancel();
-                        })
-                    }, "close")));
+                      ],
+                      className: "form-control mt-5"
+                    }),
+                JsxRuntime.jsxs("div", {
+                      children: [
+                        JsxRuntime.jsx("button", {
+                              children: "Submit",
+                              className: "btn btn-neutral",
+                              onClick: (function (param) {
+                                  handleSubmit();
+                                })
+                            }),
+                        JsxRuntime.jsx("label", {
+                              children: "close",
+                              className: "btn",
+                              onClick: (function (param) {
+                                  onCancel();
+                                })
+                            })
+                      ],
+                      className: "modal-action fle mt-8 justify-center"
+                    })
+              ]
+            });
 }
 
 var make = Login;

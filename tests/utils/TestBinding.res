@@ -138,11 +138,11 @@ module ReactTestingLibrary = {
   type queries
   type props = {children: React.element}
   type renderOptions = {
-    container: Js.undefined<Dom.element>,
-    baseElement: Js.undefined<Dom.element>,
-    hydrate: Js.undefined<bool>,
-    wrapper: Js.undefined<props => React.element>,
-    queries: Js.undefined<queries>,
+    container: Nullable.t<Dom.element>,
+    baseElement: Nullable.t<Dom.element>,
+    hydrate: Nullable.t<bool>,
+    wrapper: Nullable.t<props => React.element>,
+    queries: Nullable.t<queries>,
   }
 
   // hook
@@ -190,19 +190,19 @@ module ReactTestingLibrary = {
 
   let render = (element, ~baseElement=?, ~container=?, ~hydrate=?, ~wrapper=?, ~queries=?) => {
     let baseElement_ = switch container {
-    | Some(container') => Js.Undefined.return(container')
-    | None => Js.Undefined.fromOption(baseElement)
+    | Some(container') => Nullable.make(container')
+    | None => Nullable.fromOption(baseElement)
     }
-    let container_ = Js.Undefined.fromOption(container)
+    let container_ = Nullable.fromOption(container)
 
     _render(
       element,
       {
         baseElement: baseElement_,
         container: container_,
-        hydrate: Js.Undefined.fromOption(hydrate),
-        wrapper: Js.Undefined.fromOption(wrapper),
-        queries: Js.Undefined.fromOption(queries),
+        hydrate: Nullable.fromOption(hydrate),
+        wrapper: Nullable.fromOption(wrapper),
+        queries: Nullable.fromOption(queries),
       },
     )
   }

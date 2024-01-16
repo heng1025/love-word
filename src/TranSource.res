@@ -44,26 +44,27 @@ module Baidu = {
 
   let translate = async q => {
     try {
-      let throwErr = () => Js.Exn.raiseError("No translation key")
+      let throwErr = () => Error.raise(Error.make("No translation key"))
       let result = switch await chromeStore->get(~keys=["baiduKey"]) {
       | Some(val) => val["baiduKey"]
       | _ => throwErr()
       }
 
-      let queryUrl = switch Js.toOption(result) {
+      let queryUrl = switch Nullable.toOption(result) {
       | Some(key) => {
           let appid = key["appid"]
           let key = key["secret"]
-          let salt = Js.Float.toString(Js.Date.now())
+          let salt = Float.toString(Date.now())
           let sign = Md5.createMd5(appid ++ q ++ salt ++ key)
           let sl = getSourceLang(q)
           // zh->eng, other -> zh
-          let tlDict = Js.Dict.fromList(list{("cmn", "en")})
+          let tlDict = Dict.make()
+          tlDict->Dict.set("cmn", "en")
 
           let query = Qs.stringify({
             "q": q,
             "from": "auto",
-            "to": switch Js.Dict.get(tlDict, sl) {
+            "to": switch Dict.get(tlDict, sl) {
             | Some(val) => val
             | _ => "zh"
             },
@@ -90,7 +91,7 @@ module Baidu = {
       }
     } catch {
     | Js.Exn.Error(err) =>
-      switch Js.Exn.message(err) {
+      switch Error.message(err) {
       | Some(msg) => Error(msg)
       | None => Error("error")
       }

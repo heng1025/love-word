@@ -1,14 +1,14 @@
 open Common.Webapi
 open Widget
 open TranslateResult
-open TranslateHook
+open! TranslateHook
 
 @react.component
 let make = () => {
   let (text, setText) = React.Uncurried.useState(_ => "")
   let (sourceText, setSourceText) = React.Uncurried.useState(_ => "")
 
-  let textInput = React.useRef(Js.Nullable.null)
+  let textInput = React.useRef(Nullable.null)
   let {loading, data} = useTranslate(sourceText)
 
   let setTextInputRef = element => {
@@ -16,7 +16,10 @@ let make = () => {
   }
 
   let focusTextInput = () => {
-    textInput.current->Js.Nullable.toOption->Belt.Option.forEach(input => input->Element.focus)
+    switch textInput.current->Nullable.toOption {
+    | Some(input) => input->Element.focus
+    | None => ()
+    }
   }
 
   let handleTranslate = _ => {
@@ -42,10 +45,10 @@ let make = () => {
   }
 
   // default focus
-  React.useEffect0(() => {
+  React.useEffect(() => {
     focusTextInput()
     None
-  })
+  }, [])
 
   <div className="card card-compact w-56 bg-base-100 shadow-xl rounded-none">
     <div className="bg-primary h-5 px-1 text-white flex items-center justify-end">

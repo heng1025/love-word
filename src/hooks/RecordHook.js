@@ -51,9 +51,10 @@ function useRecord(recordType) {
   };
   var getAll = async function () {
     var ret = await chrome.runtime.sendMessage(getExtraMsgContent("GetAll"));
-    var rs = ret.sort(function (v1, v2) {
-            return v2.date - v1.date | 0;
-          }).map(function (v) {
+    ret.sort(function (v1, v2) {
+          return v2.date - v1.date;
+        });
+    var rs = ret.map(function (v) {
           var newrecord = Caml_obj.obj_dup(v);
           newrecord.checked = false;
           return newrecord;

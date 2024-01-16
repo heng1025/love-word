@@ -1,5 +1,5 @@
 open Common.Webapi.Element
-open Common.Webapi.Document
+open! Common.Webapi.Document
 
 @module("../common.css?inline") external commonCss: string = "default"
 

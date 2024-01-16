@@ -33,7 +33,7 @@ let favAddMessageHandler = async (msg: favAddMsgContent, sender, sendResponse) =
     url: tab["url"],
     title: tab["title"],
     favIconUrl: tab["favIconUrl"],
-    date: Js.Date.now(),
+    date: Date.now(),
     text: msg.text,
     translation: msg.translation,
   }
@@ -65,18 +65,18 @@ let recordAddManyMessageHandler = async (
   msg: array<recordDataWithExtra>,
   sendResponse,
 ) => {
-  let didNotSyncedRecords = Js.Array2.filter(msg, v => !v.sync)
-  if Js.Array2.length(didNotSyncedRecords) !== 0 {
+  let didNotSyncedRecords = Array.filter(msg, v => !v.sync)
+  if Array.length(didNotSyncedRecords) !== 0 {
     // server
     let _ = await recordRemoteAction(~recordType, ~data=didNotSyncedRecords, ~method="post")
     // update local
     let db = await getDB()
     let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
-    let pstores = Js.Array2.map(didNotSyncedRecords, item => {
+    let pstores = Array.map(didNotSyncedRecords, item => {
       tx.store.put(Obj.magic({...item, sync: true}))
     })
-    let _len = Js.Array2.push(pstores, tx.done)
-    let _ = await Js.Promise2.all(pstores)
+    let _len = Array.push(pstores, tx.done)
+    let _ = await Promise.all(pstores)
   }
   sendResponse(Obj.magic(true))
 }
@@ -88,16 +88,16 @@ let recordDeleteManyMessageHandler = async (
 ) => {
   let db = await getDB()
   let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
-  let pstores = Js.Array2.map(msg.records, item => {
+  let pstores = Array.map(msg.records, item => {
     tx.store.delete(Obj.magic(item.date))
   })
-  let _len = Js.Array2.push(pstores, tx.done)
+  let _len = Array.push(pstores, tx.done)
   // local
-  let _ = await Js.Promise2.all(pstores)
+  let _ = await Promise.all(pstores)
   // server
   let _ = await recordRemoteAction(
     ~recordType,
-    ~data={"text": Js.Array2.map(msg.records, v => v.text)},
+    ~data={"text": msg.records->Array.map(v => v.text)},
     ~method="delete",
   )
   sendResponse(Obj.magic(false))
@@ -134,7 +134,7 @@ let historyAddMessageHandler = async (msg: textMsgContent, sender, sendResponse)
     url: tab["url"],
     title: tab["title"],
     favIconUrl: tab["favIconUrl"],
-    date: Js.Date.now(),
+    date: Date.now(),
     text: mText,
   }
   let ret: bool = await getDBValueFromIndex(~db, ~storeName=History, ~indexName="text", ~key=mText)

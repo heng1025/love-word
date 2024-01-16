@@ -68,7 +68,7 @@ describe("TranSource moulde", () => {
   })
 
   testEach((
-    {"exn": () => Js.Exn.raiseError("js error"), "expected": "js error"},
+    {"exn": () => Error.raise(Error.make("js error")), "expected": "js error"},
     {"exn": () => raise(Not_found), "expected": "Unexpected error occurred"},
   ))("Baidu translate works works with $expected exception", async cases => {
     fetchSpy->mockImplementation(() => cases["exn"]())->ignore
@@ -80,7 +80,7 @@ describe("TranSource moulde", () => {
     chromeGetStoreSpy->mockReturnValue()->ignore
     let ret = await Baidu.translate("你好")
     expect(ret)->toStrictEqual(Error("No translation key"))
-    chromeGetStoreSpy->mockReturnValue({"baiduKey": Js.null})->ignore
+    chromeGetStoreSpy->mockReturnValue({"baiduKey": Null.null})->ignore
     let ret = await Baidu.translate("你好")
     expect(ret)->toStrictEqual(Error("No translation key"))
     // restore default mock

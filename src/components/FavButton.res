@@ -19,7 +19,7 @@ let make = (~text, ~trans) => {
     }
   }
 
-  React.useEffect1(() => {
+  React.useEffect(() => {
     favAction(Get)->ignore
 
     None

@@ -11,7 +11,7 @@ module Loading = {
       loading && !shouldDelay(loading, delay)
     )
 
-    React.useEffect2(() => {
+    React.useEffect(() => {
       switch loading {
       | true => {
           let (showSpinning, cancel) = debounce(delay, () => {

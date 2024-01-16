@@ -16,7 +16,7 @@ vi->mock("idb")
 // just mock adapterTrans
 let factory = async importOriginal => {
   let mod = await importOriginal()
-  let copy = Js.Obj.assign(Js.Obj.empty(), mod)
+  let copy = Object.assign(Object.empty(), mod)
 
   copy["adapterTrans"] = vi->fn
   copy
@@ -91,7 +91,7 @@ let favoriteSuite = () => {
     ->ignore
     let favAddMsgContent = {
       text: "hello",
-      translation: Js.Nullable.return(BaiduT(baiduData)),
+      translation: Nullable.make(BaiduT(baiduData)),
     }
     let mockSendResponse = vi->fn
     let result = handleMessage(FavAddMsgContent(favAddMsgContent), sender, mockSendResponse)
@@ -222,7 +222,7 @@ describe("Background service", () => {
     let tab = getBrowserTab(sender)
     expect(tab["title"])->toBe("Love Word")
 
-    let copySender = Js.Obj.assign(Js.Obj.empty(), sender)
+    let copySender = Object.assign(Object.empty(), sender)
     copySender["tab"] = Some({"url": "1r21.cn"})
     let tab = getBrowserTab(copySender)
     expect(tab["url"])->toBe("1r21.cn")

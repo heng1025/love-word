@@ -3,7 +3,6 @@
 import * as Js_exn from "rescript/lib/es6/js_exn.js";
 import * as FrancMin from "franc-min";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
-import * as Js_null_undefined from "rescript/lib/es6/js_null_undefined.js";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
 var apiHost = import.meta.env.LW_API_HOST;
@@ -85,10 +84,10 @@ function debounce(delay, callback) {
     contents: false
   };
   var clearExistingTimeout = function () {
-    if (!(timeoutID.contents == null)) {
-      return Js_null_undefined.iter(timeoutID.contents, (function (timer) {
-                    clearTimeout(timer);
-                  }));
+    var timer = timeoutID.contents;
+    if (timer !== null) {
+      clearTimeout(timer);
+      return ;
     }
     
   };

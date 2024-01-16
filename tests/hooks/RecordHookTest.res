@@ -95,9 +95,9 @@ describeEach([Favorite, History])("useRecordHook works for %s", recordType => {
     )
 
     let current: return = result->renderHookResultCurrent
-    let checkedRecords = current.records->Js.Array2.filter(r => r.checked)
+    let checkedRecords = current.records->Array.filter(r => r.checked)
     expect(checkedRecords)->toHaveLength(1)
-    expect(checkedRecords[0].text)->toBe(dictRecord.text)
+    expect((checkedRecords->Array.getUnsafe(0)).text)->toBe(dictRecord.text)
   })
 
   test("cancle checked", async () => {
@@ -113,7 +113,7 @@ describeEach([Favorite, History])("useRecordHook works for %s", recordType => {
     await waitForAtRTL(
       () => {
         let current: return = result->renderHookResultCurrent
-        let isAllUnchecked = current.records->Js.Array2.every(r => r.checked === false)
+        let isAllUnchecked = current.records->Array.every(r => r.checked === false)
         expect(isAllUnchecked)->toBe(true)
       },
     )
@@ -172,9 +172,9 @@ describeEach([Favorite, History])("useRecordHook works for %s", recordType => {
     await waitForAtRTL(
       () => {
         let current: return = result->renderHookResultCurrent
-        let syncedRecords = current.records->Js.Array2.filter(r => r.sync)
+        let syncedRecords = current.records->Array.filter(r => r.sync)
         expect(syncedRecords)->toHaveLength(1)
-        expect(syncedRecords[0].text)->toBe(dictRecord.text)
+        expect((syncedRecords->Array.getUnsafe(0)).text)->toBe(dictRecord.text)
       },
     )
   })

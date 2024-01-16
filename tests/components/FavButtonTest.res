@@ -4,7 +4,7 @@ open Utils
 open Fixture
 open Common.Chrome
 
-let trans = Js.Nullable.return(BaiduT(baiduData))
+let trans = Nullable.make(BaiduT(baiduData))
 let chromeSendMsgSpy = vi->spyOn(chromeRuntime, "sendMessage")
 
 describe("FavButton component", () => {

@@ -44,7 +44,7 @@ let baiduRecord = {
   favIconUrl: "",
   date: 1702484430247.0,
   text: "你好",
-  translation: Js.Nullable.return(BaiduT(baiduData)),
+  translation: Nullable.make(BaiduT(baiduData)),
   checked: false,
   sync: false,
 }
@@ -55,7 +55,7 @@ let dictRecord = {
   favIconUrl: "",
   date: 1702484481543.0,
   text: "hello",
-  translation: Js.Nullable.return(DictT(dictData)),
+  translation: Nullable.make(DictT(dictData)),
   checked: false,
   sync: false,
 }

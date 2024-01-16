@@ -10,7 +10,7 @@ let useTranslate = (text: string) => {
   let (loading, setLoading) = React.Uncurried.useState(_ => false)
   let (data, setData) = React.Uncurried.useState(_ => None)
 
-  React.useEffect1(() => {
+  React.useEffect(() => {
     let fetchTranslateResult = async txt => {
       if txt !== "" {
         setLoading(_p => true)

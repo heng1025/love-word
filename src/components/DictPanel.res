@@ -4,18 +4,18 @@ open Widget
 
 @react.component
 let make = (~data) => {
-  let (audio, setAudio) = React.Uncurried.useState(_ => Js.null)
+  let (audio, setAudio) = React.Uncurried.useState(_ => Null.null)
   let (playState, setAudioState) = React.Uncurried.useState(_ => false)
-  let trans = Js.Array2.map(Js.String2.split(data.translation, "\n"), v => {
+  let trans = Array.map(String.split(data.translation, "\n"), v => {
     <p key=v className="mt-[2px]"> {React.string(v)} </p>
   })
-  React.useEffect0(() => {
+  React.useEffect(() => {
     // type 1 为英音 2 为美音
     let src = `https://dict.youdao.com/dictvoice?audio=${data.word}&type=1`
     let au = createAudio(~url=src, ())
     setAudio(_ => au)
 
-    switch Js.Null.toOption(au) {
+    switch Null.toOption(au) {
     | Some(val) =>
       onEnded(val, () => {
         setAudioState(_p => false)
@@ -24,12 +24,12 @@ let make = (~data) => {
     }
 
     None
-  })
+  }, [])
 
   let play = _ => {
     setAudioState(p => !p)
 
-    switch Js.Null.toOption(audio) {
+    switch Null.toOption(audio) {
     | Some(au) => au->playAudio
 
     | _ => ()
@@ -49,7 +49,7 @@ let make = (~data) => {
       {switch data.tag !== "" {
       | true =>
         React.array(
-          Js.Array2.map(Js.String2.split(data.tag, " "), v => {
+          Array.map(String.split(data.tag, " "), v => {
             <Tag role="mark" key=v className="bg-secondary mr-1 mb-1"> {React.string(v)} </Tag>
           }),
         )

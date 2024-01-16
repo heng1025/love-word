@@ -8,7 +8,9 @@ import * as $$History from "./History.js";
 import * as Database from "../Database.js";
 import * as Favorite from "./Favorite.js";
 import * as Shortcut from "./Shortcut.js";
+import * as Core__Array from "@rescript/core/src/Core__Array.js";
 import * as TranslateService from "./TranslateService.js";
+import * as JsxRuntime from "react/jsx-runtime";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.js";
 
@@ -56,7 +58,7 @@ async function getRecordsWithServer(recordType) {
         });
     return acc;
   };
-  var records = tranverseLocals.contents.reduce(concatLocalWithRemote, []);
+  var records = Core__Array.reduce(tranverseLocals.contents, [], concatLocalWithRemote);
   var tx = db.transaction(recordType, "readwrite");
   var pstores = records.map(function (item) {
         return tx.store.add(item);
@@ -124,30 +126,47 @@ function OptionsApp(props) {
   };
   var tmp;
   tmp = typeof user !== "object" ? "" : user.profileImage;
-  var hasLoginedComponent = React.createElement("div", {
+  var hasLoginedComponent = JsxRuntime.jsxs("div", {
+        children: [
+          JsxRuntime.jsx("label", {
+                children: JsxRuntime.jsx("div", {
+                      children: JsxRuntime.jsx("img", {
+                            src: tmp
+                          }),
+                      className: "w-10 rounded-full"
+                    }),
+                className: "btn btn-ghost btn-circle avatar",
+                tabIndex: 0
+              }),
+          JsxRuntime.jsxs("ul", {
+                children: [
+                  JsxRuntime.jsx("li", {
+                        children: JsxRuntime.jsx("a", {
+                              children: "Profile",
+                              className: "justify-between"
+                            })
+                      }),
+                  JsxRuntime.jsx("li", {
+                        children: JsxRuntime.jsx("a", {
+                              children: "Logout"
+                            }),
+                        onClick: logout
+                      })
+                ],
+                className: "mt-3 z-[99] p-2 shadow menu menu-compact dropdown-content bg-base-100 border border-slate-500 rounded-box w-52",
+                tabIndex: 1
+              })
+        ],
         className: "dropdown dropdown-end"
-      }, React.createElement("label", {
-            className: "btn btn-ghost btn-circle avatar",
-            tabIndex: 0
-          }, React.createElement("div", {
-                className: "w-10 rounded-full"
-              }, React.createElement("img", {
-                    src: tmp
-                  }))), React.createElement("ul", {
-            className: "mt-3 z-[99] p-2 shadow menu menu-compact dropdown-content bg-base-100 border border-slate-500 rounded-box w-52",
-            tabIndex: 1
-          }, React.createElement("li", undefined, React.createElement("a", {
-                    className: "justify-between"
-                  }, "Profile")), React.createElement("li", {
-                onClick: logout
-              }, React.createElement("a", undefined, "Logout"))));
+      });
   var loginStatus;
-  loginStatus = typeof user !== "object" ? React.createElement("button", {
+  loginStatus = typeof user !== "object" ? JsxRuntime.jsx("button", {
+          children: "Login",
           className: "btn btn-neutral",
           onClick: (function (param) {
               window.login.showModal();
             })
-        }, "Login") : hasLoginedComponent;
+        }) : hasLoginedComponent;
   var handleCommit = async function (user) {
     setUser(user);
     window.login.close();
@@ -162,76 +181,127 @@ function OptionsApp(props) {
   var tmp$1;
   switch (match$5) {
     case "favorite" :
-        tmp$1 = React.createElement(Favorite.make, {});
+        tmp$1 = JsxRuntime.jsx(Favorite.make, {});
         break;
     case "history" :
-        tmp$1 = React.createElement($$History.make, {});
+        tmp$1 = JsxRuntime.jsx($$History.make, {});
         break;
     case "service" :
-        tmp$1 = React.createElement(TranslateService.make, {});
+        tmp$1 = JsxRuntime.jsx(TranslateService.make, {});
         break;
     case "shortcut" :
-        tmp$1 = React.createElement(Shortcut.make, {});
+        tmp$1 = JsxRuntime.jsx(Shortcut.make, {});
         break;
     default:
       tmp$1 = "Page Not Found";
   }
-  return React.createElement("div", {
+  return JsxRuntime.jsx("div", {
+              children: JsxRuntime.jsxs("div", {
+                    children: [
+                      JsxRuntime.jsxs("div", {
+                            children: [
+                              JsxRuntime.jsx("div", {
+                                    children: JsxRuntime.jsxs("a", {
+                                          children: [
+                                            JsxRuntime.jsx("img", {
+                                                  className: " inline-block mr-2",
+                                                  src: "/icons/lw32x32.png"
+                                                }),
+                                            "Love Word"
+                                          ],
+                                          className: "btn btn-ghost normal-case text-xl",
+                                          href: "#service"
+                                        }),
+                                    className: "flex-1"
+                                  }),
+                              JsxRuntime.jsx("div", {
+                                    children: loginStatus,
+                                    className: "flex gap-2"
+                                  }),
+                              JsxRuntime.jsx("dialog", {
+                                    children: JsxRuntime.jsx("form", {
+                                          children: JsxRuntime.jsx(Login.make, {
+                                                onSubmit: (function (u) {
+                                                    return handleCommit(u);
+                                                  }),
+                                                onCancel: (function () {
+                                                    window.login.close();
+                                                  })
+                                              }),
+                                          className: "modal-box",
+                                          method: "dialog"
+                                        }),
+                                    className: "modal",
+                                    id: "login"
+                                  })
+                            ],
+                            className: "navbar bg-base-100"
+                          }),
+                      JsxRuntime.jsxs("div", {
+                            children: [
+                              JsxRuntime.jsx("div", {
+                                    children: JsxRuntime.jsxs("ul", {
+                                          children: [
+                                            JsxRuntime.jsx("li", {
+                                                  children: JsxRuntime.jsx("span", {
+                                                        children: "Setting"
+                                                      }),
+                                                  className: "menu-title"
+                                                }),
+                                            JsxRuntime.jsx("li", {
+                                                  children: JsxRuntime.jsx("a", {
+                                                        children: "Translate Service",
+                                                        className: match$1 ? "active" : "",
+                                                        href: "#service"
+                                                      })
+                                                }),
+                                            JsxRuntime.jsx("li", {
+                                                  children: JsxRuntime.jsx("a", {
+                                                        children: "Shortcut",
+                                                        className: match$2 ? "active" : "",
+                                                        href: "#shortcut"
+                                                      })
+                                                }),
+                                            JsxRuntime.jsx("div", {
+                                                  className: "divider"
+                                                }),
+                                            JsxRuntime.jsx("li", {
+                                                  children: JsxRuntime.jsx("span", {
+                                                        children: "User"
+                                                      }),
+                                                  className: "menu-title"
+                                                }),
+                                            JsxRuntime.jsx("li", {
+                                                  children: JsxRuntime.jsx("a", {
+                                                        children: "Favorite",
+                                                        className: match$3 ? "active" : "",
+                                                        href: "#favorite"
+                                                      })
+                                                }),
+                                            JsxRuntime.jsx("li", {
+                                                  children: JsxRuntime.jsx("a", {
+                                                        children: "History Query",
+                                                        className: match$4 ? "active" : "",
+                                                        href: "#history"
+                                                      })
+                                                })
+                                          ],
+                                          className: "menu bg-base-100 w-56 p-2"
+                                        }),
+                                    className: "overflow-y-auto bg-base-100"
+                                  }),
+                              JsxRuntime.jsx("div", {
+                                    children: tmp$1,
+                                    className: "flex-1 overflow-y-auto bg-base-200 " + contentClass
+                                  })
+                            ],
+                            className: "flex flex-1 gap-1 overflow-y-hidden"
+                          })
+                    ],
+                    className: "flex flex-col gap-1 h-screen"
+                  }),
               className: "bg-base-200"
-            }, React.createElement("div", {
-                  className: "flex flex-col gap-1 h-screen"
-                }, React.createElement("div", {
-                      className: "navbar bg-base-100"
-                    }, React.createElement("div", {
-                          className: "flex-1"
-                        }, React.createElement("a", {
-                              className: "btn btn-ghost normal-case text-xl",
-                              href: "#service"
-                            }, React.createElement("img", {
-                                  className: " inline-block mr-2",
-                                  src: "/icons/lw32x32.png"
-                                }), "Love Word")), React.createElement("div", {
-                          className: "flex gap-2"
-                        }, loginStatus), React.createElement("dialog", {
-                          className: "modal",
-                          id: "login"
-                        }, React.createElement("form", {
-                              className: "modal-box",
-                              method: "dialog"
-                            }, React.createElement(Login.make, {
-                                  onSubmit: (function (u) {
-                                      return handleCommit(u);
-                                    }),
-                                  onCancel: (function () {
-                                      window.login.close();
-                                    })
-                                })))), React.createElement("div", {
-                      className: "flex flex-1 gap-1 overflow-y-hidden"
-                    }, React.createElement("div", {
-                          className: "overflow-y-auto bg-base-100"
-                        }, React.createElement("ul", {
-                              className: "menu bg-base-100 w-56 p-2"
-                            }, React.createElement("li", {
-                                  className: "menu-title"
-                                }, React.createElement("span", undefined, "Setting")), React.createElement("li", undefined, React.createElement("a", {
-                                      className: match$1 ? "active" : "",
-                                      href: "#service"
-                                    }, "Translate Service")), React.createElement("li", undefined, React.createElement("a", {
-                                      className: match$2 ? "active" : "",
-                                      href: "#shortcut"
-                                    }, "Shortcut")), React.createElement("div", {
-                                  className: "divider"
-                                }), React.createElement("li", {
-                                  className: "menu-title"
-                                }, React.createElement("span", undefined, "User")), React.createElement("li", undefined, React.createElement("a", {
-                                      className: match$3 ? "active" : "",
-                                      href: "#favorite"
-                                    }, "Favorite")), React.createElement("li", undefined, React.createElement("a", {
-                                      className: match$4 ? "active" : "",
-                                      href: "#history"
-                                    }, "History Query")))), React.createElement("div", {
-                          className: "flex-1 overflow-y-auto bg-base-200 " + contentClass
-                        }, tmp$1))));
+            });
 }
 
 var make = OptionsApp;

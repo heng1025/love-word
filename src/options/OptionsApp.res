@@ -26,7 +26,7 @@ let getRecordsWithServer = async recordType => {
 
   // strategy: local first
   let tranverseLocals = ref(retLocal)
-  if Js.Array2.length(tranverseLocals.contents) === 0 {
+  if Array.length(tranverseLocals.contents) === 0 {
     tranverseLocals := retFromServers
   }
 
@@ -34,7 +34,7 @@ let getRecordsWithServer = async recordType => {
 
   let concatLocalWithRemote = (acc, local) => {
     local.sync = false
-    Js.Array2.forEach(retFromServers, remote => {
+    Array.forEach(retFromServers, remote => {
       let isTextExisted = local.text === remote.text
       if isTextExisted {
         local.sync = true
@@ -42,35 +42,31 @@ let getRecordsWithServer = async recordType => {
         putDBValue(~db, ~storeName=recordType, ~data=local, ())->ignore
       } else {
         remote.sync = true
-        let isNotAtLocal = Js.Array2.every(tranverseLocals.contents, v => v.text !== remote.text)
-        let isNotAtAcc = Js.Array2.every(acc, v => v.text !== remote.text)
+        let isNotAtLocal = Array.every(tranverseLocals.contents, v => v.text !== remote.text)
+        let isNotAtAcc = Array.every(acc, v => v.text !== remote.text)
         if isNotAtLocal && isNotAtAcc {
-          let _ = Js.Array2.push(acc, remote)
+          let _ = Array.push(acc, remote)
         }
       }
     })
     acc
   }
 
-  let records: array<recordDataWithExtra> = Js.Array2.reduce(
-    tranverseLocals.contents,
-    concatLocalWithRemote,
-    [],
-  )
+  let records = tranverseLocals.contents->Array.reduce([], concatLocalWithRemote)
   let tx = createTransaction(~db, ~storeName=recordType, ~mode="readwrite", ())
-  let pstores = Js.Array2.map(records, item => {
+  let pstores = Array.map(records, item => {
     tx.store.add(Obj.magic(item))
   })
-  let _len = Js.Array2.push(pstores, tx.done)
+  let _len = Array.push(pstores, tx.done)
   try {
-    let _ = await Js.Promise2.all(pstores)
+    let _ = await Promise.all(pstores)
   } catch {
   | Js.Exn.Error(err) =>
-    switch Js.Exn.message(err) {
-    | Some(msg) => Js.log(msg)
-    | _ => Js.log("Err happen")
+    switch Error.message(err) {
+    | Some(msg) => Console.log(msg)
+    | _ => Console.log("Err happen")
     }
-  | _ => Js.log("Unexpected error occurred")
+  | _ => Console.log("Unexpected error occurred")
   }
 }
 
@@ -79,7 +75,7 @@ let make = () => {
   let url = RescriptReactRouter.useUrl()
   let (user, setUser) = React.Uncurried.useState(_ => UnLogined)
 
-  React.useEffect0(() => {
+  React.useEffect(() => {
     let getUser = async () => {
       let result = await chromeStore->get(~keys=["user"])
       let u: user = result["user"]
@@ -87,17 +83,17 @@ let make = () => {
     }
     getUser()->ignore
     None
-  })
+  }, [])
 
-  React.useEffect1(() => {
+  React.useEffect(() => {
     if url.hash === "" {
       RescriptReactRouter.push("#service")
     }
     None
   }, [url])
 
-  let contentClass = React.useMemo1(() => {
-    let isRecordUrl = Js.Array2.includes(["favorite", "history"], url.hash)
+  let contentClass = React.useMemo(() => {
+    let isRecordUrl = ["favorite", "history"]->Array.includes(url.hash)
     switch isRecordUrl {
     | false => "p-5"
     | true => ""

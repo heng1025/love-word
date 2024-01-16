@@ -1,17 +1,17 @@
 module Webapi = {
   module Element = {
-    @get external style: Dom.element => Js.Dict.t<string> = "style"
+    @get external style: Dom.element => Dict.t<string> = "style"
     @send external text: (Dom.element, string) => string = "text"
-    @send external contains: (Js.Nullable.t<Dom.element>, Dom.element) => bool = "contains"
+    @send external contains: (Nullable.t<Dom.element>, Dom.element) => bool = "contains"
     @send external focus: Dom.element => unit = "focus"
     @send external play: Dom.element => unit = "play"
     @send external pause: Dom.element => unit = "pause"
     @get external getAudioSrc: Dom.element => string = "src"
     @set external createAudioSrc: (Dom.element, string) => unit = "src"
-    @send external attachShadow: (Js.Nullable.t<Dom.element>, 'a) => Dom.element = "attachShadow"
-    @send external appendChild: (Dom.element, Js.Nullable.t<Dom.element>) => unit = "appendChild"
+    @send external attachShadow: (Nullable.t<Dom.element>, 'a) => Dom.element = "attachShadow"
+    @send external appendChild: (Dom.element, Nullable.t<Dom.element>) => unit = "appendChild"
     @send
-    external setAttribute: (Js.Nullable.t<Dom.element>, string, string) => unit = "setAttribute"
+    external setAttribute: (Nullable.t<Dom.element>, string, string) => unit = "setAttribute"
   }
 
   module Document = {
@@ -20,7 +20,7 @@ module Webapi = {
     @val external document: t = "document"
     @get external body: t => Dom.element = "body"
     @get external documentElement: t => Dom.element = "documentElement"
-    @send external createElement: (t, string) => Js.Nullable.t<Dom.element> = "createElement"
+    @send external createElement: (t, string) => Nullable.t<Dom.element> = "createElement"
   }
 
   module MouseEvent = {
@@ -88,7 +88,7 @@ module Webapi = {
 
     type audio
     @new
-    external createAudio: (~url: string=?, unit) => Js.null<audio> = "Audio"
+    external createAudio: (~url: string=?, unit) => Null.t<audio> = "Audio"
     @set
     external setAudioSrc: (audio, string) => unit = "src"
     @set

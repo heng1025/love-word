@@ -38,24 +38,22 @@ let useRecord = recordType => {
   let getAll = async () => {
     let ret: array<recordDataWithExtra> =
       await chromeRuntime->sendMessage(getExtraMsgContent(GetAll))
-    let rs =
-      ret
-      ->Js.Array2.sortInPlaceWith((v1, v2) => Belt.Float.toInt(v2.date -. v1.date))
-      ->Js.Array2.map(v => {
-        ...v,
-        checked: false,
-      })
+    ret->Array.sort((v1, v2) => v2.date -. v1.date)
+    let rs = ret->Array.map(v => {
+      ...v,
+      checked: false,
+    })
     setRecords(_ => rs)
   }
 
-  React.useEffect1(() => {
+  React.useEffect(() => {
     getAll()->ignore
     None
   }, [recordType])
 
   let onSearch = val => {
     if val !== "" {
-      let rs = Js.Array2.filter(records, item => {
+      let rs = records->Array.filter(item => {
         item.text->includeWith(val)
       })
       setRecords(_ => rs)
@@ -65,7 +63,7 @@ let useRecord = recordType => {
   }
 
   let onCheck = (record: recordDataWithExtra) => {
-    let rs = Js.Array2.map(records, v => {
+    let rs = Array.map(records, v => {
       let {date, checked} = record
 
       if date === v.date {
@@ -77,7 +75,7 @@ let useRecord = recordType => {
   }
 
   let onCancel = () => {
-    let rs = Js.Array2.map(records, v => {
+    let rs = Array.map(records, v => {
       ...v,
       checked: false,
     })
@@ -87,7 +85,7 @@ let useRecord = recordType => {
   let onDelete = async checkedRecords => {
     let _ = await chromeRuntime->sendMessage(
       getDeleteManyMsgContent({
-        records: Js.Array2.map(checkedRecords, v => {text: v.text, date: v.date}),
+        records: Array.map(checkedRecords, v => {text: v.text, date: v.date}),
       }),
     )
     await getAll()

@@ -1,0 +1,23 @@
+{
+  "name": "love-word",
+  "namespace": false,
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "tests",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
+  "package-specs": {
+    "module": "es6",
+    "in-source": true
+  },
+  "suffix": ".js",
+  "jsx": { "version": 4 },
+  "bs-dependencies": ["@rescript/core", "@rescript/react"],
+  "bsc-flags": ["-open RescriptCore"]
+}

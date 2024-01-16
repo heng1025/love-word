@@ -3,7 +3,6 @@
 import * as Qs from "qs";
 import Md5 from "md5";
 import * as Js_exn from "rescript/lib/es6/js_exn.js";
-import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as Functions from "./Functions.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
@@ -29,34 +28,33 @@ function textToSpeech(text) {
 async function translate$1(q) {
   try {
     var val = await chrome.storage.local.get(["baiduKey"]);
-    var result = val !== undefined ? Caml_option.valFromOption(val).baiduKey : Js_exn.raiseError("No translation key");
+    var result;
+    if (val !== undefined) {
+      result = Caml_option.valFromOption(val).baiduKey;
+    } else {
+      throw new Error("No translation key");
+    }
     var queryUrl;
     if (result == null) {
-      queryUrl = Js_exn.raiseError("No translation key");
-    } else {
-      var appid = result.appid;
-      var key = result.secret;
-      var salt = Date.now().toString();
-      var sign = Md5(appid + q + salt + key);
-      var sl = Functions.getSourceLang(q);
-      var tlDict = Js_dict.fromList({
-            hd: [
-              "cmn",
-              "en"
-            ],
-            tl: /* [] */0
-          });
-      var val$1 = Js_dict.get(tlDict, sl);
-      var query = Qs.stringify({
-            q: q,
-            from: "auto",
-            to: val$1 !== undefined ? val$1 : "zh",
-            appid: appid,
-            salt: salt,
-            sign: sign
-          });
-      queryUrl = endpoint + "?" + query;
+      throw new Error("No translation key");
     }
+    var appid = result.appid;
+    var key = result.secret;
+    var salt = Date.now().toString();
+    var sign = Md5(appid + q + salt + key);
+    var sl = Functions.getSourceLang(q);
+    var tlDict = {};
+    tlDict["cmn"] = "en";
+    var val$1 = tlDict[sl];
+    var query = Qs.stringify({
+          q: q,
+          from: "auto",
+          to: val$1 !== undefined ? val$1 : "zh",
+          appid: appid,
+          salt: salt,
+          sign: sign
+        });
+    queryUrl = endpoint + "?" + query;
     var res = await fetch(queryUrl, undefined);
     var data = await res.json();
     var msg = data.error_msg;

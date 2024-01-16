@@ -4,7 +4,7 @@ open Common.Chrome
 
 let apiHost = %raw(`import.meta.env.LW_API_HOST`)
 let getSourceLang = text => FrancMin.createFranc(text, {minLength: 1, only: ["eng", "cmn"]})
-let includeWith = (target, substring) => Js.Re.fromString(substring)->Js.Re.test_(target)
+let includeWith = (target, substring) => Re.fromString(substring)->RegExp.test(target)
 
 type api<'data> = {
   code: int,
@@ -13,11 +13,11 @@ type api<'data> = {
 }
 let fetchByHttp = async (~url, ~method="get", ~body=?) => {
   try {
-    let headers = Js.Obj.empty()
+    let headers = Object.empty()
     let result = await chromeStore->get(~keys=["user"])
     let user = result["user"]
-    let _ = switch Js.toOption(user) {
-    | Some(val) => Js.Obj.assign(headers, {"x-token": val["token"]})
+    let _ = switch Nullable.toOption(user) {
+    | Some(val) => Object.assign(headers, {"x-token": val["token"]})
     | _ => headers
     }
 
@@ -25,7 +25,7 @@ let fetchByHttp = async (~url, ~method="get", ~body=?) => {
     | Some(b) =>
       await fetch(
         ~input=`${apiHost}${url}`,
-        ~init={method, headers, body: Js.Json.stringifyAny(b)},
+        ~init={method, headers, body: JSON.stringifyAny(b)},
         (),
       )
     | _ => await fetch(~input=`${apiHost}${url}`, ~init={headers: headers}, ())
@@ -37,7 +37,7 @@ let fetchByHttp = async (~url, ~method="get", ~body=?) => {
     }
   } catch {
   | Js.Exn.Error(err) =>
-    switch Js.Exn.message(err) {
+    switch Error.message(err) {
     | Some(msg) => Error(msg)
     | _ => Error("Err happen")
     }
@@ -46,12 +46,13 @@ let fetchByHttp = async (~url, ~method="get", ~body=?) => {
 }
 
 let debounce = (delay, callback) => {
-  let timeoutID = ref(Js.Nullable.null)
+  let timeoutID: ref<Null.t<timeoutId>> = ref(Null.null)
   let cancelled = ref(false)
 
   let clearExistingTimeout = () => {
-    if !Js.Nullable.isNullable(timeoutID.contents) {
-      Js.Nullable.iter(timeoutID.contents, timer => Js.Global.clearTimeout(timer))
+    switch timeoutID.contents->Null.toOption {
+    | Some(timer) => clearTimeout(timer)
+    | None => ()
     }
   }
 
@@ -63,7 +64,7 @@ let debounce = (delay, callback) => {
     clearExistingTimeout()
 
     switch cancelled.contents {
-    | false => timeoutID := Js.Nullable.return(Js.Global.setTimeout(() => {
+    | false => timeoutID := Null.make(setTimeout(() => {
             callback()
           }, delay))
     | _ => ()
@@ -72,4 +73,3 @@ let debounce = (delay, callback) => {
 
   (wrapper, cancel)
 }
-

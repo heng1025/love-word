@@ -8,7 +8,7 @@ external closeModal: unit => unit = "close"
 @react.component
 let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => {
   let (btnState, setBtnState) = React.Uncurried.useState(_ => None)
-  let checkedLen = Js.Array2.length(records)
+  let checkedLen = Array.length(records)
 
   let onClick = _ => {
     switch btnState {
@@ -49,7 +49,7 @@ let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => 
               showModal()
             }}>
             <span> {React.string("Delete")} </span>
-            <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>
+            <span> {React.string(`(${Int.toString(checkedLen)})`)} </span>
           </button>
           <button
             className="btn join-item btn-secondary"
@@ -58,7 +58,7 @@ let make = (~records=[], ~onDelete, ~onSync, ~onClear, ~onSearch, ~onCancel) => 
               showModal()
             }}>
             <span> {React.string("Sync")} </span>
-            <span> {React.string(`(${Js.Int.toString(checkedLen)})`)} </span>
+            <span> {React.string(`(${Int.toString(checkedLen)})`)} </span>
           </button>
           <button
             className="btn join-item btn-error"

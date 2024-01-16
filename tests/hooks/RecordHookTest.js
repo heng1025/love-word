@@ -2,7 +2,6 @@
 
 import * as Fixture from "../utils/Fixture.js";
 import * as Caml_obj from "rescript/lib/es6/caml_obj.js";
-import * as Caml_array from "rescript/lib/es6/caml_array.js";
 import * as RecordHook from "../../src/hooks/RecordHook.js";
 import * as React from "@testing-library/react";
 
@@ -86,7 +85,7 @@ describe.each([
                       return r.checked;
                     });
                 expect(checkedRecords).toHaveLength(1);
-                expect(Caml_array.get(checkedRecords, 0).text).toBe(Fixture.dictRecord.text);
+                expect(checkedRecords[0].text).toBe(Fixture.dictRecord.text);
               }));
         test("cancle checked", (async function () {
                 var result = initRecords(recordType);
@@ -146,7 +145,7 @@ describe.each([
                                     return r.sync;
                                   });
                               expect(syncedRecords).toHaveLength(1);
-                              expect(Caml_array.get(syncedRecords, 0).text).toBe(Fixture.dictRecord.text);
+                              expect(syncedRecords[0].text).toBe(Fixture.dictRecord.text);
                             }), undefined);
               }));
       }));

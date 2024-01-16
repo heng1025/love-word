@@ -19,7 +19,7 @@ let make = (~onSubmit, ~onCancel) => {
     | Ok(val) => {
         chromeStore->set({"user": val})->ignore
         await onSubmit(val)
-        switch Js.Array2.includes(["favorite", "history"], url.hash) {
+        switch Array.includes(["favorite", "history"], url.hash) {
         | true => reload()
         | false => ()
         }

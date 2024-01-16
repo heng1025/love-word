@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as Widget from "./Widget.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function FavButton(props) {
   var trans = props.trans;
@@ -52,12 +53,13 @@ function FavButton(props) {
   React.useEffect((function () {
           favAction("Get");
         }), [text]);
-  return React.createElement("button", {
+  return JsxRuntime.jsx("button", {
+              children: isFaved ? JsxRuntime.jsx(Widget.StarFill.make, {}) : JsxRuntime.jsx(Widget.Star.make, {}),
               className: "btn btn-xs w-5 h-5 min-h-0 btn-circle btn-ghost",
               onClick: (function (param) {
                   favAction(isFaved ? "Delete" : "Add");
                 })
-            }, isFaved ? React.createElement(Widget.StarFill.make, {}) : React.createElement(Widget.Star.make, {}));
+            });
 }
 
 var make = FavButton;
